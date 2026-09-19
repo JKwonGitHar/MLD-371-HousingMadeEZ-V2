@@ -27,10 +27,10 @@ Addressing housing challenges faced by international students at Harvard and exp
 
 ## Background Brief
 
-1. We are an informal organization to help the broader international student body at Harvard University.
+1. We are an informal ad hoc organization that formed to help international graduate students at Harvard University navigate housing issues.
 2. Who runs it: Us
-3. We are building an informational tool to help international students avoid or resolve housing challenges that they have indentified.
-4. The reoccuring day-to-day tasks students perform include: finding housing, understanding leases, avoiding scams, securing furnishings, finding roomates, obtaining and paying for utilities, etc.
-5. We are surveying international students to identify pain points. We will use AI to analyse the survey responses.
-6. To our understanding students currently use WhatsApp and other networking applications, the Harvard Housing site, other apartment search websites to find housing, roommates, furnishings, and seek advice for resolving housing related issues. We assume international students use AI assisted searching when looking for housing.
-7. Scamming, finding and moving furnishings, and understanding leases are specific pain points identified in our initial information gathering. We will update this based on survey findings.
+3. We are using AI to build an informational tool to help international students avoid or resolve housing challenges that they have identified.
+4. The reoccurring day-to-day tasks students searching for housing perform include: finding housing, understanding leases, avoiding scams, securing furnishings, finding roommates, obtaining and paying for utilities, etc.
+5. We are surveying international students to identify pain points. We will use AI to analyze the survey responses. We will also gather data through focus groups with international students, interviews with housing authorities, and searching local news reports. We will use AI to search for relevant information and to analyze the data that we collect. 
+6. To our understanding, students currently use WhatsApp and other networking applications, the Harvard Housing site, and other apartment search websites to find housing, roommates, furnishings, and seek advice for resolving housing related issues. We assume international students use AI assisted searching when looking for housing.
+7. Scamming, finding and moving furnishings, and understanding leases are specific pain points identified in our initial information gathering. We will update specific pain points based on survey findings.
