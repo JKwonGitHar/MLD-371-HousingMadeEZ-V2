@@ -1,5 +1,5 @@
 # MLD-371-Liz-McKenna
-For international groups / pain points XYZ~
+Addressing housing challenges faced by international students at Harvard and exploring an AI-informed tool to help them find housing, understand leases, avoid scams, and navigate related tasks.
 
 
 # Background Brief
