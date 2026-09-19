@@ -1,4 +1,5 @@
 # Housing Made EZ
+Addressing housing challenges faced by international students at Harvard and exploring an AI-informed tool to help them find housing, understand leases, avoid scams, and navigate related tasks.
 
 **Team:** John, Andrea, Eze, Elsa, Mustafa
 
