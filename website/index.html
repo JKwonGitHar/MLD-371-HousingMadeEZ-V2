@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Housing Made EZ: a resource hub for international students finding housing near Harvard Kennedy School.">
+<title>Housing Made EZ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* ---------- Tokens (single bright, eye-friendly theme) ---------- */
+  :root{
+    --ink:        #1F3A34;
+    --ink-soft:   #4E6B64;
+    --ink-faint:  #72908A;
+    --paper:      #F7FBF9;
+    --paper-raised:#FFFFFF;
+    --line:       #DCEBE5;
+    --accent:     #0E8F68;
+    --accent-ink: #0A5C44;
+    --accent-soft:#E2F5EC;
+    --amber:      #B8791C;
+    --amber-soft: #FFF3DC;
+    --warn:       #C1473F;
+    --warn-soft:  #FDEDEA;
+    --good:       #2F8F5B;
+    --series-cambridge: #1baf7a;
+    --series-allston:   #eb6834;
+    --radius-s: 6px;
+    --radius-m: 12px;
+    --radius-l: 20px;
+    --shadow-1: 0 1px 3px rgba(31,58,52,.06), 0 1px 2px rgba(31,58,52,.04);
+    --shadow-2: 0 10px 28px rgba(31,58,52,.08);
+    color-scheme: light;
+  }
+
+  /* ---------- Fonts ---------- */
+
+  * { box-sizing: border-box; }
+  html{ background: var(--paper); }
+  body{
+    background-color: var(--paper);
+    background-image:
+      radial-gradient(1200px 520px at 8% -8%, #DDF4EA 0%, transparent 60%),
+      radial-gradient(900px 480px at 100% 0%, #E3F0FB 0%, transparent 60%),
+      radial-gradient(900px 600px at 50% 100%, #FFF6E6 0%, transparent 65%);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: 'Work Sans', system-ui, sans-serif;
+    line-height: 1.55;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  h1,h2,h3{ font-family:'Fraunces', Georgia, serif; text-wrap: balance; margin: 0; }
+  .mono{ font-family:'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  a { color: var(--accent-ink); }
+  img{ max-width: 100%; }
+  [hidden]{ display:none !important; }
+
+  .wrap{ max-width: 980px; margin: 0 auto; }
+  .prose{ max-width: 65ch; }
+
+  /* ---------- Top bar / route nav ---------- */
+  .topbar{
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-inner{
+    max-width: 980px; margin: 0 auto; padding: 12px 0;
+    display:flex; align-items:center; gap: 18px;
+  }
+  .brand{ display:flex; align-items:center; gap:8px; font-weight:700; font-size:15px; white-space:nowrap; }
+  .brand-dot{ width:10px; height:10px; border-radius:50%; background: var(--accent); flex:none; }
+  .route{
+    display:flex; gap: 4px; overflow-x:auto; scrollbar-width:none; flex:1;
+  }
+  .route::-webkit-scrollbar{ display:none; }
+  .route a{
+    flex: none; font-size: 12.5px; font-weight:600; color: var(--ink-soft);
+    text-decoration:none; padding: 6px 10px; border-radius: 999px; white-space:nowrap;
+    border: 1px solid transparent;
+  }
+  .route a:hover{ border-color: var(--line); color: var(--ink); }
+
+  /* ---------- Hero ---------- */
+  .hero{ padding: 56px 0 40px; }
+  .hero-eyebrow{
+    display:inline-flex; align-items:center; gap:8px; font-size:12.5px; font-weight:600;
+    letter-spacing:.06em; text-transform:uppercase; color: var(--accent-ink);
+    background: var(--accent-soft); padding: 5px 12px; border-radius: 999px; margin-bottom: 18px;
+  }
+  .hero h1{ font-size: clamp(34px, 5.5vw, 54px); font-weight: 600; line-height:1.05; }
+  .hero p.lede{ margin-top:16px; font-size: 18px; color: var(--ink-soft); max-width: 60ch; }
+  .hero-meta{ display:flex; flex-wrap:wrap; gap: 10px 28px; margin-top: 28px; }
+  .hero-meta div{ font-size: 13px; color: var(--ink-faint); }
+  .hero-meta strong{ display:block; font-family:'Fraunces', serif; font-size: 16px; color: var(--ink); font-weight:600; }
+
+  /* ---------- Stop / section shell ---------- */
+  .stop{
+    position: relative;
+    padding: 46px 0 46px 30px;
+    border-left: 2px solid var(--line);
+    margin-left: 6px;
+  }
+  .stop::before{
+    content:""; position:absolute; left:-7px; top: 50px;
+    width:12px; height:12px; border-radius:50%;
+    background: var(--paper); border: 3px solid var(--accent);
+  }
+  .stop:last-of-type{ border-left-color: transparent; }
+  @media (max-width: 640px){
+    .stop{ padding-left: 20px; margin-left: 2px; }
+  }
+  .stop-kicker{
+    font-size: 12.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+    color: var(--accent-ink); margin-bottom: 8px;
+  }
+  .stop h2{ font-size: clamp(24px, 3.4vw, 32px); font-weight:600; margin-bottom: 10px; }
+  .stop .sub{ color: var(--ink-soft); max-width: 62ch; margin-bottom: 26px; }
+
+  /* ---------- Cards / grid ---------- */
+  .grid{ display:grid; gap: 14px; }
+  .grid.cols-2{ grid-template-columns: repeat(2, 1fr); }
+  .grid.cols-3{ grid-template-columns: repeat(3, 1fr); }
+  .grid.cols-4{ grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 760px){
+    .grid.cols-2, .grid.cols-3, .grid.cols-4{ grid-template-columns: 1fr; }
+  }
+  .card{
+    background: var(--paper-raised); border: 1px solid var(--line);
+    border-radius: var(--radius-m); padding: 18px 20px; box-shadow: var(--shadow-1);
+  }
+  .card h3{ font-size: 16.5px; font-weight:600; margin-bottom: 6px; }
+  .card p{ margin: 0; font-size: 14.5px; color: var(--ink-soft); }
+  .card .term-name{ font-family:'Fraunces', serif; font-weight:600; font-size:17px; color: var(--ink); }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; font-weight:600; font-size: 14.5px;
+    padding: 10px 18px; border-radius: 999px; text-decoration:none; border: 1px solid transparent;
+    cursor:pointer; font-family:'Work Sans', sans-serif;
+  }
+  .btn-primary{ background: var(--accent); color: var(--paper-raised); }
+  .btn-primary:hover{ background: var(--accent-ink); }
+  .btn-ghost{ background: transparent; border-color: var(--line); color: var(--ink); }
+  .btn-ghost:hover{ border-color: var(--accent); color: var(--accent-ink); }
+  .btn:disabled{ opacity:.5; cursor:not-allowed; }
+
+  .tag{
+    display:inline-flex; font-size: 11.5px; font-weight:700; letter-spacing:.03em;
+    padding: 3px 9px; border-radius: 999px; text-transform:uppercase;
+  }
+  .tag-warn{ background: var(--warn-soft); color: var(--warn); }
+  .tag-good{ background: var(--accent-soft); color: var(--accent-ink); }
+  .tag-amber{ background: var(--amber-soft); color: var(--amber); }
+
+  .callout{
+    border-radius: var(--radius-m); padding: 16px 18px; display:flex; gap:12px; align-items:flex-start;
+  }
+  .callout.warn{ background: var(--warn-soft); border: 1px solid color-mix(in srgb, var(--warn) 35%, transparent); }
+  .callout p{ margin:0; font-size: 14px; color: var(--ink-soft); }
+  .callout strong{ color: var(--ink); }
+
+  .linklist{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+  .linklist a{
+    display:flex; align-items:center; justify-content:space-between; gap: 10px;
+    text-decoration:none; padding: 11px 14px; border:1px solid var(--line); border-radius: var(--radius-s);
+    background: var(--paper-raised); font-size: 14.5px; font-weight:500; color: var(--ink);
+  }
+  .linklist a:hover{ border-color: var(--accent); }
+  .linklist a .go{ color: var(--ink-faint); font-size: 13px; }
+  .linklist small{ display:block; color: var(--ink-faint); font-weight: 400; font-size: 12.5px; margin-top:2px; }
+
+  /* ---------- Checklist ---------- */
+  .toggle-row{ display:flex; gap: 8px; margin-bottom: 18px; flex-wrap:wrap; align-items:center; }
+  .seg{ display:inline-flex; border:1px solid var(--line); border-radius:999px; padding:3px; background:var(--paper-raised); }
+  .seg button{
+    border:none; background:transparent; padding: 7px 16px; border-radius:999px; font-size:13.5px; font-weight:600;
+    color: var(--ink-soft); cursor:pointer; font-family:'Work Sans', sans-serif;
+  }
+  .seg button[aria-pressed="true"]{ background: var(--accent); color: var(--paper-raised); }
+  .progress-wrap{ display:flex; align-items:center; gap:10px; font-size:13px; color: var(--ink-faint); margin-left:auto; }
+  .progress-track{ width:120px; height:6px; border-radius:999px; background:var(--line); overflow:hidden; }
+  .progress-fill{ height:100%; background: var(--accent); border-radius:999px; transition: width .25s ease; }
+
+  .checklist{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+  .check-item{
+    display:flex; align-items:flex-start; gap:12px; background:var(--paper-raised); border:1px solid var(--line);
+    border-radius: var(--radius-s); padding: 12px 14px;
+  }
+  .check-item input{ width:18px; height:18px; margin-top:2px; accent-color: var(--accent); flex:none; }
+  .check-item label{ font-size:14.5px; flex:1; cursor:pointer; }
+  .check-item.done label{ color: var(--ink-faint); text-decoration: line-through; }
+  .check-item .badge{ flex:none; }
+
+  /* ---------- Chart ---------- */
+  .viz-root{
+    --surface-1: var(--paper-raised);
+    --text-primary: var(--ink);
+    --text-secondary: var(--ink-soft);
+    --grid-line: var(--line);
+  }
+  .chart-card{ background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius-m); padding: 20px 20px 8px; box-shadow: var(--shadow-1); }
+  .chart-legend{ display:flex; gap:18px; margin-bottom: 6px; font-size:13px; color: var(--ink-soft); }
+  .chart-legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .chart-legend i{ width:10px; height:10px; border-radius:3px; display:inline-block; }
+  .bar-tooltip{
+    position:absolute; pointer-events:none; background: var(--ink); color: var(--paper);
+    font-size:12px; padding:6px 9px; border-radius:6px; transform: translate(-50%,-115%);
+    white-space:nowrap; opacity:0; transition: opacity .12s ease; z-index: 5; font-family:'IBM Plex Mono',monospace;
+  }
+  .bar-tooltip.show{ opacity:1; }
+  .table-wrap{ overflow-x:auto; max-width:100%; }
+  .rent-table{ width:100%; border-collapse:collapse; margin-top:18px; font-size:13.5px; }
+  .rent-table th, .rent-table td{ text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); }
+  .rent-table th{ color: var(--ink-faint); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  .rent-table td.num{ font-family:'IBM Plex Mono', monospace; }
+
+  /* ---------- Distance strip ---------- */
+  .dist-strip{ display:flex; flex-direction:column; gap:10px; margin-top: 18px; }
+  .dist-row{ display:grid; grid-template-columns: 120px 1fr 70px; align-items:center; gap:12px; font-size:13.5px; }
+  .dist-row .place{ font-weight:600; }
+  .dist-bar-track{ height:8px; background: var(--line); border-radius:999px; overflow:hidden; }
+  .dist-bar-fill{ height:100%; background: linear-gradient(90deg, var(--accent), var(--amber)); border-radius:999px; }
+  .dist-row .val{ font-family:'IBM Plex Mono', monospace; color: var(--ink-soft); text-align:right; }
+
+  /* ---------- Roommate board ---------- */
+  .rm-form{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .rm-form .full{ grid-column: 1 / -1; }
+  @media (max-width:640px){ .rm-form{ grid-template-columns: 1fr; } }
+  .field label{ display:block; font-size:12.5px; font-weight:600; color: var(--ink-soft); margin-bottom:5px; }
+  .field input, .field textarea, .field select{
+    width:100%; padding:9px 11px; border:1px solid var(--line); border-radius:var(--radius-s);
+    background: var(--paper-raised); color: var(--ink); font-family:'Work Sans', sans-serif; font-size:14px;
+  }
+  .field textarea{ resize: vertical; min-height: 60px; }
+  .rm-post{ background: var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-m); padding:16px 18px; }
+  .rm-post-head{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:6px; }
+  .rm-post-head .who{ font-weight:600; }
+  .rm-post-head .when{ font-size:12px; color: var(--ink-faint); }
+  .rm-meta{ display:flex; gap:14px; flex-wrap:wrap; font-size:12.5px; color: var(--ink-soft); margin: 6px 0; }
+  .rm-meta b{ color: var(--ink); font-family:'IBM Plex Mono', monospace; font-weight:500; }
+  .empty-state{ color: var(--ink-faint); font-size:14px; padding: 18px; text-align:center; border:1px dashed var(--line); border-radius: var(--radius-m); }
+
+  footer{ padding: 40px 0 60px; border-top: 1px solid var(--line); margin-top: 20px; }
+  footer p{ font-size:13px; color: var(--ink-faint); margin:0 0 6px; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner wrap">
+    <div class="brand"><span class="brand-dot"></span>Housing Made EZ</div>
+    <nav class="route">
+      <a href="#scams">Scams</a>
+      <a href="#lease">Lease</a>
+      <a href="#banking">Banking</a>
+      <a href="#checklist">Checklist</a>
+      <a href="#rent">Rent map</a>
+      <a href="#roommates">Roommates</a>
+      <a href="#childcare">Childcare</a>
+    </nav>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="hero-eyebrow">Housing Made EZ · for International Student Groups</div>
+    <h1>Everything you need to land safely, Harvard Kennedy&nbsp;School–adjacent.</h1>
+    <p class="lede">Addressing housing challenges faced by international students at Harvard: how to avoid scams, read a lease you've never seen the format of before, open a bank account before you land, and figure out where to actually live.</p>
+    <div class="hero-meta">
+      <div><strong>Team Housing Made EZ</strong>John, Andrea, Eze, Elsa, Mustafa</div>
+      <div><strong>International Student Groups</strong>Partner organization</div>
+      <div><strong>Harvard Kennedy School</strong>Distances below are measured from here</div>
+    </div>
+  </section>
+
+  <!-- ================= SCAMS ================= -->
+  <section class="stop" id="scams">
+    <div class="stop-kicker">Stop 1</div>
+    <h2>Don't get scammed before you even arrive</h2>
+    <p class="sub">Rental scams target people who can't tour an apartment in person — which is exactly the position most international students are in. These are the official Boston consumer-protection tips, plus the actual lookup tools.</p>
+
+    <div class="callout warn" style="margin-bottom:22px;">
+      <div>
+        <strong>Never wire money, and never pay before you've confirmed who you're paying.</strong>
+        <p>You can't reverse a wire transfer. Insist on seeing the unit (in person or live video with someone you trust) and confirm the landlord's identity before any payment changes hands.</p>
+      </div>
+    </div>
+
+    <div class="grid cols-2" style="margin-bottom:22px;">
+      <div class="card">
+        <h3>Verify who actually owns the unit</h3>
+        <p>Search the address in the city's property database before you send anyone money. Anyone can post a listing online — only the database tells you who really owns it.</p>
+        <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+          <a class="btn btn-primary" href="http://www.cityofboston.gov/assessing/search/" target="_blank" rel="noopener">Look up a Boston address</a>
+          <a class="btn btn-ghost" href="https://www.cambridgema.gov/iwantto/viewthepropertydatabase" target="_blank" rel="noopener">Look up a Cambridge address</a>
+        </div>
+      </div>
+      <div class="card">
+        <h3>How to spot a fake listing</h3>
+        <p>Unusually low rent · spelling/grammar errors · no background or credit check · asks to pay the deposit in installments · broker isn't state-licensed · unit isn't registered with Inspectional Services.</p>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Work Sans',sans-serif; font-size:14px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint); margin-bottom:10px;">If you've spotted one, report it</h3>
+    <ul class="linklist" style="margin-bottom:10px;">
+      <li><a href="https://www.boston.gov/departments/consumer-affairs-and-licensing/apartment-scams" target="_blank" rel="noopener">Boston.gov — Apartment Scams (source for this page)<small>Full tips, brochure, and reporting links</small><span class="go">↗</span></a></li>
+      <li><a href="https://police.boston.gov/" target="_blank" rel="noopener">Boston Police Department<small>File a local report</small><span class="go">↗</span></a></li>
+      <li><a href="https://reportfraud.ftc.gov/" target="_blank" rel="noopener">Federal Trade Commission — Report Fraud<small>Federal scam database</small><span class="go">↗</span></a></li>
+      <li><a href="https://www.ic3.gov/" target="_blank" rel="noopener">FBI Internet Crime Complaint Center (IC3)<small>For online / wire-transfer scams</small><span class="go">↗</span></a></li>
+    </ul>
+    <p style="font-size:13px; color:var(--ink-faint);">Questions? Boston Consumer Affairs — <span class="mono">617-635-3834</span></p>
+  </section>
+
+  <!-- ================= LEASE ================= -->
+  <section class="stop" id="lease">
+    <div class="stop-kicker">Stop 2</div>
+    <h2>Decipher your lease</h2>
+    <p class="sub">US leases use terms that don't translate directly if you've rented elsewhere. Here's the plain-English version of the ones that trip people up most, sourced from Massachusetts Legal Help and the Attorney General's tenant guide.</p>
+
+    <div class="grid cols-2">
+      <div class="card"><div class="term-name">Security deposit</div><p>Money the landlord holds and can only use for damage you cause, or unpaid rent if you move out owing money. It is not automatically forfeited.</p></div>
+      <div class="card"><div class="term-name">Lease duration</div><p>The fixed period (usually 12 months) during which the landlord can't raise your rent and can only evict you for non-payment or violating the lease.</p></div>
+      <div class="card"><div class="term-name">Tenant at will</div><p>Renting with no written lease, or a lease that has expired. Fewer protections than a fixed-term lease — avoid this if you can.</p></div>
+      <div class="card"><div class="term-name">Self-extending lease</div><p>Automatically continues on the same terms unless you or the landlord give written notice to end it. Know your notice deadline.</p></div>
+      <div class="card"><div class="term-name">Option to renew</div><p>The lease simply ends on its date. You must give written notice if you want to <em>stay</em> — no notice needed if you're leaving.</p></div>
+      <div class="card"><div class="term-name">Repairs</div><p>Landlords are legally required to make repairs, except damage you caused. A clause that tries to shift this onto you is not enforceable.</p></div>
+      <div class="card"><div class="term-name">Utilities</div><p>Check whether electricity, gas, heat, and water are separately metered and who pays for each — this varies a lot between buildings.</p></div>
+      <div class="card"><div class="term-name">Subletting</div><p>Whether you're allowed to rent your space to someone else (e.g. over the summer). Usually requires written landlord approval — read this clause before you sign.</p></div>
+    </div>
+
+    <ul class="linklist" style="margin-top:18px;">
+      <li><a href="https://www.masslegalhelp.org/housing-apartments-shelter/tenants-rights/understanding-your-lease-tenant" target="_blank" rel="noopener">Mass Legal Help — Understanding Your Lease<small>Full plain-language breakdown</small><span class="go">↗</span></a></li>
+      <li><a href="https://www.mass.gov/guides/the-attorney-generals-guide-to-landlord-and-tenant-rights" target="_blank" rel="noopener">MA Attorney General's Guide to Landlord & Tenant Rights<small>The official state guide, PDF</small><span class="go">↗</span></a></li>
+    </ul>
+  </section>
+
+  <!-- ================= BANKING ================= -->
+  <section class="stop" id="banking">
+    <div class="stop-kicker">Stop 3</div>
+    <h2>Start a bank account before you land</h2>
+    <p class="sub">You'll need a US account to pay a deposit and first month's rent — most landlords won't take an international card. Harvard Federal Credit Union is the one built for this: <strong>no SSN and no US citizenship required.</strong></p>
+
+    <div class="grid cols-2" style="margin-bottom:16px;">
+      <div class="card">
+        <span class="tag tag-good">No SSN required</span>
+        <h3 style="margin-top:10px;">Harvard Federal Credit Union</h3>
+        <p>Begin the membership application online before you arrive. Bring your passport, Harvard ID or acceptance letter, and a $5 opening deposit to finish in person — usually processed within 10 days.</p>
+        <a class="btn btn-primary" style="margin-top:14px;" href="https://harvardfcu.org/international/" target="_blank" rel="noopener">Start your application</a>
+      </div>
+      <div class="card">
+        <h3>Other options</h3>
+        <p>Chase and Bank of America both have dedicated international-student account programs if you'd rather bank somewhere with more US-wide branches.</p>
+        <ul class="linklist" style="margin-top:12px;">
+          <li><a href="https://www.chase.com/personal/banking/education/basics/bank-accounts-for-international-students" target="_blank" rel="noopener">Chase — International Student Accounts<span class="go">↗</span></a></li>
+          <li><a href="https://bettermoneyhabits.bankofamerica.com/en/personal-banking/international-student-bank-account" target="_blank" rel="noopener">Bank of America — Student Account Guide<span class="go">↗</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CHECKLIST ================= -->
+  <section class="stop" id="checklist">
+    <div class="stop-kicker">Stop 4</div>
+    <h2>Your move-in checklist</h2>
+    <p class="sub">Tasks differ a lot depending on how far you're coming from — filter to your situation and check things off as you go. Your progress is saved on this device.</p>
+
+    <div class="toggle-row">
+      <div class="seg" role="group" aria-label="Filter checklist">
+        <button data-filter="both" aria-pressed="true">All</button>
+        <button data-filter="international" aria-pressed="false">Coming from abroad</button>
+        <button data-filter="domestic" aria-pressed="false">Moving within the US</button>
+      </div>
+      <div class="progress-wrap">
+        <span id="progress-label">0 / 0 done</span>
+        <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <ul class="checklist" id="checklist-list"></ul>
+    <p id="checklist-note" style="font-size:12px; color:var(--ink-faint); margin-top:10px;"></p>
+  </section>
+
+  <!-- ================= RENT MAP ================= -->
+  <section class="stop" id="rent">
+    <div class="stop-kicker">Stop 5</div>
+    <h2>Rent, mapped by distance from HKS</h2>
+    <p class="sub">Cambridge is closer to campus and costs more for it. Allston trades a longer commute for meaningfully lower rent, especially on larger units. Straight-line distances are approximate — use them for planning, not for booking a route.</p>
+
+    <div class="chart-card">
+      <div class="chart-legend">
+        <span><i style="background:var(--series-cambridge)"></i>Cambridge</span>
+        <span><i style="background:var(--series-allston)"></i>Allston</span>
+      </div>
+      <div style="position:relative;">
+        <svg id="rent-chart" viewBox="0 0 640 260" style="width:100%; height:auto; overflow:visible;" role="img" aria-label="Average monthly rent by unit size, Cambridge versus Allston"></svg>
+        <div class="bar-tooltip" id="bar-tip"></div>
+      </div>
+      <div class="table-wrap">
+      <table class="rent-table">
+        <thead><tr><th>Unit size</th><th>Cambridge</th><th>Allston</th><th>Difference</th></tr></thead>
+        <tbody id="rent-table-body"></tbody>
+      </table>
+      </div>
+      <p style="font-size:12px; color:var(--ink-faint); margin: 14px 0 4px;">Sources: <a href="https://www.rentcafe.com/average-rent-market-trends/us/ma/cambridge/" target="_blank" rel="noopener">RentCafe (Cambridge)</a> · <a href="https://www.renthop.com/average-rent-in/allston-boston-ma" target="_blank" rel="noopener">RentHop (Allston)</a>, current market averages.</p>
+    </div>
+
+    <h3 style="font-size:16px; margin: 28px 0 4px;">Approximate distance from Harvard Kennedy School</h3>
+    <div class="dist-strip" id="dist-strip"></div>
+  </section>
+
+  <!-- ================= ROOMMATES ================= -->
+  <section class="stop" id="roommates">
+    <div class="stop-kicker">Stop 6</div>
+    <h2>Find a roommate</h2>
+    <p class="sub">Post here if you're looking, or browse who else is. This board is shared live with everyone who has access to this page. Same safety rule as above: meet before you commit, and verify any apartment through the city database before paying anything.</p>
+
+    <div id="rm-unavailable" class="empty-state" hidden>The live board isn't available in this view. In the meantime, try <a href="https://www.spareroom.com/roommates/ma/middlesex_county/cambridge" target="_blank" rel="noopener">SpareRoom Cambridge</a>, <a href="https://www.spareroom.com/roommates/boston" target="_blank" rel="noopener">SpareRoom Boston</a>, or the <a href="https://www.facebook.com/groups/harvardhousing/" target="_blank" rel="noopener">Harvard Housing Facebook group</a>.</div>
+
+    <div id="rm-app" hidden>
+      <form class="card rm-form" id="rm-form" style="margin-bottom:22px;">
+        <div class="field"><label for="rm-name">Name</label><input id="rm-name" required maxlength="60" placeholder="Priya S."></div>
+        <div class="field"><label for="rm-contact">Contact (email preferred)</label><input id="rm-contact" required maxlength="80" placeholder="you@college.harvard.edu"></div>
+        <div class="field"><label for="rm-movein">Move-in month</label><input id="rm-movein" required maxlength="30" placeholder="August 2026"></div>
+        <div class="field"><label for="rm-budget">Budget / month</label><input id="rm-budget" required maxlength="30" placeholder="$1,200–1,500"></div>
+        <div class="field full"><label for="rm-area">Preferred area(s)</label><input id="rm-area" required maxlength="80" placeholder="Cambridge, near Porter or Central Sq"></div>
+        <div class="field full"><label for="rm-note">Note</label><textarea id="rm-note" maxlength="280" placeholder="A bit about you, your program, any preferences..."></textarea></div>
+        <div class="full" style="display:flex; justify-content:flex-end; gap:10px;">
+          <button type="submit" class="btn btn-primary">Post listing</button>
+        </div>
+      </form>
+      <div id="rm-list" style="display:flex; flex-direction:column; gap:12px;"></div>
+    </div>
+  </section>
+
+  <!-- ================= CHILDCARE ================= -->
+  <section class="stop" id="childcare">
+    <div class="stop-kicker">Stop 7</div>
+    <h2>Childcare: Cambridge vs. Boston/Allston</h2>
+    <p class="sub">Bringing a family changes the calculus. Cambridge centers run at a premium — university-affiliated care and long waitlists push prices up — while Boston-wide averages (the closest available data for Allston/Brighton) run somewhat lower.</p>
+
+    <div class="grid cols-2" style="margin-bottom:16px;">
+      <div class="card">
+        <span class="tag tag-amber">Higher cost, closer</span>
+        <h3 style="margin-top:10px;">Cambridge</h3>
+        <div class="rm-meta" style="margin-top:10px;">
+          <span>Infant <b>$2,500–3,500/mo</b></span>
+          <span>Toddler <b>$2,100–3,000/mo</b></span>
+        </div>
+        <p>Prices skew highest near Harvard Square ($2,700–3,600 infant) and Kendall Square ($2,600–3,500), a bit more moderate near Porter Square ($2,400–3,200). Expect competitive waitlists — apply early.</p>
+      </div>
+      <div class="card">
+        <span class="tag tag-good">Lower cost, farther</span>
+        <h3 style="margin-top:10px;">Boston / Allston-Brighton</h3>
+        <div class="rm-meta" style="margin-top:10px;">
+          <span>Infant <b>$2,400–3,400/mo</b></span>
+          <span>Toddler <b>$2,000–2,900/mo</b></span>
+        </div>
+        <p>Neighborhood-specific data for Allston/Brighton wasn't publicly available, so this uses citywide Boston averages as the closest proxy — treat it as a ballpark, not a quote.</p>
+      </div>
+    </div>
+
+    <ul class="linklist">
+      <li><a href="https://www.mass.gov/guides/find-a-licensed-family-group-or-school-age-child-care-program" target="_blank" rel="noopener">Mass.gov — Find a Licensed Child Care Program<small>Official state search tool, verify any provider here</small><span class="go">↗</span></a></li>
+      <li><a href="https://winnie.com/boston/daycares" target="_blank" rel="noopener">Winnie — Boston Daycares<small>Reviews, waitlist status, pricing by center</small><span class="go">↗</span></a></li>
+    </ul>
+  </section>
+
+  <footer>
+    <p><strong>Housing Made EZ</strong> — John, Andrea, Eze, Elsa, Mustafa · built for International Student Groups.</p>
+    <p>Distances and rent ranges are approximate planning estimates, not guarantees — always verify directly with landlords, banks, and providers.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============ CHECKLIST DATA ============ */
+  var CHECKLIST = [
+    {id:"fcu", tag:"both", text:"Start a Harvard FCU membership application online (no SSN needed)"},
+    {id:"visa", tag:"international", text:"Confirm your I-20/DS-2019 and visa interview are complete"},
+    {id:"temp", tag:"international", text:"Book temporary housing for your first 1–2 weeks before signing a full lease"},
+    {id:"mover", tag:"domestic", text:"Reserve a moving container or mover if you're bringing furniture"},
+    {id:"verify", tag:"both", text:"Verify any apartment's landlord and unit through the city property database"},
+    {id:"travelins", tag:"international", text:"Get travel/health insurance for the gap before Harvard's plan starts"},
+    {id:"sim", tag:"international", text:"Arrange a US SIM or eSIM plan for arrival day"},
+    {id:"rentersins", tag:"both", text:"Get a renters insurance quote for your new apartment"},
+    {id:"cash", tag:"international", text:"Convert some cash to USD and notify your home bank of travel"},
+    {id:"movein", tag:"both", text:"Confirm your move-in date and how keys/utilities transfer"},
+    {id:"hio", tag:"international", text:"Register your arrival with the Harvard International Office"},
+    {id:"address", tag:"domestic", text:"Update your mailing address with USPS, your bank, and employer"}
+  ];
+
+  var checklistState = {}; // id -> bool
+  var currentFilter = "both";
+  var checklistStore = null; // {get, set} once resolved
+
+  function renderChecklist(){
+    var list = document.getElementById("checklist-list");
+    list.innerHTML = "";
+    var visible = CHECKLIST.filter(function(item){
+      return currentFilter === "both" || item.tag === "both" || item.tag === currentFilter;
+    });
+    visible.forEach(function(item){
+      var li = document.createElement("li");
+      li.className = "check-item" + (checklistState[item.id] ? " done" : "");
+      var cb = document.createElement("input");
+      cb.type = "checkbox"; cb.id = "chk-" + item.id;
+      cb.checked = !!checklistState[item.id];
+      cb.addEventListener("change", function(){
+        checklistState[item.id] = cb.checked;
+        persistChecklist();
+        renderChecklist();
+      });
+      var label = document.createElement("label");
+      label.setAttribute("for", cb.id);
+      label.textContent = item.text;
+      var badge = document.createElement("span");
+      badge.className = "tag badge " + (item.tag === "international" ? "tag-amber" : item.tag === "domestic" ? "tag-good" : "");
+      badge.textContent = item.tag === "both" ? "" : (item.tag === "international" ? "Abroad" : "Domestic");
+      if (item.tag === "both") badge.style.display = "none";
+      li.appendChild(cb); li.appendChild(label); li.appendChild(badge);
+      list.appendChild(li);
+    });
+    var done = visible.filter(function(i){ return checklistState[i.id]; }).length;
+    document.getElementById("progress-label").textContent = done + " / " + visible.length + " done";
+    document.getElementById("progress-fill").style.width = (visible.length ? (done/visible.length*100) : 0) + "%";
+  }
+
+  document.querySelectorAll(".seg button").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      document.querySelectorAll(".seg button").forEach(function(b){ b.setAttribute("aria-pressed", "false"); });
+      btn.setAttribute("aria-pressed", "true");
+      currentFilter = btn.getAttribute("data-filter");
+      renderChecklist();
+    });
+  });
+
+  function persistChecklist(){
+    try { localStorage.setItem("hme-checklist", JSON.stringify(checklistState)); } catch(e){}
+    if (checklistStore) {
+      checklistStore.set({ items: checklistState, updatedAt: Date.now() }).catch(function(){});
+    }
+  }
+
+  function loadLocalChecklist(){
+    try {
+      var raw = localStorage.getItem("hme-checklist");
+      if (raw) checklistState = JSON.parse(raw) || {};
+    } catch(e){}
+  }
+
+  /* ============ RENT CHART ============ */
+  var RENT = [
+    {label:"Studio", cambridge:2775, allston:2833},
+    {label:"1 Bed", cambridge:3289, allston:2750},
+    {label:"2 Bed", cambridge:4173, allston:2900},
+    {label:"3 Bed", cambridge:5398, allston:3117}
+  ];
+
+  function fmt(n){ return "$" + n.toLocaleString("en-US"); }
+
+  function renderRentChart(){
+    var svg = document.getElementById("rent-chart");
+    var tip = document.getElementById("bar-tip");
+    var W = 640, H = 260, padL = 46, padR = 12, padT = 16, padB = 34;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var maxVal = Math.max.apply(null, RENT.map(function(r){ return Math.max(r.cambridge, r.allston); }));
+    var niceMax = Math.ceil(maxVal / 1000) * 1000;
+    var groupW = plotW / RENT.length;
+    var barW = groupW * 0.30;
+
+    var css = getComputedStyle(document.documentElement);
+    var textSecondary = css.getPropertyValue("--ink-soft").trim() || "#46615A";
+    var gridLine = css.getPropertyValue("--line").trim() || "#DDE4D9";
+    var camColor = css.getPropertyValue("--series-cambridge").trim() || "#1baf7a";
+    var allColor = css.getPropertyValue("--series-allston").trim() || "#eb6834";
+
+    var svgns = "http://www.w3.org/2000/svg";
+    function el(tag, attrs){
+      var e = document.createElementNS(svgns, tag);
+      for (var k in attrs) e.setAttribute(k, attrs[k]);
+      return e;
+    }
+
+    svg.innerHTML = "";
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+
+    // gridlines + y labels
+    var steps = 4;
+    for (var s = 0; s <= steps; s++){
+      var val = niceMax * s / steps;
+      var y = padT + plotH - (val / niceMax) * plotH;
+      svg.appendChild(el("line", {x1: padL, x2: W - padR, y1: y, y2: y, stroke: gridLine, "stroke-width": 1}));
+      var t = el("text", {x: padL - 8, y: y + 4, "text-anchor": "end", "font-size": 10, fill: textSecondary, "font-family": "IBM Plex Mono, monospace"});
+      t.textContent = "$" + Math.round(val/1000) + "k";
+      svg.appendChild(t);
+    }
+
+    RENT.forEach(function(row, i){
+      var gx = padL + groupW * i;
+      var cx = gx + groupW/2 - barW - 3;
+      var ax = gx + groupW/2 + 3;
+
+      [
+        {x: cx, val: row.cambridge, color: camColor, name: "Cambridge"},
+        {x: ax, val: row.allston, color: allColor, name: "Allston"}
+      ].forEach(function(bar){
+        var h = (bar.val / niceMax) * plotH;
+        var y = padT + plotH - h;
+        var rect = el("rect", {x: bar.x, y: y, width: barW, height: h, rx: 4, fill: bar.color});
+        rect.style.cursor = "pointer";
+        rect.addEventListener("mousemove", function(evt){
+          var pt = svg.createSVGPoint();
+          var rectBB = svg.getBoundingClientRect();
+          pt.x = evt.clientX; pt.y = evt.clientY;
+          var relX = evt.clientX - rectBB.left;
+          var relY = evt.clientY - rectBB.top;
+          tip.style.left = relX + "px";
+          tip.style.top = relY + "px";
+          tip.textContent = bar.name + " " + row.label + ": " + fmt(bar.val);
+          tip.classList.add("show");
+        });
+        rect.addEventListener("mouseleave", function(){ tip.classList.remove("show"); });
+        svg.appendChild(rect);
+
+        var lbl = el("text", {x: bar.x + barW/2, y: y - 6, "text-anchor": "middle", "font-size": 10, fill: textSecondary, "font-family": "IBM Plex Mono, monospace"});
+        lbl.textContent = "$" + Math.round(bar.val/100)/10 + "k";
+        svg.appendChild(lbl);
+      });
+
+      var glabel = el("text", {x: gx + groupW/2, y: H - 10, "text-anchor": "middle", "font-size": 12, fill: textSecondary, "font-family": "Work Sans, sans-serif", "font-weight": 600});
+      glabel.textContent = row.label;
+      svg.appendChild(glabel);
+    });
+
+    // table
+    var tbody = document.getElementById("rent-table-body");
+    tbody.innerHTML = "";
+    RENT.forEach(function(row){
+      var tr = document.createElement("tr");
+      var diff = row.cambridge - row.allston;
+      var diffText = (diff >= 0 ? "+" : "−") + fmt(Math.abs(diff)) + " in Cambridge";
+      tr.innerHTML = "<td>" + row.label + "</td><td class='num'>" + fmt(row.cambridge) + "</td><td class='num'>" + fmt(row.allston) + "</td><td class='num'>" + diffText + "</td>";
+      tbody.appendChild(tr);
+    });
+  }
+
+  /* ============ DISTANCE FROM HKS ============ */
+  var DISTANCES = [
+    {place:"Harvard Square", miles:0.3},
+    {place:"Central Square", miles:1.0},
+    {place:"Kendall Square", miles:1.4},
+    {place:"Porter Square", miles:1.6},
+    {place:"Davis Square", miles:2.1},
+    {place:"Allston", miles:2.8},
+    {place:"Brighton Center", miles:3.6}
+  ];
+  function renderDistances(){
+    var wrap = document.getElementById("dist-strip");
+    wrap.innerHTML = "";
+    var max = Math.max.apply(null, DISTANCES.map(function(d){ return d.miles; }));
+    DISTANCES.forEach(function(d){
+      var row = document.createElement("div");
+      row.className = "dist-row";
+      var pct = (d.miles / max) * 100;
+      row.innerHTML = "<span class='place'>" + d.place + "</span>" +
+        "<span class='dist-bar-track'><span class='dist-bar-fill' style='width:" + pct + "%'></span></span>" +
+        "<span class='val'>" + d.miles.toFixed(1) + " mi</span>";
+      wrap.appendChild(row);
+    });
+  }
+
+  /* ============ ROOMMATE BOARD (db capability) ============ */
+  var rmCollection = null;
+
+  function renderRoommates(posts){
+    var wrap = document.getElementById("rm-list");
+    wrap.innerHTML = "";
+    if (!posts.length){
+      wrap.innerHTML = "<div class='empty-state'>No listings yet — be the first to post.</div>";
+      return;
+    }
+    posts.forEach(function(p){
+      var card = document.createElement("div");
+      card.className = "rm-post";
+      var when = "";
+      try { when = new Date(p.postedAt).toLocaleDateString("en-US", {month:"short", day:"numeric"}); } catch(e){}
+      var head = document.createElement("div");
+      head.className = "rm-post-head";
+      var who = document.createElement("span"); who.className = "who"; who.textContent = p.name || "Someone";
+      var wh = document.createElement("span"); wh.className = "when"; wh.textContent = when;
+      head.appendChild(who); head.appendChild(wh);
+      var meta = document.createElement("div"); meta.className = "rm-meta";
+      meta.innerHTML = "<span>Move-in <b></b></span><span>Budget <b></b></span><span>Area <b></b></span>";
+      meta.querySelectorAll("b")[0].textContent = p.moveIn || "—";
+      meta.querySelectorAll("b")[1].textContent = p.budget || "—";
+      meta.querySelectorAll("b")[2].textContent = p.area || "—";
+      var note = document.createElement("p");
+      note.style.cssText = "margin:6px 0 0; font-size:13.5px; color:var(--ink-soft);";
+      note.textContent = p.note || "";
+      var contact = document.createElement("p");
+      contact.style.cssText = "margin:8px 0 0; font-size:12.5px; color:var(--ink-faint);";
+      contact.textContent = "Contact: " + (p.contact || "—");
+      card.appendChild(head); card.appendChild(meta);
+      if (p.note) card.appendChild(note);
+      card.appendChild(contact);
+      wrap.appendChild(card);
+    });
+  }
+
+  function initRoommates(db){
+    if (!db){
+      document.getElementById("rm-unavailable").hidden = false;
+      return;
+    }
+    document.getElementById("rm-app").hidden = false;
+    rmCollection = db.collection("roommate_posts");
+    rmCollection.orderBy("postedAt", "desc").limit(50).onSnapshot(function(snap){
+      var posts = snap.docs.map(function(d){ return d.data(); });
+      renderRoommates(posts);
+    }, function(err){
+      document.getElementById("rm-app").hidden = true;
+      document.getElementById("rm-unavailable").hidden = false;
+    });
+
+    var form = document.getElementById("rm-form");
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+      var btn = form.querySelector("button[type=submit]");
+      btn.disabled = true; btn.textContent = "Posting…";
+      var data = {
+        name: document.getElementById("rm-name").value.trim().slice(0,60),
+        contact: document.getElementById("rm-contact").value.trim().slice(0,80),
+        moveIn: document.getElementById("rm-movein").value.trim().slice(0,30),
+        budget: document.getElementById("rm-budget").value.trim().slice(0,30),
+        area: document.getElementById("rm-area").value.trim().slice(0,80),
+        note: document.getElementById("rm-note").value.trim().slice(0,280),
+        postedAt: Date.now()
+      };
+      rmCollection.add(data).then(function(){
+        form.reset();
+      }).catch(function(){
+        alert_fallback();
+      }).finally(function(){
+        btn.disabled = false; btn.textContent = "Post listing";
+      });
+    });
+  }
+
+  function alert_fallback(){
+    var note = document.getElementById("checklist-note");
+    // reuse a lightweight inline message pattern instead of window.alert
+  }
+
+  /* ============ BOOT ============ */
+  function start(){
+    loadLocalChecklist();
+    renderChecklist();
+    renderRentChart();
+    renderDistances();
+
+    if (window.claude && typeof window.claude.use === "function"){
+      Promise.all([
+        window.claude.use("db").catch(function(){ return null; }),
+        window.claude.use("user").catch(function(){ return null; })
+      ]).then(function(results){
+        var db = results[0], user = results[1];
+        initRoommates(db);
+
+        if (db && user){
+          user.id().then(function(uid){
+            if (!uid) return;
+            var doc = db.doc("data/users/" + uid + "/checklist");
+            checklistStore = doc;
+            doc.get().then(function(snap){
+              if (snap.exists && snap.data() && snap.data().items){
+                checklistState = snap.data().items;
+                renderChecklist();
+              }
+            }).catch(function(){});
+          }).catch(function(){});
+        }
+      });
+    } else {
+      document.getElementById("rm-unavailable").hidden = false;
+    }
+  }
+
+  if (window.claude && window.claude.hot){
+    window.claude.hot.ready ? window.claude.hot.ready(start) : start(window.claude.hot.data || {});
+  } else {
+    start();
+  }
+})();
+</script>
+</body>
+</html>
