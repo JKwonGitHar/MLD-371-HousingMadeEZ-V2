@@ -1,0 +1,77 @@
+HOUSING MADE EASY
+Background Brief: International Student Housing Navigation
+
+I. Overview
+
+International students often experience housing as a sequence of high-stakes decisions: where to search, whether a listing or landlord is legitimate, which documents will be accepted without a U.S. credit history, what a lease means, and what to do when a housing arrangement changes. Current resources are spread across school portals, student groups, public marketplaces, search engines, and informal advice. These resources may be useful, but they are difficult to compare, unevenly trusted, and often lack the context needed by students unfamiliar with the U.S. housing system.
+
+This project will test whether a trusted, structured navigation tool can help international graduate and professional students move from scattered information to a safe, informed next step. The initial focus should be on- and off-campus housing in the Cambridge/Boston area during arrival, apartment-search, and transition periods. Through user research and iterative prototyping, our team will determine whether the most valuable solution is a guided resource, decision-support workflow, verified directory, or another format.
+
+II. Purpose and Core Problem Statement
+
+The goal is not simply to compile housing information, but to identify where Harvard’s international students face the greatest avoidable risks and uncertainty throughout the housing journey, then use those insights to develop a solution that addresses their most pressing needs.
+
+Core Problem Statement:
+How might we help international graduate and professional students move from fragmented housing information to a safe, informed next step—without requiring prior knowledge of the U.S. rental system, a domestic credit history, or a large local network?
+
+III. Working Product Hypothesis
+
+International students do not necessarily need more housing listings. They may need a reliable way to understand their options, recognize risks, prepare for applications, and know where to get help. A first MVP hypothesis is a housing decision navigator that combines curated information, step-by-step guidance, risk-screening prompts, and referrals to peer-support.
+
+IV. Project and Initial Scope
+
+The project is a student-led initiative serving Harvard’s international student community. The first research and prototype cycle should focus on:
+-	newly admitted or newly arriving international graduate and professional students;
+-	students looking for off-campus housing in Cambridge and the broader Boston area;
+-	students who are unfamiliar with U.S. rental practices, lack U.S. credit history, or do not yet have a trusted local network; and
+-	the period from preparing to search through signing a lease or securing a short-term arrangement.
+
+Current students seeking subleases, furniture, or move-out support may become important secondary users, but they should not be treated as equal priorities in the first version.
+
+V. Pain-Point Hypothesis
+
+-	Trustworthy information: Identifying current, legitimate, and relevant sources across fragmented channels.
+-	Listing and landlord verification: Spotting scams, misleading listings, unusual payment requests, and missing information.
+-	Applications without U.S. credit history: Understanding guarantors, deposits, proof of funds, and acceptable documents.
+-	Leases and rental processes: Interpreting unfamiliar terms, obligations, deadlines, and key questions.
+-	Location and affordability: Comparing rent, utilities, transportation, roommates, commute, safety, and timing.
+-	Housing transitions: Managing subleases, utilities, banking, furniture, and move-out—potentially as later modules.
+
+VI. Current Alternatives and the Opportunity Gap
+
+Students currently combine:
+- Harvard University Housing portals;
+- WhatsApp, Slack, and other peer networks;
+- public marketplaces; and
+- advice from friends, classmates, alumni, landlords, or brokers.
+
+The problem is not simply that these resources are separate. The gaps may be:
+- unclear source credibility and inconsistent verification;
+- stale or incomplete information;
+- no clear sequence from search to application to lease signing;
+- limited support for comparing options and spotting red flags; and
+- no obvious escalation path when a student is unsure or at risk.
+
+VII. MVP Direction
+
+The first prototype should test a narrow “Housing Decision Navigator” experience. A user should be able to:
+
+1. describe their situation, timing, budget, location preferences, and housing type;
+2. receive a tailored sequence of search channels and preparation steps;
+3. evaluate a listing using a clear red-flag and verification checklist;
+4. prepare questions and documents for an application or landlord conversation;
+5. understand which lease issues require professional or institutional help; and
+6. reach a trusted Harvard or community resource when the tool cannot answer safely.
+
+The first version should avoid trying to be a full marketplace, guarantee a listing’s legitimacy, provide legal advice, store sensitive documents, or solve every housing-related task at once. Furniture exchange, utility setup, bank accounts, and sublease matching can be evaluated as later modules after the primary need is clearer.
+
+VIII. Key Decisions Before Building
+
+1. Which student segment and housing moment will the first version serve?
+2. Which pain point is both frequent enough and serious enough to prioritize?
+3. What information can the team verify and maintain over time?
+4. What can the tool safely explain, and when must it refer users elsewhere?
+5. Is a new interface necessary, or would a better-structured layer over existing resources solve the problem?
+6. What evidence will justify expanding into subleases, furniture, utilities, or other modules?
+
+The immediate next step is therefore not to build a broad housing platform. It is to validate the highest-risk, highest-frequency decision point and prototype the smallest trusted intervention that helps students act safely and confidently.

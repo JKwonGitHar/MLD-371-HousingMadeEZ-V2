@@ -1,0 +1,26 @@
+HOUSING MADE EZ background Brief: International Student Housing Navigation
+Executive Summary
+International students arriving at Harvard University face significant informational, logistical, and structural issues when securing accommodations. This peer-run informal student working group is developing a dedicated informational tool designed to empower international students to independently navigate and resolve housing challenges they face. Our team will identify actionable friction points and deliver targetable resources.
+
+Leadership and the Org
+Student-led informal initiative operating within Harvard targeting the broader international student population. For now we will begin with the graduate and professional schools with ideas to scale to the broader Harvard in the future.
+Problems / Pain Points 
+We are going to Build an informational tool to help international students avoid or resolve housing challenges they have identified. Here are some issues we have found:
+1.	Finding and selling furniture as they move in and out
+2.	Understanding, reviewing, and signing legally binding lease contracts
+3.	Establishing bank accounts to pay for utilities and housing
+4.	Subleases for students that starts at different academic school year
+5.	No prior domestic credit history as they sign for off base housing
+6.	Rental Scams 
+Current Situation
+International students currently use various resources to talk and exchange information, however, there is not a consolidated system.
+1.	 There are various WhatsApp, Slack, Telegram, tools
+2.	Institutional portals showing Harvard listing
+3.	Public Marketplace such as Zillow / Craigslist / Facebook / etc
+4.	Search engines along with AI to look through neighborhoods
+These tools help students but their lack of validation and structure leave students exposed to misinformation. 
+
+Objectives / Methodology / Next Step
+Our team has started an international student focused survey leveraging our personal connections. We are mapping housing experiences and common pitfalls to see where pain points are for each student to see where a tool we vibe code can help students.
+Once we have an idea through the survey, we will create a prototype product we will push it out to international students to test it. We would be seeking feedback on improvements we can make.
+

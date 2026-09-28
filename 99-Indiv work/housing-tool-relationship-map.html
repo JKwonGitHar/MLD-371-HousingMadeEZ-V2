@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Housing tool relationship map and sources</title>
+<style>
+:root {
+  --bg: #ffffff;
+  --surface: #f7f6f2;
+  --card: #ffffff;
+  --text-primary: #1c1c1a;
+  --text-secondary: #55544f;
+  --text-muted: #85837a;
+  --border: #e2e0d6;
+  --accent: #185fa5;
+  --accent-bg: #e6f1fb;
+  --gap-fill: #faeeda;
+  --gap-border: #ef9f27;
+  --gap-text: #633806;
+  font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17171a;
+    --surface: #1f1f22;
+    --card: #232326;
+    --text-primary: #f0efe9;
+    --text-secondary: #b8b6ac;
+    --text-muted: #8a8981;
+    --border: #35342f;
+    --accent: #85b7eb;
+    --accent-bg: #0c2e4a;
+    --gap-fill: #412402;
+    --gap-border: #ef9f27;
+    --gap-text: #fac775;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #17171a;
+  --surface: #1f1f22;
+  --card: #232326;
+  --text-primary: #f0efe9;
+  --text-secondary: #b8b6ac;
+  --text-muted: #8a8981;
+  --border: #35342f;
+  --accent: #85b7eb;
+  --accent-bg: #0c2e4a;
+  --gap-fill: #412402;
+  --gap-border: #ef9f27;
+  --gap-text: #fac775;
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text-primary);
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  line-height: 1.6;
+}
+.wrap { max-width: 760px; margin: 0 auto; padding: 40px 24px 64px; }
+header { margin-bottom: 32px; }
+h1 { font-size: 24px; font-weight: 500; margin: 0 0 8px; }
+.subtitle { color: var(--text-secondary); font-size: 15px; margin: 0; }
+h2 { font-size: 19px; font-weight: 500; margin: 40px 0 6px; }
+h3 { font-size: 16px; font-weight: 500; margin: 20px 0 6px; }
+p { font-size: 15px; color: var(--text-secondary); margin: 0 0 14px; }
+.diagram-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px 0 8px;
+  overflow-x: auto;
+}
+.diagram-card svg { width: 100%; height: auto; display: block; }
+.caption { font-size: 12px; color: var(--text-muted); margin: 8px 0 0; text-align: center; }
+.sources { display: flex; flex-direction: column; gap: 10px; margin: 12px 0 8px; }
+.source-card {
+  display: block;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-decoration: none;
+  color: inherit;
+}
+.source-card:hover { border-color: var(--accent); }
+.source-title { font-size: 14px; font-weight: 500; color: var(--text-primary); margin: 0 0 4px; }
+.source-domain { font-size: 12px; color: var(--accent); margin: 0 0 4px; }
+.source-snippet { font-size: 13px; color: var(--text-secondary); margin: 0; }
+.gap-note {
+  background: var(--gap-fill);
+  border: 1px solid var(--gap-border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--gap-text);
+  margin: 16px 0;
+}
+.legend { font-size: 12px; color: var(--text-muted); margin: 4px 0 0; }
+footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+<h1>International student housing tool: relationship map</h1>
+<p class="subtitle">How data sources, analysis, the tool, and the housing ecosystem connect &mdash; with sources backing each entity and issue.</p>
+</header>
+
+<h2>1. Data sources feeding the tool</h2>
+<p>Four Harvard-affiliated student groups feed survey data into an AI-assisted analysis process, which informs development of the housing tool. No single group or board owns this data &mdash; sources are informal and ongoing.</p>
+<div class="diagram-card">
+<svg viewBox="0 0 680 380" role="img">
+<title>Data sources feeding the housing tool</title>
+<desc>Four Harvard-affiliated student groups feed survey data into an AI-assisted analysis process, which informs development of the housing tool.</desc>
+<defs><marker id="arrow1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+
+<rect x="40" y="40" width="140" height="56" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="110" y="62" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#085041">Mason Fellows</text>
+<text x="110" y="80" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0F6E56">Off-cycle, July arrival</text>
+
+<rect x="196" y="40" width="140" height="56" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="266" y="62" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#085041">HKS clubs</text>
+<text x="266" y="80" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0F6E56">Student orgs</text>
+
+<rect x="352" y="40" width="140" height="56" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="422" y="62" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#085041">Griffin GSAS</text>
+<text x="422" y="80" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0F6E56">Grad students</text>
+
+<rect x="508" y="40" width="132" height="56" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="574" y="62" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#085041">WhatsApp chats</text>
+<text x="574" y="80" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0F6E56">Informal networks</text>
+
+<line x1="110" y1="96" x2="300" y2="150" stroke="#5F5E5A" stroke-width="1" marker-end="url(#arrow1)"/>
+<line x1="266" y1="96" x2="320" y2="150" stroke="#5F5E5A" stroke-width="1" marker-end="url(#arrow1)"/>
+<line x1="422" y1="96" x2="360" y2="150" stroke="#5F5E5A" stroke-width="1" marker-end="url(#arrow1)"/>
+<line x1="574" y1="96" x2="380" y2="150" stroke="#5F5E5A" stroke-width="1" marker-end="url(#arrow1)"/>
+
+<rect x="240" y="156" width="200" height="56" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+<text x="340" y="174" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#3C3489">AI-assisted analysis</text>
+<text x="340" y="192" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#534AB7">Responses + privacy review</text>
+
+<line x1="340" y1="212" x2="340" y2="256" stroke="#5F5E5A" stroke-width="1" marker-end="url(#arrow1)"/>
+
+<rect x="220" y="262" width="240" height="56" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="340" y="280" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#712B13">Housing tool</text>
+<text x="340" y="298" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#993C1D">Built for international students</text>
+
+<text x="340" y="350" text-anchor="middle" font-size="12" fill="#85837a">No single group or board owns this data source</text>
+</svg>
+</div>
+
+<h2>2. Tool, students, and the housing ecosystem</h2>
+<p>The tool serves international students, who interact with Harvard University Housing and off-campus landlords across Cambridge and Boston, and helps address seven categories of housing-related issues.</p>
+<div class="diagram-card">
+<svg viewBox="0 0 680 420" role="img">
+<title>Housing tool connecting students to the housing ecosystem</title>
+<desc>The housing tool serves international students, who interact with Harvard University Housing and off-campus landlords in Cambridge and Boston, and helps address seven categories of housing-related issues.</desc>
+<defs><marker id="arrow2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+
+<rect x="270" y="20" width="140" height="50" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="340" y="45" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#712B13">Housing tool</text>
+
+<line x1="340" y1="70" x2="340" y2="106" stroke="#5F5E5A" stroke-width="1" marker-end="url(#arrow2)"/>
+
+<rect x="220" y="112" width="240" height="56" rx="8" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+<text x="340" y="130" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#633806">International students</text>
+<text x="340" y="148" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#854F0B">On and off campus</text>
+
+<line x1="280" y1="168" x2="180" y2="216" stroke="#5F5E5A" stroke-width="1" marker-end="url(#arrow2)"/>
+<line x1="400" y1="168" x2="500" y2="216" stroke="#5F5E5A" stroke-width="1" marker-end="url(#arrow2)"/>
+
+<rect x="60" y="222" width="220" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="170" y="240" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#444441">HU Housing system</text>
+<text x="170" y="258" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#5F5E5A">Official channel</text>
+
+<rect x="400" y="222" width="220" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="510" y="240" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#444441">Off-campus landlords</text>
+<text x="510" y="258" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#5F5E5A">Cambridge and Boston</text>
+
+<line x1="340" y1="168" x2="340" y2="300" stroke="#5F5E5A" stroke-width="1" marker-end="url(#arrow2)"/>
+
+<rect x="80" y="306" width="520" height="94" rx="20" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+<text x="340" y="326" text-anchor="middle" font-size="14" font-weight="500" fill="#3C3489">Issues addressed</text>
+<text x="340" y="352" text-anchor="middle" font-size="12" fill="#534AB7">Affordability, leasing, roommates, scams</text>
+<text x="340" y="370" text-anchor="middle" font-size="12" fill="#534AB7">Temporary housing, transport, Boston vs. Cambridge dynamics</text>
+</svg>
+</div>
+
+<h2>3. Cited sources by entity</h2>
+
+<h3>Mason Fellows &amp; off-cycle timing</h3>
+<p>The Edward S. Mason Program is a one-year Master in Public Administration program at Harvard Kennedy School for mid-career professionals from developing, newly industrialized, or transitional countries; this year's cohort includes 89 fellows from 51 countries.</p>
+<div class="sources">
+<a class="source-card" href="https://scholarshipsforafricans.com/fr/bourses/harvard-kennedy-school-mason-fellowship" target="_blank" rel="noopener">
+<p class="source-title">Edward S. Mason Program (Mid-Career MPA)</p>
+<p class="source-domain">Harvard Kennedy School programme overview</p>
+<p class="source-snippet">Official description of eligibility, structure, and fellow benefits.</p>
+</a>
+<a class="source-card" href="https://news.harvard.edu/gazette/tag/sammaan-foundation" target="_blank" rel="noopener">
+<p class="source-title">Sharing a passion to make a difference</p>
+<p class="source-domain">The Harvard Gazette</p>
+<p class="source-snippet">Confirms current cohort size: 89 Mason Fellows from 51 countries.</p>
+</a>
+</div>
+
+<h3>Harvard Griffin GSAS</h3>
+<p>GSAS has roughly 4,824 students, about 30% of whom are international, and its Office of Residential Life supports both on- and off-campus housing searches across Cambridge and Boston.</p>
+<div class="sources">
+<a class="source-card" href="https://en.wikipedia.org/wiki/Harvard_Kenneth_C._Griffin_Graduate_School_of_Arts_and_Sciences" target="_blank" rel="noopener">
+<p class="source-title">Harvard Kenneth C. Griffin Graduate School of Arts and Sciences</p>
+<p class="source-domain">Wikipedia</p>
+<p class="source-snippet">Enrollment figures and international student share.</p>
+</a>
+<a class="source-card" href="https://gsas.harvard.edu/office/residential-life" target="_blank" rel="noopener">
+<p class="source-title">Residential Life &mdash; Harvard Griffin GSAS</p>
+<p class="source-domain">gsas.harvard.edu</p>
+<p class="source-snippet">How the office supports housing search on and off campus.</p>
+</a>
+</div>
+
+<h3>HU Housing as a distinct system</h3>
+<p>Harvard Griffin GSAS residence halls and Harvard University Housing apartments are managed by separate offices with distinct application processes, supporting the map's framing of HU Housing as its own node.</p>
+<div class="sources">
+<a class="source-card" href="https://gsas.harvard.edu/admitted-students/life-harvard" target="_blank" rel="noopener">
+<p class="source-title">Life at Harvard &mdash; Housing</p>
+<p class="source-domain">gsas.harvard.edu</p>
+<p class="source-snippet">Notes that GSAS residence halls and HU Housing apartments are separately managed.</p>
+</a>
+</div>
+
+<h3>Scams targeting international students</h3>
+<p>International students are frequent rental-scam targets because they're often unfamiliar with U.S. rental norms and less able to view properties in person before signing. Harvard's police department maintains dedicated guidance directing students to the Off-Campus Housing site and external resources like the FTC.</p>
+<div class="sources">
+<a class="source-card" href="https://www.hupd.harvard.edu/scams-targeting-international-affiliates" target="_blank" rel="noopener">
+<p class="source-title">Scams and Identity Theft Attempts Targeting International Affiliates</p>
+<p class="source-domain">hupd.harvard.edu</p>
+<p class="source-snippet">Official guidance and external scam-reporting resources.</p>
+</a>
+<a class="source-card" href="https://www.spoteasy.com/blog/what-scams-should-i-watch-for-renting-off-campus-near-harvard" target="_blank" rel="noopener">
+<p class="source-title">What scams should I watch for renting off-campus near Harvard?</p>
+<p class="source-domain">spoteasy.com</p>
+<p class="source-snippet">Explains why international students are disproportionately targeted.</p>
+</a>
+</div>
+
+<h3>Affordability &amp; Boston vs. Cambridge dynamics</h3>
+<p>Budget-conscious students commonly aim to spend no more than 30&ndash;40% of monthly income on rent, which pushes many toward Allston, Brighton, and parts of Somerville rather than Cambridge proper.</p>
+<div class="sources">
+<a class="source-card" href="https://www.spoteasy.com/blog/why-do-international-students-choose-certain-off-campus-neighborhoods-near-harvard" target="_blank" rel="noopener">
+<p class="source-title">Why international students choose certain off-campus neighborhoods near Harvard</p>
+<p class="source-domain">spoteasy.com</p>
+<p class="source-snippet">Budget thresholds and neighborhood tradeoffs.</p>
+</a>
+</div>
+
+<h3>Temporary / alternative housing pressure</h3>
+<p>In 2023, Harvard's housing office unexpectedly denied a large number of winter break housing applications, leaving international students on financial aid scrambling for temporary housing &mdash; a concrete example of this issue category.</p>
+<div class="sources">
+<a class="source-card" href="https://bdc2020-php8.boston.com/news/local-news/2024/12/02/harvard-international-students-denied-winter-break-housing" target="_blank" rel="noopener">
+<p class="source-title">International students denied housing at Harvard over winter break</p>
+<p class="source-domain">boston.com</p>
+<p class="source-snippet">2023 winter housing crisis affecting international students.</p>
+</a>
+</div>
+
+<div class="gap-note">
+Sourcing gap: no public documentation confirms HKS clubs/organizations or Harvard WhatsApp groups as formal data-collection channels. These are internal, informal networks defined by your project team rather than externally documented sources.
+</div>
+
+<footer>
+Compiled from public Harvard sources and independent reporting, current as of September 2026. Verify program details on official Harvard pages before relying on them for planning.
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,128 @@
+HOUSING MADE EZ
+Background Brief: International Student Housing Navigation
+MLD-371 AI and Civil Society | Harvard Kennedy School
+
+Team: John Kwon, Elsa Nisa, Eze Chukwu, Mustafa Naqvi, Andrea Pavlick
+Partner: International student groups at Harvard University
+
+
+1. WHO WE ARE AND WHO WE SERVE
+
+Housing Made EZ is an informal, ad hoc group of Harvard Kennedy School graduate students
+enrolled in MLD-371. We are using AI to develop an informational tool that helps
+international students affiliated with Harvard find and secure housing, on and off campus,
+in Cambridge and the greater Boston area.
+
+Our primary users are newly admitted international graduate and professional students
+preparing to relocate, especially those unfamiliar with the U.S. rental system, without a
+U.S. credit history, or without a trusted local network. Current international students
+may also use the tool. Although it is designed for international students, all Harvard
+students could benefit from it.
+
+The population is large. According to Harvard's Office for Institutional Research &
+Analytics, Harvard enrolled 6,749 U.S. nonresident students across all programs in 2025.
+Most were in graduate programs, including 555 at the Harvard Kennedy School. We began with
+issues raised by a small number of HKS international students and will widen our focus as
+we hear from more of the graduate community.
+
+2. WHO RUNS IT AND HOW DECISIONS ARE MADE
+
+The group is run by its five members, all HKS graduate students. We have no budget. We make
+decisions through informed discussion and aim for consensus; if we cannot reach consensus,
+we decide by majority vote.
+
+We are not working with a single board or office. We engage several student communities:
+Edward S. Mason Program fellows, HKS clubs and organizations, graduate students at the
+Harvard Kenneth C. Griffin Graduate School of Arts and Sciences, and Harvard WhatsApp groups.
+The tool is meant to supplement, not replace, the support Harvard University Housing provides.
+
+3. THE PROBLEM AND THE RECURRING TASKS
+
+International students face the same challenges as anyone moving to Boston, but with less
+context. They often do not know the local rental market, which sources to trust, or how to
+spot a scam, and rental scams are a documented problem in Boston (Boston.gov; Boston Police
+Department). Housing becomes a series of high-stakes decisions: where to search, whether a
+listing or landlord is legitimate, which documents are accepted without U.S. credit history,
+what a lease means, and what to do when plans change.
+
+The recurring, day-to-day tasks students must complete include:
+  - finding housing and roommates, often before arriving in the U.S.;
+  - understanding, reviewing, and signing legally binding leases;
+  - avoiding rental scams and verifying listings and landlords;
+  - applying without a U.S. credit history (guarantors, deposits, proof of funds);
+  - opening a bank account to pay rent, deposits, and utilities;
+  - setting up and paying for utilities;
+  - finding, buying, and later selling furniture when moving in and out; and
+  - arranging subleases or temporary housing when schedules do not match the academic year.
+
+Some groups face extra difficulty. Mason Fellows arrive off-cycle in July, a hard time to
+find housing, and students with families must also enroll children in U.S. schools. Other
+issues we hope to address include affordability, access to the private rental market,
+navigating the Harvard University Housing system, Boston versus Cambridge trade-offs, and
+transportation.
+
+Out of scope: immigration and visa issues, and anything related to Harvard enrollment.
+
+4. WHAT STUDENTS USE TODAY
+
+To our understanding, students currently combine:
+  - WhatsApp, Slack, Telegram, and other peer networks;
+  - the Harvard University Housing site and institutional listings;
+  - public marketplaces such as Zillow, Craigslist, and Facebook;
+  - search engines and, we assume, AI-assisted search; and
+  - advice from friends, classmates, alumni, landlords, and brokers.
+
+These resources help, but they are scattered and unevenly trusted. The gaps are unclear
+credibility, stale or incomplete information, no clear sequence from search to application
+to lease signing, little help comparing options or spotting red flags, and no obvious place
+to turn when a student is unsure or at risk.
+
+5. HOW WE ARE GATHERING INFORMATION AND USING AI
+
+We are running an anonymous survey of international students, collecting only what we need
+to identify concerns, and will keep engaging students throughout the project. Early
+responses point to four common pain points: apartment scams, understanding leases, setting
+up bank accounts, and understanding utility costs. We will update this list as more
+responses arrive.
+
+We are using AI to (a) analyze survey responses, (b) assess whether any use of social-media
+data, such as WhatsApp discussions, would raise privacy concerns, and (c) help decide which
+type of tool will be most useful. We will not use any method that jeopardizes students'
+privacy, and we are paying attention to the privacy, legal, ethical, and governance
+questions raised by using AI on a collective-action problem.
+
+6. PRODUCT DIRECTION AND NEXT STEPS
+
+Our working hypothesis is that international students do not need more listings. They need
+a trusted way to understand their options, recognize risks, prepare applications, and know
+where to get help. The first prototype will test a narrow "Housing Decision Navigator" that
+lets a student:
+  1. describe their situation, timing, budget, preferred location, and housing type;
+  2. get a tailored sequence of search channels and preparation steps;
+  3. check a listing against a red-flag and verification checklist;
+  4. prepare questions and documents for applications and landlord conversations;
+  5. see which lease issues need professional or institutional help; and
+  6. reach a trusted Harvard or community resource when the tool cannot safely answer.
+
+The first version will not be a marketplace, guarantee that a listing is legitimate, give
+legal advice, or store sensitive documents. Furniture exchange, utilities, banking, and
+sublease matching may follow as later modules. We have already built an early resource page
+covering scams, leases, banking, rent comparisons, roommates, and childcare.
+
+Next steps: finish the survey, identify the most frequent and most serious decision point,
+build the smallest trusted tool that addresses it, and test it with international students
+to gather feedback. Key questions before building: which student segment and housing moment
+to serve first, what information we can verify and keep current, when the tool must refer
+users elsewhere, and whether a better-organized layer over existing resources would work
+better than a new interface.
+
+
+SOURCES
+Boston.gov. "Apartment Scams." https://www.boston.gov/departments/consumer-affairs-and-licensing/apartment-scams
+Boston Police Department. "BPD Community Alert: Public Advisory on Apartment Rental Scams."
+  https://police.boston.gov/2026/08/08/bpd-community-alert-public-advisory-on-apartment-rental-scams-2/
+Harvard University. "Harvard University Housing." https://www.huhousing.harvard.edu/
+Harvard University Office of Institutional Research & Analytics. "Fact Book: Student
+  Enrollment." https://oira.harvard.edu/factbook/fact-book-enrollment/#enr_intl
+Salpoglou, Demetrios. "The Complete Guide to Avoid Rental Scams in Boston." Boston Pads,
+  March 16, 2026. https://bostonpads.com/renters/the-complete-guide-to-avoid-rental-scams-in-boston/

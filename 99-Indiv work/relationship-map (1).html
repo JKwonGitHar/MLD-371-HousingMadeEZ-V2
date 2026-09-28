@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Housing Relationship Map</title>
+<style>
+  :root{
+    --ink:#1F3A34; --ink-soft:#4E6B64; --ink-faint:#72908A;
+    --paper:#F7FBF9; --raised:#FFFFFF; --line:#DCEBE5;
+    --node:#0E8F68; --node-soft:#E2F5EC;
+    --edge:#3F5E57; --strain:#C8302B; --unset:#9DB3AC;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;line-height:1.5}
+  main{max-width:1080px;margin:0 auto;padding:32px 16px 48px}
+  .kicker{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--node)}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(26px,4vw,36px);margin:4px 0 8px;text-wrap:balance}
+  .caption{max-width:68ch;color:var(--ink-soft);margin:0 0 20px}
+  .notice{background:#FFF6E3;border:1px solid #F0D9A8;border-radius:10px;padding:10px 14px;
+    font-size:14px;color:#6B4E12;margin-bottom:20px;max-width:80ch}
+  .panel{background:var(--raised);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .chart-wrap{overflow-x:auto}
+  svg{display:block;width:100%;min-width:680px;height:auto}
+  .legend{display:flex;flex-wrap:wrap;gap:14px 28px;margin-top:14px;padding-top:14px;
+    border-top:1px solid var(--line);font-size:13.5px;color:var(--ink-soft)}
+  .legend h2{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);
+    margin:0 0 6px;font-weight:700}
+  .legend .row{display:flex;align-items:center;gap:8px;margin:3px 0}
+  .legend svg{width:auto;min-width:0;display:inline-block}
+  table{border-collapse:collapse;width:100%;font-size:14px;margin-top:8px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint)}
+  td.na{color:var(--ink-faint);font-style:italic}
+  .table-wrap{overflow-x:auto;margin-top:24px}
+  h3{font-size:16px;margin:28px 0 0}
+  .est-note{margin:12px 0 0;font-size:12.5px;color:var(--ink-faint)}
+  footer{margin-top:24px;font-size:12.5px;color:var(--ink-faint)}
+</style>
+</head>
+<body>
+<main>
+  <div class="kicker">Housing Made EZ · Background brief</div>
+  <h1>Where international students go for housing help</h1>
+  <p class="caption">International students are at the center because they are the ones seeking housing help. MC/MPA students and HKS
+  international student groups are subgroups of that community, shown inside the shaded area, and students turn to both for day-to-day advice. Students deal with two landlords, private
+  landlords and Harvard housing, and hear from the Harvard Graduate Council by email. Both landlord relationships are strained, with private landlords and with Harvard housing, and are shown in red.
+  That advice comes daily through WhatsApp and face to face. Circles are sized by how many relationships each group holds,
+  lines are labeled by channel, and thicker lines mean more frequent contact.</p>
+
+  <div class="notice" id="notice" hidden>
+    <strong>Draft:</strong> channel, frequency and strain have not been specified yet for
+    <span id="unset-count"></span> of the connections. Those are drawn as gray dashed lines
+    until the values are filled in (see the <code>RELATIONSHIPS</code> block in this file's source).
+  </div>
+
+  <div class="panel">
+    <div class="chart-wrap"><svg id="net" viewBox="0 0 1000 665" role="img"
+      aria-labelledby="net-title"><title id="net-title">Network chart: international students seeking housing help</title></svg></div>
+    <div class="legend" id="legend"></div>
+    <p class="est-note" id="est-note" hidden>Line thickness shows the team's estimate of how often each group is in contact, not a measured figure. It will be updated with survey results.</p>
+  </div>
+
+  <h3>Relationships</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Relationship</th><th>From</th><th>To</th><th>Channel</th><th>Frequency</th><th>Strained?</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <footer>Team Housing Made EZ: John, Andrea, Eze, Elsa, Mustafa. Partner: International Student Groups.</footer>
+</main>
+
+<script>
+/* =====================================================================
+   DATA: edit here.
+   channel:   any text, e.g. "WhatsApp", "Email", "Website", "In person"
+   frequency: "daily" | "weekly" | "monthly" | "rarely" | null (not specified)
+   strained:  true | false | null (not specified)
+   estimated: true when the frequency is the team's estimate rather than measured
+   ===================================================================== */
+var NODES = [
+  { id:"students",  label:"International students",   x:500, y:300, hub:true },
+  { id:"mcmpa",     label:"MC/MPA",                   x:320, y:500, subOf:"students" },
+  { id:"hks",       label:"HKS Intl Student groups",  x:585, y:562, subOf:"students" },
+  { id:"landlords", label:"Landlords",                x:875, y:135, landlord:true },
+  { id:"housing",   label:"Harvard housing",          x:875, y:500, landlord:true },
+  { id:"council",   label:"Harvard Graduate council", x:115, y:300 }
+];
+
+/* One entry per connection. A connection can carry more than one of the
+   relationships from the team's list (names). */
+var RELATIONSHIPS = [
+  { names:["People seeking houses", "Landlord relationship"],        from:"students", to:"landlords", channel:"Email · WhatsApp",         frequency:"weekly",  estimated:true, strained:true  },
+  { names:["Student seeking temp housing", "Landlord relationship"], from:"students", to:"housing",   channel:"Email",                    frequency:"monthly", estimated:true, strained:true  },
+  { names:["People seeking advice"],                                 from:"students", to:"hks",       channel:"WhatsApp · Face to face",  frequency:"daily",   estimated:true, strained:false },
+  { names:["People seeking advice"],                                 from:"students", to:"mcmpa",     channel:"WhatsApp · Face to face",  frequency:"daily",   estimated:true, strained:false },
+  { names:["Information distributor"],                               from:"council",  to:"students",  channel:"Email",                    frequency:"weekly",  estimated:true, strained:false }
+];
+/* ===================================================================== */
+
+(function(){
+  var NS = "http://www.w3.org/2000/svg";
+  var css = getComputedStyle(document.documentElement);
+  function tok(n){ return css.getPropertyValue(n).trim(); }
+  var C = { ink:tok("--ink"), soft:tok("--ink-soft"), faint:tok("--ink-faint"), node:tok("--node"), nodeSoft:tok("--node-soft"),
+            edge:tok("--edge"), strain:tok("--strain"), unset:tok("--unset"), raised:tok("--raised"), line:tok("--line") };
+  var WIDTH = { daily:7, weekly:4.5, monthly:2.5, rarely:1.25 };
+  var FREQ_LABEL = { daily:"Daily", weekly:"Weekly", monthly:"Monthly", rarely:"Rarely" };
+
+  function el(tag, attrs, parent){
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function isUnset(r){ return r.frequency == null || r.strained == null || !r.channel; }
+  function edgeColor(r){ return r.strained === true ? C.strain : (isUnset(r) ? C.unset : C.edge); }
+  function edgeWidth(r){ return WIDTH[r.frequency] || 2.5; }
+
+  // relationships held = number of named relationships on connections touching the node
+  var byId = {}, degree = {};
+  NODES.forEach(function(n){ byId[n.id] = n; degree[n.id] = 0; });
+  RELATIONSHIPS.forEach(function(r){ degree[r.from] += r.names.length; degree[r.to] += r.names.length; });
+  function radius(id){ return 24 + 8 * degree[id]; }
+
+  var svg = document.getElementById("net");
+  var defs = el("defs", {}, svg);
+  function marker(id, color){
+    var m = el("marker", { id:id, viewBox:"0 0 10 10", refX:"9", refY:"5", markerWidth:"14", markerHeight:"14",
+      orient:"auto-start-reverse", markerUnits:"userSpaceOnUse" }, defs);
+    el("path", { d:"M0,0 L10,5 L0,10 z", fill:color }, m);
+  }
+  marker("arr-edge", C.edge); marker("arr-strain", C.strain); marker("arr-unset", C.unset);
+  function markerFor(r){ return r.strained === true ? "arr-strain" : (isUnset(r) ? "arr-unset" : "arr-edge"); }
+
+  // ---- background regions: the student community, and the two landlords ----
+  var gRegions = el("g", {}, svg);
+  el("ellipse", { cx:500, cy:398, rx:262, ry:228, fill:C.nodeSoft, "fill-opacity":0.55,
+    stroke:C.node, "stroke-opacity":0.35, "stroke-width":1.5, "stroke-dasharray":"3 6" }, gRegions);
+  var t = el("text", { x:500, y:652, "text-anchor":"middle", "font-size":"12", "font-weight":"700",
+    "letter-spacing":"1.2", fill:C.node }, gRegions);
+  t.textContent = "INTERNATIONAL STUDENT COMMUNITY";
+  el("rect", { x:790, y:40, width:170, height:570, rx:22, fill:"#FFF6E3", "fill-opacity":0.8,
+    stroke:"#E8C98A", "stroke-width":1.5, "stroke-dasharray":"3 6" }, gRegions);
+  t = el("text", { x:875, y:652, "text-anchor":"middle", "font-size":"12", "font-weight":"700",
+    "letter-spacing":"1.2", fill:"#9A6B12" }, gRegions);
+  t.textContent = "BOTH ACT AS LANDLORDS";
+
+  var gSub = el("g", {}, svg), gEdges = el("g", {}, svg), gLabels = el("g", {}, svg), gNodes = el("g", {}, svg);
+
+  function trim(a, b){
+    var dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy), ux = dx/len, uy = dy/len, pad = 6;
+    return { x1:a.x + ux*(radius(a.id)+pad), y1:a.y + uy*(radius(a.id)+pad),
+             x2:b.x - ux*(radius(b.id)+pad), y2:b.y - uy*(radius(b.id)+pad) };
+  }
+
+  // subgroup ("part of") connectors — not relationships
+  NODES.forEach(function(n){
+    if (!n.subOf) return;
+    var p = trim(byId[n.subOf], n);
+    var l = el("line", { x1:p.x1, y1:p.y1, x2:p.x2, y2:p.y2, stroke:C.node, "stroke-opacity":0.45,
+      "stroke-width":1.5, "stroke-dasharray":"1 5", "stroke-linecap":"round" }, gSub);
+    el("title", {}, l).textContent = n.label + " is a subgroup of " + byId[n.subOf].label;
+  });
+
+  RELATIONSHIPS.forEach(function(r){
+    var p = trim(byId[r.from], byId[r.to]);
+    var line = el("line", { x1:p.x1, y1:p.y1, x2:p.x2, y2:p.y2, stroke:edgeColor(r),
+      "stroke-width":edgeWidth(r), "stroke-linecap":"round", "marker-end":"url(#"+markerFor(r)+")" }, gEdges);
+    if (isUnset(r)) line.setAttribute("stroke-dasharray", "7 6");
+    el("title", {}, line).textContent = r.names.join(" + ") + " · " + (r.channel || "channel not specified") +
+      " · " + (FREQ_LABEL[r.frequency] || "frequency not specified") +
+      " · " + (r.strained === true ? "strained" : r.strained === false ? "not strained" : "strain not specified");
+
+    var mx = (p.x1+p.x2)/2, my = (p.y1+p.y2)/2;
+    var g = el("g", { transform:"translate("+mx+","+my+")" }, gLabels);
+    var lines = [(r.strained === true ? "⚠ " : "") + (r.channel || "Channel: not specified")].concat(r.names);
+    var y0 = -((lines.length-1) * 15) / 2 + 4;
+    lines.forEach(function(txt, i){
+      var tt = el("text", { "text-anchor":"middle", y: y0 + i*15, "font-size": i ? "12" : "13.5",
+        "font-weight": i ? "400" : "700", fill: i ? C.soft : (r.strained === true ? C.strain : C.ink) }, g);
+      tt.textContent = txt;
+    });
+    requestAnimationFrame(function(){
+      var bb = g.getBBox();
+      g.insertBefore(el("rect", { x:bb.x-8, y:bb.y-4, width:bb.width+16, height:bb.height+8,
+        rx:6, fill:C.raised, stroke:C.line }), g.firstChild);
+    });
+  });
+
+  NODES.forEach(function(n){
+    var r = radius(n.id), g = el("g", {}, gNodes);
+    if (n.hub) el("circle", { cx:n.x, cy:n.y, r:r+9, fill:"none", stroke:C.node, "stroke-opacity":0.25, "stroke-width":6 }, g);
+    el("circle", { cx:n.x, cy:n.y, r:r, fill:n.hub ? C.node : C.raised, stroke:C.node, "stroke-width":2.5 }, g);
+    var num = el("text", { x:n.x, y:n.y+7, "text-anchor":"middle", "font-size":n.hub ? "24" : "19", "font-weight":"700",
+      fill:n.hub ? "#FFFFFF" : C.node }, g);
+    num.textContent = degree[n.id];
+    var above = n.hub || n.y < 200;
+    var lab = el("text", { x:n.x, y: above ? n.y - r - (n.hub ? 22 : 12) : n.y + r + 20, "text-anchor":"middle",
+      "font-size": n.hub ? "17" : "14.5", "font-weight":"700", fill:C.ink }, g);
+    lab.textContent = n.label;
+    if (n.subOf){
+      var sub = el("text", { x:n.x, y:n.y + r + 36, "text-anchor":"middle", "font-size":"12", fill:C.faint }, g);
+      sub.textContent = "subgroup";
+    }
+    el("title", {}, g).textContent = n.label + ": " + degree[n.id] + " relationship" + (degree[n.id]===1?"":"s") +
+      (n.subOf ? " (subgroup of " + byId[n.subOf].label + ")" : "");
+  });
+
+  // ---- legend ----
+  function swatchLine(color, width, dash, op){
+    return '<svg width="54" height="16" viewBox="0 0 54 16" aria-hidden="true"><line x1="3" y1="8" x2="51" y2="8" stroke="'+color+
+      '" stroke-width="'+width+'" stroke-linecap="round"'+(dash?' stroke-dasharray="'+dash+'"':'')+(op?' stroke-opacity="'+op+'"':'')+'/></svg>';
+  }
+  function circle(r, filled){
+    return '<svg width="'+(2*r+4)+'" height="'+(2*r+4)+'" aria-hidden="true"><circle cx="'+(r+2)+'" cy="'+(r+2)+'" r="'+r+
+      '" fill="'+(filled?C.node:C.raised)+'" stroke="'+C.node+'" stroke-width="2"/></svg>';
+  }
+  function area(fill, stroke){
+    return '<svg width="54" height="18" aria-hidden="true"><rect x="2" y="2" width="50" height="14" rx="7" fill="'+fill+
+      '" stroke="'+stroke+'" stroke-dasharray="3 4"/></svg>';
+  }
+  document.getElementById("legend").innerHTML =
+    '<div><h2>Circle size</h2>' +
+      '<div class="row">'+circle(6)+' Fewer relationships</div>' +
+      '<div class="row">'+circle(13)+' More relationships</div>' +
+      '<div class="row">'+circle(9, true)+' Focus group (international students)</div>' +
+      '<div class="row" style="font-size:12.5px">The number inside each circle is its count.</div></div>' +
+    '<div><h2>Line thickness = how often</h2>' +
+      ['daily','weekly','monthly','rarely'].map(function(f){
+        return '<div class="row">'+swatchLine(C.edge, WIDTH[f])+' '+FREQ_LABEL[f]+'</div>'; }).join('') +
+    '</div>' +
+    '<div><h2>Lines</h2>' +
+      '<div class="row">'+swatchLine(C.edge, 3)+' Working relationship</div>' +
+      '<div class="row">'+swatchLine(C.strain, 3)+' ⚠ Strained</div>' +
+      '<div class="row">'+swatchLine(C.unset, 2.5, "7 6")+' Not specified yet</div>' +
+      '<div class="row">'+swatchLine(C.node, 1.5, "1 5", 0.6)+' Subgroup of (not a relationship)</div></div>' +
+    '<div><h2>Areas</h2>' +
+      '<div class="row">'+area(C.nodeSoft, C.node)+' International student community</div>' +
+      '<div class="row">'+area("#FFF6E3", "#E8C98A")+' Landlords students report to</div>' +
+      '<div class="row" style="font-size:12.5px">Arrows point from the group seeking help<br>or giving information.</div></div>';
+
+  // ---- table + notice ----
+  var tbody = document.getElementById("rows"), unset = 0;
+  RELATIONSHIPS.forEach(function(r){
+    if (isUnset(r)) unset++;
+    r.names.forEach(function(name){
+      var tr = document.createElement("tr");
+      function td(text, na){ var c = document.createElement("td"); c.textContent = text; if (na) c.className = "na"; tr.appendChild(c); }
+      td(name); td(byId[r.from].label); td(byId[r.to].label);
+      td(r.channel || "Not specified", !r.channel);
+      td(r.frequency ? FREQ_LABEL[r.frequency] + (r.estimated ? " (estimated)" : "") : "Not specified", !r.frequency);
+      td(r.strained === true ? "Yes" : r.strained === false ? "No" : "Not specified", r.strained == null);
+      tbody.appendChild(tr);
+    });
+  });
+  if (RELATIONSHIPS.some(function(r){ return r.estimated; })) document.getElementById("est-note").hidden = false;
+  if (unset){
+    document.getElementById("unset-count").textContent = unset + " of " + RELATIONSHIPS.length;
+    document.getElementById("notice").hidden = false;
+  }
+})();
+</script>
+</body>
+</html>

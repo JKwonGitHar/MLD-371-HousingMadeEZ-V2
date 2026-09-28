@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Housing Made Easy — Stakeholder Relationship Map</title>
+<style>
+  :root{
+    --ink:#172033;
+    --muted:#5E6B80;
+    --faint:#8692A5;
+    --paper:#F5F7FB;
+    --panel:#FFFFFF;
+    --line:#DCE3EE;
+    --line-strong:#C7D1DF;
+    --shadow:0 12px 30px rgba(31,52,82,.08);
+    --user:#0B8069;
+    --harvard:#2D61C9;
+    --market:#C46D16;
+    --public:#7550B5;
+    --place:#078596;
+    --mvp:#C63767;
+    --risk:#B83D49;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    line-height:1.45}
+  body{padding:28px 18px 52px}
+  main{max-width:1500px;margin:0 auto}
+  .eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:800;color:var(--harvard)}
+  h1,h2,h3{margin:0;line-height:1.15}
+  h1{font-size:clamp(28px,4vw,46px);letter-spacing:-.04em;margin-top:7px;max-width:900px}
+  h2{font-size:22px;letter-spacing:-.02em}
+  h3{font-size:15px}
+  p{margin:0}
+  .intro{max-width:930px;color:var(--muted);font-size:16px;margin-top:13px}
+  .top-grid{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:14px;margin-top:22px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:17px 18px;box-shadow:var(--shadow)}
+  .card h3{margin-bottom:7px}
+  .card p{font-size:14px;color:var(--muted)}
+  .card strong{color:var(--ink)}
+  .accent-card{border-top:4px solid var(--mvp)}
+  .section{margin-top:26px}
+  .section-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:12px}
+  .section-head p{color:var(--muted);font-size:14px;max-width:760px}
+  .toolbar{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px 15px;display:flex;flex-wrap:wrap;gap:11px 18px;align-items:center;margin-bottom:12px}
+  .tool-label{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);font-weight:800;margin-right:2px}
+  .filters{display:flex;flex-wrap:wrap;gap:6px}
+  button.filter{font:inherit;font-size:12.5px;color:var(--muted);border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 10px;cursor:pointer}
+  button.filter:hover,button.filter:focus-visible{border-color:var(--harvard);color:var(--harvard);outline:3px solid rgba(45,97,201,.15);outline-offset:1px}
+  button.filter.active{background:var(--ink);border-color:var(--ink);color:#fff}
+  .map-shell{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+  .map-scroll{overflow-x:auto;padding:10px 0 0}
+  #map{display:block;width:100%;min-width:1120px;height:auto}
+  .map-footer{border-top:1px solid var(--line);padding:12px 16px;display:flex;flex-wrap:wrap;gap:13px 24px;align-items:center;color:var(--muted);font-size:12px}
+  .legend-group{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+  .legend-label{font-weight:800;color:var(--ink);margin-right:1px}
+  .swatch{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+  .swatch i{display:inline-block;width:10px;height:10px;border-radius:50%}
+  .line-key{display:inline-block;width:28px;border-top:2px solid currentColor;vertical-align:middle}
+  .line-key.dashed{border-top-style:dashed}
+  .line-key.dotted{border-top-style:dotted}
+  .line-key.longdash{border-top-style:dashed;opacity:.78}
+  .priority-key{display:inline-flex;align-items:center;gap:5px}
+  .priority-key .ring{width:13px;height:13px;border:2px dashed var(--mvp);border-radius:4px}
+  .priority-key .pill{font-size:10px;font-weight:800;border:1px solid var(--line-strong);border-radius:999px;padding:1px 5px}
+  .below-map{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(290px,.75fr);gap:14px;margin-top:14px}
+  .detail{min-height:260px}
+  .detail-top{display:flex;align-items:start;justify-content:space-between;gap:12px}
+  .detail h3{font-size:20px;letter-spacing:-.02em}
+  .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+  .tag{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:800;letter-spacing:.02em}
+  .tag.category{color:#fff}
+  .tag.priority{color:var(--ink);background:#F0F3F7;border:1px solid var(--line)}
+  .detail p{font-size:14px;color:var(--muted);margin-top:13px}
+  .detail h4{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin:18px 0 7px}
+  .detail ul{list-style:none;padding:0;margin:0;display:grid;gap:5px}
+  .detail li{font-size:13px;color:var(--muted);padding-left:14px;position:relative}
+  .detail li::before{content:"→";position:absolute;left:0;color:var(--harvard);font-weight:800}
+  .detail a{color:var(--harvard);text-decoration:none}
+  .detail a:hover{text-decoration:underline}
+  .mvp-box{border-left:4px solid var(--mvp);background:#FFF5F8}
+  .mvp-box p{color:#6C3949}
+  .table-shell{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+  table{border-collapse:collapse;width:100%;min-width:1050px;font-size:13px}
+  th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);background:#FAFBFD;position:sticky;top:0}
+  tr:last-child td{border-bottom:0}
+  td{color:var(--muted)}
+  td strong{color:var(--ink)}
+  td a{color:var(--harvard);text-decoration:none}
+  td a:hover{text-decoration:underline}
+  .small-tag{font-size:10px;font-weight:800;border-radius:999px;padding:3px 6px;white-space:nowrap}
+  .method{background:#FFF9ED;border:1px solid #F1DFB2;border-radius:14px;padding:14px 16px;color:#725817;font-size:13px}
+  .method strong{color:#59450F}
+  .sources{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+  .source{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px 14px}
+  .source a{color:var(--harvard);font-size:13px;font-weight:800;text-decoration:none}
+  .source a:hover{text-decoration:underline}
+  .source p{font-size:12px;color:var(--muted);margin-top:5px}
+  footer{margin-top:24px;color:var(--faint);font-size:12px}
+  @media (max-width:900px){
+    .top-grid,.below-map,.sources{grid-template-columns:1fr}
+    .section-head{display:block}
+    .section-head p{margin-top:7px}
+  }
+  @media (max-width:560px){
+    body{padding:20px 12px 40px}
+    .intro{font-size:15px}
+    .card{padding:15px}
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">Housing Made Easy · MVP discovery</div>
+  <h1>Stakeholder relationship map for international student housing</h1>
+  <p class="intro">This map expands the original sketch beyond students, peer groups, and landlords. It shows the actors that shape a student’s housing journey, the role each one plays, and where the first MVP should build, refer, or simply observe.</p>
+
+  <div class="top-grid">
+    <section class="card accent-card">
+      <h3>Recommended MVP boundary</h3>
+      <p><strong>Build between international students, Harvard guidance channels, and the private rental market.</strong> The first product should help students find a trustworthy next step, evaluate a listing, prepare for an application, and escalate questions safely.</p>
+    </section>
+    <section class="card">
+      <h3>Build with</h3>
+      <p>Students, current-student peer networks, HIO, school offices, HUH, and the Harvard off-campus housing platform.</p>
+    </section>
+    <section class="card">
+      <h3>Refer or verify</h3>
+      <p>Landlords, brokers, city housing offices, inspection services, legal aid, fair-housing resources, and formal tenant-rights guidance.</p>
+    </section>
+  </div>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>Relationship map</h2>
+        <p>Rows show ecosystem layers. Node color shows stakeholder category. Line style shows the relationship type. A dashed ring marks a core MVP stakeholder; it does not imply that the relationship is already validated.</p>
+      </div>
+    </div>
+    <div class="toolbar" aria-label="Map filters">
+      <span class="tool-label">Show</span>
+      <div class="filters" id="priority-filters">
+        <button class="filter active" type="button" data-priority="all" aria-pressed="true">All stakeholders</button>
+        <button class="filter" type="button" data-priority="core" aria-pressed="false">Core MVP</button>
+        <button class="filter" type="button" data-priority="referral" aria-pressed="false">Referral / verification</button>
+        <button class="filter" type="button" data-priority="secondary" aria-pressed="false">Later / secondary</button>
+        <button class="filter" type="button" data-priority="context" aria-pressed="false">Context only</button>
+      </div>
+      <span class="tool-label">Category</span>
+      <div class="filters" id="category-filters">
+        <button class="filter active" type="button" data-category="all" aria-pressed="true">All categories</button>
+        <button class="filter" type="button" data-category="user" aria-pressed="false">Users &amp; peers</button>
+        <button class="filter" type="button" data-category="harvard" aria-pressed="false">Harvard</button>
+        <button class="filter" type="button" data-category="market" aria-pressed="false">Market</button>
+        <button class="filter" type="button" data-category="public" aria-pressed="false">Public / legal</button>
+        <button class="filter" type="button" data-category="place" aria-pressed="false">Place / infrastructure</button>
+      </div>
+    </div>
+    <div class="map-shell">
+      <div class="map-scroll">
+        <svg id="map" viewBox="0 0 1720 1295" role="img" aria-labelledby="map-title map-desc">
+          <title id="map-title">Stakeholder relationship map for international student housing around Harvard</title>
+          <desc id="map-desc">Five horizontal rows show users and peer networks, Harvard gateways, the housing market, public and legal systems, and neighborhood infrastructure. Arrows show relationships between stakeholders.</desc>
+        </svg>
+      </div>
+      <div class="map-footer" id="legend"></div>
+    </div>
+    <div class="below-map">
+      <section class="card detail" id="detail" aria-live="polite"></section>
+      <section class="card mvp-box">
+        <h3>What this changes from the first draft</h3>
+        <p style="margin-top:9px;font-size:14px">The original map was a useful interpersonal sketch, but it made the ecosystem look like students asking two kinds of landlords for help. This version separates <strong>housing supply</strong>, <strong>Harvard gateways</strong>, <strong>public safeguards</strong>, and <strong>neighborhood context</strong>. It also removes unvalidated frequency and “strained” labels. Those are research questions, not established facts.</p>
+        <p style="margin-top:12px;font-size:14px">The map therefore points toward a focused MVP: a trusted navigation layer over existing resources, not an all-in-one housing marketplace.</p>
+      </section>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>Stakeholder inventory</h2>
+        <p>Use this table to decide who to interview, who can validate content, who can distribute the tool, and who should remain a referral or context layer.</p>
+      </div>
+    </div>
+    <div class="table-shell">
+      <table>
+        <thead>
+          <tr><th>Layer</th><th>Stakeholder</th><th>Role in the housing journey</th><th>MVP implication</th><th>Priority</th><th>Evidence</th></tr>
+        </thead>
+        <tbody id="inventory"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="method"><strong>Evidence and validation note:</strong> The sources below establish the formal roles, services, and channels represented in the map. The arrows, priority levels, and product implications are design hypotheses. Validate them through interviews and task-based research before treating relationship strength, frequency, trust, or risk as findings.</div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>Sources consulted</h2>
+        <p>Official Harvard, city, state, legal, and transit sources used to build the stakeholder inventory.</p>
+      </div>
+    </div>
+    <div class="sources" id="sources"></div>
+  </section>
+
+  <footer>Housing Made Easy · Stakeholder map for MVP discovery · Source review: September 27, 2026</footer>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var NS = "http://www.w3.org/2000/svg";
+  var SVG_W = 1720, NODE_W = 198, NODE_H = 76;
+  var categoryMeta = {
+    user:{label:"Users & peer networks",color:"#0B8069",fill:"#E5F5F0"},
+    harvard:{label:"Harvard gateways & resources",color:"#2D61C9",fill:"#E8EFFD"},
+    market:{label:"Housing market & transactions",color:"#C46D16",fill:"#FFF1DF"},
+    public:{label:"Public, legal & safety systems",color:"#7550B5",fill:"#F0EAFB"},
+    place:{label:"Neighborhood & infrastructure",color:"#078596",fill:"#E4F5F7"}
+  };
+  var priorityMeta = {
+    core:{label:"Core MVP",color:"#C63767"},
+    referral:{label:"Referral / verification",color:"#7550B5"},
+    secondary:{label:"Later / secondary",color:"#C46D16"},
+    context:{label:"Context only",color:"#078596"}
+  };
+  var relationshipMeta = {
+    peer:{label:"Peer / lived experience",color:"#0B8069",dash:"10 6"},
+    information:{label:"Information / guidance",color:"#2D61C9",dash:"7 5"},
+    transaction:{label:"Transaction / exchange",color:"#C46D16",dash:""},
+    referral:{label:"Referral / escalation",color:"#7550B5",dash:"7 5"},
+    regulation:{label:"Regulation / verification",color:"#513282",dash:"2 6"},
+    context:{label:"Place / infrastructure",color:"#078596",dash:"12 5 2 5"},
+    risk:{label:"Risk / caution",color:"#B83D49",dash:"4 5"}
+  };
+  var sources = {
+    hio:{title:"Harvard International Office — Housing",url:"https://www.hio.harvard.edu/life-community/housing",note:"Housing options, HUH, Off Campus Partners, leases, deposits, utilities, furniture, and verification cautions."},
+    huh:{title:"Harvard University Housing — Other Housing Options",url:"https://www.huhousing.harvard.edu/housing-services/other-housing-options",note:"University housing, private-market housing, and HUH sublet pathways."},
+    hgse:{title:"HGSE Office of Student Affairs — Off-Campus Housing",url:"https://osa.gse.harvard.edu/campus-housing",note:"School-level guidance on neighborhoods, platforms, brokers, up-front costs, credit history, and transit."},
+    hgc:{title:"Harvard Graduate Council",url:"https://www.hgc.harvard.edu/",note:"University-wide graduate and professional student advocacy and cross-school reach."},
+    cambridge:{title:"City of Cambridge — Housing Services Division",url:"https://www.cambridgema.gov/departments/officeofthehousingliaison",note:"Housing search assistance, tenant resources, rental assistance, eviction prevention, legal and mediation referrals."},
+    caminspect:{title:"City of Cambridge — Housing Inspection",url:"https://www.cambridgema.gov/inspection/housing",note:"Housing-code enforcement and complaints about conditions such as heat, plumbing, pests, and landlord maintenance."},
+    boston:{title:"City of Boston — Inspectional Services and Housing",url:"https://content.boston.gov/departments/inspectional-services/when-you-need-rental-inspection",note:"Rental registration, inspections, housing-code resources, and tenant pathways."},
+    rights:{title:"Massachusetts Attorney General — Landlord and Tenant Rights",url:"https://www.mass.gov/guides/the-attorney-generals-guide-to-landlord-and-tenant-rights",note:"Statewide rights and responsibilities, rental agreements, deposits, disputes, and housing discrimination pathways."},
+    hls:{title:"Harvard Law School — Housing Law Clinic",url:"https://hls.harvard.edu/clinics/in-house-clinics/housing-law-clinic/",note:"Housing-law education, legal services, and housing-justice pathways."},
+    mbta:{title:"MBTA",url:"https://www.mbta.com/",note:"Public transit, trip planning, accessibility, and location-choice context."}
+  };
+  var nodes = [
+    {id:"students",x:860,y:143,category:"user",priority:"core",lines:["International graduate &","professional students"],role:"Primary users: newly arriving or searching for housing.",implication:"Recruit for discovery and usability testing; co-design the first decision-support workflow.",sources:["hio","hgse"]},
+    {id:"peer",x:470,y:143,category:"user",priority:"core",lines:["Current students &","peer networks"],role:"Lived advice, referrals, warnings, and informal trust signals.",implication:"Use for research recruitment, distribution, and later peer-support features.",sources:["hio","hgc"]},
+    {id:"roommates",x:1250,y:143,category:"user",priority:"core",lines:["Roommates, subletters,","& current tenants"],role:"Share housing, offer sublets, and provide direct experience with units and landlords.",implication:"Test listing verification and sublet use cases; do not assume peer listings are verified.",sources:["hio","huh"]},
+
+    {id:"hio",x:170,y:355,category:"harvard",priority:"core",lines:["Harvard International","Office (HIO)"],role:"Arrival, housing, financial-account, and international-student context.",implication:"Potential content validator, referral partner, and distribution gateway.",sources:["hio"]},
+    {id:"huh",x:390,y:355,category:"harvard",priority:"core",lines:["Harvard University","Housing (HUH)"],role:"University-owned housing, eligibility, leases, and sublets.",implication:"Important supply-side and eligibility partner; keep HUH distinct from private landlords.",sources:["hio","huh"]},
+    {id:"schools",x:610,y:355,category:"harvard",priority:"core",lines:["School student affairs","& housing offices"],role:"School-specific deadlines, guidance, orientation, and student communication.",implication:"Recruit across graduate and professional schools; avoid assuming one Harvard-wide process.",sources:["hgse","hio"]},
+    {id:"hgc",x:830,y:355,category:"harvard",priority:"referral",lines:["Harvard Graduate","Council"],role:"University-wide graduate and professional student advocacy and reach.",implication:"Potential convening and advocacy partner, not the primary content owner.",sources:["hgc"]},
+    {id:"groups",x:1050,y:355,category:"harvard",priority:"core",lines:["International student","groups"],role:"Trusted peer distribution through student communities and messaging channels.",implication:"Recruit participants and test whether peer trust improves use of official guidance.",sources:["hio","hgc"]},
+    {id:"offcampus",x:1270,y:355,category:"harvard",priority:"core",lines:["Off Campus Partners /","HarvardHousingOffCampus"],role:"Searchable private-market, roommate, and sublet listings connected to Harvard.",implication:"Potential integration or referral source; listings are not inspected or endorsed, so verification is central.",sources:["hio"]},
+    {id:"hsa",x:1490,y:355,category:"harvard",priority:"secondary",lines:["Harvard Student","Agencies"],role:"Appliance and move-in support after housing is secured.",implication:"Later module for furniture and move-in logistics, not the first MVP.",sources:["hio"]},
+
+    {id:"landlords",x:270,y:590,category:"market",priority:"core",lines:["Private landlords"],role:"Own or directly offer rental units; set screening, payment, and lease terms.",implication:"Research the information students need to evaluate landlords; do not make claims of verification without evidence.",sources:["hio","hgse"]},
+    {id:"managers",x:510,y:590,category:"market",priority:"core",lines:["Property managers"],role:"Operate buildings, communicate requirements, and manage maintenance or tenancy issues.",implication:"Important source of process information and potential risk signals.",sources:["hgse","cambridge"]},
+    {id:"brokers",x:750,y:590,category:"market",priority:"core",lines:["Real-estate brokers"],role:"Mediate much of the Boston-area apartment search and may shape fees and access.",implication:"Test whether students need broker-fee and process guidance before integrating broker listings.",sources:["hgse"]},
+    {id:"platforms",x:990,y:590,category:"market",priority:"core",lines:["Public listing","platforms"],role:"Provide search volume and comparisons but vary in quality and trust.",implication:"Treat as discovery channels, not trusted sources; build a verification layer over them only if validated.",sources:["hgse","hio"]},
+    {id:"temporary",x:1230,y:590,category:"market",priority:"secondary",lines:["Temporary lodging","providers"],role:"Bridge accommodation for students who arrive before securing a lease.",implication:"Useful transition module; initially provide a curated referral path rather than a booking product.",sources:["hio"]},
+    {id:"movein",x:1470,y:590,category:"market",priority:"secondary",lines:["Utilities, banks,","& renters insurers"],role:"Support payments, account setup, utility activation, and protection after a housing choice.",implication:"Later-stage logistics; link out to providers rather than handling financial data.",sources:["hio"]},
+
+    {id:"camservices",x:150,y:830,category:"public",priority:"referral",lines:["Cambridge Housing","Services"],role:"Housing search assistance, tenant resources, rental assistance, and eviction prevention.",implication:"Referral and escalation partner for Cambridge residents; not a content source to replace.",sources:["cambridge"]},
+    {id:"caminspect",x:385,y:830,category:"public",priority:"referral",lines:["Cambridge Inspectional","Services"],role:"Enforces housing standards and responds to housing-condition complaints.",implication:"Use for official verification and escalation when safety or code issues arise.",sources:["caminspect"]},
+    {id:"boston",x:620,y:830,category:"public",priority:"referral",lines:["Boston housing &","inspection services"],role:"Rental registration, inspection, housing-code, and tenant-resource pathways.",implication:"Needed because the target geography extends beyond Cambridge.",sources:["boston"]},
+    {id:"rights",x:855,y:830,category:"public",priority:"referral",lines:["MA Attorney General","& fair-housing bodies"],role:"Statewide rights, responsibilities, consumer, and discrimination pathways.",implication:"Use authoritative links and escalation guidance; do not provide legal advice.",sources:["rights"]},
+    {id:"legalaid",x:1090,y:830,category:"public",priority:"referral",lines:["Legal aid &","mediation providers"],role:"Help with disputes, tenant rights, and mediation when risk has materialized.",implication:"Build a clear handoff pathway for high-stakes questions and disputes.",sources:["cambridge","rights"]},
+    {id:"hlsclinic",x:1325,y:830,category:"public",priority:"referral",lines:["Harvard legal clinics","& Housing Law Clinic"],role:"Legal education, housing justice, and supervised legal-service pathways.",implication:"Potential expert reviewer or referral partner for lease and rights content.",sources:["hls"]},
+    {id:"affordable",x:1560,y:830,category:"public",priority:"context",lines:["Affordable housing","providers / authorities"],role:"Offer subsidized or affordable housing pathways with distinct eligibility rules.",implication:"Monitor as an equity and affordability pathway; validate relevance for the initial user segment.",sources:["cambridge"]},
+
+    {id:"mbta",x:350,y:1075,category:"place",priority:"context",lines:["MBTA / public","transit"],role:"Shapes neighborhood choice, commute feasibility, accessibility, and temporary mobility.",implication:"Provide location context or links; do not make transit planning the first product.",sources:["hgse","mbta"]},
+    {id:"neighborhoods",x:800,y:1075,category:"place",priority:"context",lines:["Neighborhood residents","& associations"],role:"Provide local context and experience; are affected by housing pressure and student turnover.",implication:"Include neighborhood information carefully and avoid reducing communities to commute or price scores.",sources:["hgse","cambridge"]},
+    {id:"local",x:1250,y:1075,category:"place",priority:"context",lines:["Local businesses &","essential services"],role:"Support everyday life after move-in: groceries, laundromats, childcare, health, and community services.",implication:"Potential later directory layer; not central to first housing-search MVP.",sources:["hio","hgse"]}
+  ];
+  var edges = [
+    {from:"students",to:"peer",type:"peer",label:"asks for lived advice",curve:28},
+    {from:"peer",to:"students",type:"peer",label:"shares referrals and warnings",curve:-28},
+    {from:"students",to:"hio",type:"information",label:"asks for arrival and housing guidance",curve:24},
+    {from:"hio",to:"students",type:"referral",label:"links to options and escalation",curve:-24},
+    {from:"students",to:"huh",type:"transaction",label:"applies, leases, or seeks a sublet",curve:10},
+    {from:"huh",to:"students",type:"information",label:"provides eligibility and housing information",curve:-10},
+    {from:"students",to:"schools",type:"information",label:"seeks school-specific help",curve:12},
+    {from:"schools",to:"students",type:"referral",label:"shares deadlines and guidance",curve:-12},
+    {from:"hgc",to:"students",type:"peer",label:"advocates and amplifies issues",curve:18},
+    {from:"groups",to:"students",type:"peer",label:"distributes peer advice",curve:-18},
+    {from:"students",to:"offcampus",type:"information",label:"searches private-market listings",curve:12},
+    {from:"offcampus",to:"students",type:"risk",label:"provides leads without inspecting listings",curve:-12},
+    {from:"students",to:"landlords",type:"transaction",label:"inquires, applies, and pays",curve:22},
+    {from:"landlords",to:"students",type:"transaction",label:"sets terms, screening, and lease conditions",curve:-22},
+    {from:"students",to:"managers",type:"transaction",label:"communicates about application and tenancy",curve:14},
+    {from:"managers",to:"students",type:"transaction",label:"sets building and maintenance expectations",curve:-14},
+    {from:"students",to:"brokers",type:"transaction",label:"seeks access to the market",curve:20},
+    {from:"brokers",to:"students",type:"information",label:"offers options and process guidance",curve:-20},
+    {from:"students",to:"platforms",type:"information",label:"searches and compares options",curve:18},
+    {from:"platforms",to:"students",type:"risk",label:"high-volume information with uneven trust",curve:-18},
+    {from:"students",to:"temporary",type:"transaction",label:"needs bridge housing",curve:14},
+    {from:"students",to:"movein",type:"transaction",label:"sets up utilities, payments, and insurance",curve:10},
+    {from:"students",to:"camservices",type:"referral",label:"seeks housing support or prevention help",curve:24},
+    {from:"camservices",to:"students",type:"referral",label:"provides housing-search and tenant support",curve:-24},
+    {from:"students",to:"caminspect",type:"regulation",label:"reports unsafe or noncompliant conditions",curve:16},
+    {from:"caminspect",to:"landlords",type:"regulation",label:"enforces housing standards",curve:-24},
+    {from:"students",to:"boston",type:"referral",label:"uses city-specific tenant pathways",curve:20},
+    {from:"boston",to:"managers",type:"regulation",label:"registration and inspection requirements",curve:-20},
+    {from:"students",to:"rights",type:"referral",label:"seeks rights and fair-housing information",curve:15},
+    {from:"students",to:"legalaid",type:"referral",label:"escalates a dispute or high-stakes question",curve:18},
+    {from:"legalaid",to:"students",type:"referral",label:"offers legal or mediation support",curve:-18},
+    {from:"hlsclinic",to:"students",type:"referral",label:"offers legal education and pathways",curve:20},
+    {from:"students",to:"affordable",type:"information",label:"explores affordability pathways",curve:22},
+    {from:"students",to:"mbta",type:"context",label:"uses commute to evaluate location",curve:24},
+    {from:"mbta",to:"students",type:"context",label:"provides transit and accessibility context",curve:-24},
+    {from:"students",to:"neighborhoods",type:"context",label:"lives in and affects local communities",curve:20},
+    {from:"neighborhoods",to:"students",type:"context",label:"provides local context and norms",curve:-20},
+    {from:"students",to:"local",type:"context",label:"needs everyday services after moving",curve:20}
+  ];
+  var nodeById = {};
+  nodes.forEach(function(n){ nodeById[n.id] = n; });
+  var svg = document.getElementById("map");
+  var gLanes = make("g",{});
+  var gEdges = make("g",{});
+  var gNodes = make("g",{});
+  svg.appendChild(gLanes); svg.appendChild(gEdges); svg.appendChild(gNodes);
+  var selectedId = "students";
+  var activePriority = "all";
+  var activeCategory = "all";
+  var edgeElements = [];
+  var nodeElements = [];
+
+  function make(tag,attrs,parent){
+    var e = document.createElementNS(NS,tag);
+    Object.keys(attrs || {}).forEach(function(k){ e.setAttribute(k,attrs[k]); });
+    if(parent) parent.appendChild(e);
+    return e;
+  }
+  function htmlEscape(s){
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+  function addText(parent,text,x,y,attrs){
+    var t = make("text",Object.assign({x:x,y:y},attrs || {}),parent);
+    t.textContent = text;
+    return t;
+  }
+  function addLines(parent,lines,x,y,attrs,lineGap){
+    var t = make("text",Object.assign({x:x,y:y,"text-anchor":"middle"},attrs || {}),parent);
+    lines.forEach(function(line,i){
+      var span = make("tspan",{x:x,dy:i===0 ? 0 : (lineGap || 16)},t);
+      span.textContent = line;
+    });
+    return t;
+  }
+  function marker(id,color){
+    var m = make("marker",{id:id,viewBox:"0 0 10 10",refX:"8.8",refY:"5",markerWidth:"7",markerHeight:"7",orient:"auto-start-reverse",markerUnits:"strokeWidth"},svg.querySelector("defs") || (function(){ return make("defs",{},svg); })());
+    make("path",{d:"M 0 0 L 10 5 L 0 10 z",fill:color},m);
+  }
+  Object.keys(relationshipMeta).forEach(function(k){ marker("arrow-"+k,relationshipMeta[k].color); });
+  var rows = [
+    {y:28,h:190,cat:"user",title:"1 · USERS & PEER NETWORKS",subtitle:"Who experiences the problem and who supplies informal trust"},
+    {y:243,h:235,cat:"harvard",title:"2 · HARVARD GATEWAYS & RESOURCES",subtitle:"Where students receive official guidance, access, and distribution"},
+    {y:503,h:235,cat:"market",title:"3 · HOUSING MARKET & TRANSACTIONS",subtitle:"Who controls listings, screening, leases, money, and move-in services"},
+    {y:763,h:235,cat:"public",title:"4 · PUBLIC, LEGAL & SAFETY SYSTEMS",subtitle:"Who sets rules, verifies conditions, protects rights, or receives escalations"},
+    {y:1023,h:235,cat:"place",title:"5 · NEIGHBORHOOD & INFRASTRUCTURE",subtitle:"What shapes location choice and the experience of living beyond the lease"}
+  ];
+  rows.forEach(function(row){
+    var c = categoryMeta[row.cat];
+    make("rect",{x:24,y:row.y,width:SVG_W-48,height:row.h,rx:18,fill:c.fill,stroke:c.color,"stroke-opacity":".22","stroke-width":"1"},gLanes);
+    addText(gLanes,row.title,47,row.y+27,{"font-size":"12","font-weight":"800","letter-spacing":"1.2",fill:c.color});
+    addText(gLanes,row.subtitle,47,row.y+47,{"font-size":"11.5",fill:"#6B7890"});
+  });
+  function port(n,t){
+    var dx=t.x-n.x, dy=t.y-n.y;
+    var sx = Math.abs(dx) < 0.001 ? Infinity : (NODE_W/2)/Math.abs(dx);
+    var sy = Math.abs(dy) < 0.001 ? Infinity : (NODE_H/2)/Math.abs(dy);
+    var k = Math.min(sx,sy);
+    return {x:n.x+dx*k,y:n.y+dy*k};
+  }
+  function pathFor(e){
+    var s = nodeById[e.from], t = nodeById[e.to], a=port(s,t), b=port(t,s);
+    var mx=(a.x+b.x)/2, my=(a.y+b.y)/2, dx=b.x-a.x, dy=b.y-a.y, len=Math.max(1,Math.hypot(dx,dy));
+    var curve=e.curve || 0;
+    var cx=mx-(dy/len)*curve, cy=my+(dx/len)*curve;
+    return "M "+a.x+" "+a.y+" Q "+cx+" "+cy+" "+b.x+" "+b.y;
+  }
+  function edgeTitle(e){
+    return nodeById[e.from].lines.join(" ")+" → "+nodeById[e.to].lines.join(" ")+" · "+e.label;
+  }
+  edges.forEach(function(e,i){
+    var meta=relationshipMeta[e.type], d=pathFor(e);
+    var hit=make("path",{d:d,fill:"none",stroke:"transparent","stroke-width":"15","stroke-linecap":"round",tabindex:"0","role":"button","aria-label":edgeTitle(e)},gEdges);
+    var visible=make("path",{d:d,fill:"none",stroke:meta.color,"stroke-width":e.type==="risk" ? "2.6" : "2.15","stroke-linecap":"round","marker-end":"url(#arrow-"+e.type+")","data-edge":i},gEdges);
+    if(meta.dash) visible.setAttribute("stroke-dasharray",meta.dash);
+    var title=make("title",{},visible); title.textContent=edgeTitle(e);
+    hit.addEventListener("click",function(){ selectEdge(e); });
+    hit.addEventListener("keydown",function(ev){ if(ev.key==="Enter" || ev.key===" "){ev.preventDefault();selectEdge(e);} });
+    edgeElements.push({edge:e,hit:hit,visible:visible});
+  });
+  nodes.forEach(function(n){
+    var c=categoryMeta[n.category], p=priorityMeta[n.priority], g=make("g",{transform:"translate("+(n.x-NODE_W/2)+","+(n.y-NODE_H/2)+")","data-node":n.id,tabindex:"0","role":"button","aria-label":n.lines.join(" ")},gNodes);
+    var ring=make("rect",{x:-4,y:-4,width:NODE_W+8,height:NODE_H+8,rx:16,fill:"none",stroke:p.color,"stroke-width":n.priority==="core" ? "2.2" : "1.2","stroke-dasharray":n.priority==="core" ? "5 4" : "2 5","stroke-opacity":n.priority==="core" ? ".75" : ".35","data-ring":"true"},g);
+    make("rect",{x:0,y:0,width:NODE_W,height:NODE_H,rx:13,fill:c.fill,stroke:c.color,"stroke-width":"1.4"},g);
+    var badgeW=n.priority==="referral" ? 75 : n.priority==="secondary" ? 64 : n.priority==="context" ? 60 : 38;
+    make("rect",{x:NODE_W-badgeW-8,y:8,width:badgeW,height:17,rx:8,fill:"#FFFFFF","fill-opacity":".82",stroke:p.color,"stroke-opacity":".45"},g);
+    addText(g,p.label.toUpperCase(),NODE_W-badgeW/2-8,20,{"font-size":"8.6","font-weight":"800","text-anchor":"middle",fill:p.color});
+    addLines(g,n.lines,NODE_W/2,n.lines.length===2 ? 36 : 30,{"font-size":"14","font-weight":"800",fill:"#172033"},16);
+    var roleText=n.role.length>50 ? n.role.slice(0,49)+"…" : n.role;
+    addText(g,roleText,NODE_W/2,NODE_H-10,{"font-size":"9.8","text-anchor":"middle",fill:"#5E6B80"});
+    var title=make("title",{},g); title.textContent=n.lines.join(" ")+" · "+c.label+" · "+p.label;
+    g.addEventListener("click",function(){selectNode(n.id);});
+    g.addEventListener("keydown",function(ev){if(ev.key==="Enter" || ev.key===" "){ev.preventDefault();selectNode(n.id);}});
+    nodeElements.push({node:n,g:g,ring:ring});
+  });
+  function sourceLinks(ids){
+    return (ids || []).map(function(id){var s=sources[id];return '<a href="'+s.url+'" target="_blank" rel="noopener">'+htmlEscape(s.title)+'</a>';}).join(" · ");
+  }
+  function relationshipLine(e,id){
+    var outgoing=e.from===id;
+    var other=outgoing ? nodeById[e.to] : nodeById[e.from];
+    var arrow=outgoing ? "→" : "←";
+    return '<li>'+arrow+' <strong>'+htmlEscape(other.lines.join(" "))+'</strong>: '+htmlEscape(e.label)+' <span style="color:#8692A5">('+htmlEscape(relationshipMeta[e.type].label)+')</span></li>';
+  }
+  function updateDetail(n,edge){
+    var root=document.getElementById("detail");
+    if(edge){
+      root.innerHTML='<div class="detail-top"><div><h3>Relationship detail</h3><div class="meta"><span class="tag category" style="background:'+relationshipMeta[edge.type].color+'">'+htmlEscape(relationshipMeta[edge.type].label)+'</span></div></div></div>'+
+        '<p><strong>'+htmlEscape(nodeById[edge.from].lines.join(" "))+'</strong> → <strong>'+htmlEscape(nodeById[edge.to].lines.join(" "))+'</strong></p>'+
+        '<p>'+htmlEscape(edge.label)+'.</p>'+
+        '<h4>Why it matters for the MVP</h4><p>Use this relationship as a research question. Test how often it occurs, how much trust students place in it, and whether the product should support, verify, or simply refer the user.</p>';
+      return;
+    }
+    var c=categoryMeta[n.category],p=priorityMeta[n.priority], related=edges.filter(function(e){return e.from===n.id || e.to===n.id;});
+    root.innerHTML='<div class="detail-top"><div><h3>'+htmlEscape(n.lines.join(" "))+'</h3><div class="meta"><span class="tag category" style="background:'+c.color+'">'+htmlEscape(c.label)+'</span><span class="tag priority">'+htmlEscape(p.label)+'</span></div></div></div>'+
+      '<p>'+htmlEscape(n.role)+'</p><h4>MVP implication</h4><p>'+htmlEscape(n.implication)+'</p>'+
+      '<h4>Mapped relationships</h4><ul>'+related.map(function(e){return relationshipLine(e,n.id);}).join("")+'</ul>'+
+      '<h4>Evidence</h4><p>'+sourceLinks(n.sources)+'</p>';
+  }
+  function selectNode(id){
+    selectedId=id;
+    updateDetail(nodeById[id]);
+    applyFilters();
+  }
+  function selectEdge(e){
+    selectedId=null;
+    updateDetail(null,e);
+    edgeElements.forEach(function(item){item.visible.setAttribute("stroke-opacity",item.edge===e ? "1" : ".16");});
+    nodeElements.forEach(function(item){item.g.setAttribute("opacity",(item.node.id===e.from || item.node.id===e.to) ? "1" : ".42");});
+  }
+  function matches(n){
+    return (activePriority==="all" || n.priority===activePriority) && (activeCategory==="all" || n.category===activeCategory);
+  }
+  function applyFilters(){
+    nodeElements.forEach(function(item){
+      var show=matches(item.node);
+      item.g.setAttribute("opacity",show ? "1" : ".13");
+      item.g.setAttribute("aria-hidden",show ? "false" : "true");
+      item.ring.setAttribute("stroke-opacity",show ? (item.node.priority==="core" ? ".75" : ".35") : "0");
+    });
+    edgeElements.forEach(function(item){
+      var show=matches(nodeById[item.edge.from]) && matches(nodeById[item.edge.to]);
+      var selected=selectedId && (item.edge.from===selectedId || item.edge.to===selectedId);
+      item.visible.setAttribute("stroke-opacity",show ? (selected ? "1" : (selectedId ? ".18" : ".64")) : ".04");
+      item.hit.setAttribute("opacity",show ? "1" : ".04");
+    });
+    if(selectedId && !matches(nodeById[selectedId])) selectedId=null;
+    if(selectedId) nodeElements.forEach(function(item){if(item.node.id===selectedId){item.g.setAttribute("opacity","1");}});
+  }
+  function setActive(group,attr,value){
+    group.querySelectorAll("button").forEach(function(btn){
+      var active=btn.getAttribute(attr)===value;
+      btn.classList.toggle("active",active);
+      btn.setAttribute("aria-pressed",active ? "true" : "false");
+    });
+  }
+  document.querySelectorAll("#priority-filters button").forEach(function(btn){
+    btn.addEventListener("click",function(){activePriority=btn.dataset.priority;setActive(document.getElementById("priority-filters"),"data-priority",activePriority);applyFilters();});
+  });
+  document.querySelectorAll("#category-filters button").forEach(function(btn){
+    btn.addEventListener("click",function(){activeCategory=btn.dataset.category;setActive(document.getElementById("category-filters"),"data-category",activeCategory);applyFilters();});
+  });
+  var legend=document.getElementById("legend");
+  legend.innerHTML='<div class="legend-group"><span class="legend-label">Color</span>'+Object.keys(categoryMeta).map(function(k){return '<span class="swatch"><i style="background:'+categoryMeta[k].color+'"></i>'+categoryMeta[k].label+'</span>';}).join("")+'</div>'+
+    '<div class="legend-group"><span class="legend-label">Line</span>'+Object.keys(relationshipMeta).map(function(k){var m=relationshipMeta[k];var cls=m.dash ? (k==="regulation" ? "dotted" : k==="context" ? "longdash" : "dashed") : "";return '<span class="swatch" style="color:'+m.color+'"><span class="line-key '+cls+'"></span>'+m.label+'</span>';}).join("")+'</div>'+
+    '<div class="legend-group"><span class="legend-label">Priority</span><span class="priority-key"><span class="ring"></span> Core MVP</span><span class="priority-key"><span class="pill">REFERRAL</span> Verify / refer</span></div>';
+  var inventory=document.getElementById("inventory");
+  inventory.innerHTML=nodes.map(function(n){
+    var c=categoryMeta[n.category],p=priorityMeta[n.priority];
+    return '<tr><td><span class="small-tag" style="color:#fff;background:'+c.color+'">'+htmlEscape(c.label)+'</span></td><td><strong>'+htmlEscape(n.lines.join(" "))+'</strong></td><td>'+htmlEscape(n.role)+'</td><td>'+htmlEscape(n.implication)+'</td><td><span class="small-tag" style="color:'+p.color+';background:#F6F7FA;border:1px solid '+p.color+'55">'+htmlEscape(p.label)+'</span></td><td>'+sourceLinks(n.sources)+'</td></tr>';
+  }).join("");
+  var sourceRoot=document.getElementById("sources");
+  sourceRoot.innerHTML=Object.keys(sources).map(function(k){var s=sources[k];return '<article class="source"><a href="'+s.url+'" target="_blank" rel="noopener">'+htmlEscape(s.title)+'</a><p>'+htmlEscape(s.note)+'</p></article>';}).join("");
+  updateDetail(nodeById.students);
+  applyFilters();
+})();
+</script>
+</body>
+</html>
