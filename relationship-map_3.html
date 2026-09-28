@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Community Relationship Map</title>
+<style>
+  :root {
+    --bg: #fbfaf8; --surface: #ffffff; --ink: #1f2328; --ink-2: #57606a; --ink-3: #8b949e;
+    --border: #e3e1dc; --node: #3d6fb4; --node-ring: #ffffff; --edge: #9aa1a9;
+    --scam: #b42828; --time: #d18f00; --halo: #ffffff;
+    --scam-bg: #fbeaea; --time-bg: #fcf3e0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #16181b; --surface: #1e2125; --ink: #e8e6e3; --ink-2: #aeb4bb; --ink-3: #7d858e;
+      --border: #33373c; --node: #6d9be0; --node-ring: #1e2125; --edge: #6c737b;
+      --scam: #d03a3a; --time: #bd8a10; --halo: #1e2125;
+      --scam-bg: #3a2020; --time-bg: #352b16;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16181b; --surface: #1e2125; --ink: #e8e6e3; --ink-2: #aeb4bb; --ink-3: #7d858e;
+    --border: #33373c; --node: #6d9be0; --node-ring: #1e2125; --edge: #6c737b;
+    --scam: #d03a3a; --time: #bd8a10; --halo: #1e2125;
+    --scam-bg: #3a2020; --time-bg: #352b16;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 28px 16px 48px; }
+  h1 { font-size: 24px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .sub { color: var(--ink-2); margin: 0 0 20px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .layout { display: grid; grid-template-columns: 1fr 250px; gap: 16px; align-items: start; }
+  @media (max-width: 820px) { .layout { grid-template-columns: 1fr; } }
+  svg { width: 100%; height: auto; display: block; }
+  .edge { fill: none; stroke-linecap: round; transition: opacity .15s; }
+  .edge-hit { fill: none; stroke: transparent; stroke-width: 18; cursor: pointer; }
+  .node circle { fill: var(--node); stroke: var(--node-ring); stroke-width: 3; cursor: pointer; }
+  .node text { fill: var(--ink); font-size: 14px; font-weight: 600; text-anchor: middle;
+    paint-order: stroke; stroke: var(--halo); stroke-width: 4px; stroke-linejoin: round; pointer-events: none; }
+  .node .deg { fill: #fff; stroke: none; font-size: 13px; font-weight: 700; }
+  .elabel { font-size: 11.5px; text-anchor: middle; paint-order: stroke; stroke: var(--halo);
+    stroke-width: 4px; stroke-linejoin: round; pointer-events: none; transition: opacity .15s; }
+  .elabel .rel { fill: var(--ink); font-weight: 600; }
+  .elabel .ch { fill: var(--ink-3); }
+  .elabel .rs { fill: var(--scam); font-weight: 700; }
+  .elabel .rt { fill: var(--time); font-weight: 700; }
+  .overlap { stroke: var(--node); stroke-opacity: .22; stroke-width: 16; stroke-linecap: round; fill: none; }
+  .olabel { font-size: 11.5px; font-weight: 600; fill: var(--node); text-anchor: middle; paint-order: stroke;
+    stroke: var(--halo); stroke-width: 4px; stroke-linejoin: round; pointer-events: none; }
+  .dim { opacity: 0.12; }
+  .legend h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2); margin: 0 0 10px; }
+  .legend section { margin-bottom: 16px; }
+  .legend .row { display: flex; align-items: center; gap: 10px; margin: 6px 0; font-size: 13.5px; color: var(--ink); }
+  .legend .row span.m { color: var(--ink-2); }
+  .legend svg { width: 44px; height: 24px; flex: none; }
+  .caption { color: var(--ink-2); font-size: 14px; margin: 14px 2px 0; max-width: 820px; }
+  .note { margin-top: 10px; padding: 10px 12px; border-left: 3px solid var(--ink-3); background: var(--surface);
+    font-size: 13px; color: var(--ink-2); border-radius: 0 6px 6px 0; }
+  #tip { position: fixed; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 10px; font-size: 13px; box-shadow: 0 4px 16px rgba(0,0,0,.15); opacity: 0; transition: opacity .1s; max-width: 320px; }
+  #tip b { display: block; margin-bottom: 2px; }
+  #tip .k { color: var(--ink-2); }
+  #tip .ts { color: var(--scam); font-weight: 700; margin-top: 6px; display: block; }
+  #tip .tt { color: var(--time); font-weight: 700; margin-top: 6px; display: block; }
+  #tip ul { margin: 2px 0 0; padding-left: 16px; }
+
+  .pains { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+  @media (max-width: 720px) { .pains { grid-template-columns: 1fr; } }
+  .pain h3 { margin: 0 0 2px; font-size: 16px; display: flex; align-items: center; gap: 8px; }
+  .pain h3 .sw { width: 22px; height: 4px; border-radius: 2px; flex: none; }
+  .pain .lede { color: var(--ink-2); font-size: 13.5px; margin: 0 0 10px; }
+  .pain ul { list-style: none; margin: 0; padding: 0; }
+  .pain li { padding: 8px 10px; border-radius: 8px; margin: 0 -10px; cursor: default; }
+  .pain li:focus { outline: none; }
+  .pain.scam li:hover, .pain.scam li:focus { background: var(--scam-bg); }
+  .pain.time li:hover, .pain.time li:focus { background: var(--time-bg); }
+  .pain li strong { font-size: 14px; }
+  .pain li p { margin: 1px 0 3px; font-size: 13.5px; color: var(--ink-2); }
+  .pain .where { font-size: 12px; color: var(--ink-3); }
+  .pain .fix { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 13.5px; color: var(--ink-2); }
+  .gap { margin-top: 16px; font-size: 13.5px; color: var(--ink-2); }
+
+  .tablewrap { margin-top: 16px; overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  th { color: var(--ink-2); font-weight: 600; }
+  td.u { color: var(--ink-3); font-style: italic; }
+  details summary { cursor: pointer; color: var(--ink-2); font-size: 14px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Community Relationship Map</h1>
+  <p class="sub">Housing support network for HKS international and mid-career students, with friction points</p>
+
+  <div class="layout">
+    <div class="card">
+      <svg id="map" viewBox="0 0 1000 660" role="img" aria-label="Network chart of six groups and ten relationships, with scam-risk and time-pressure friction points highlighted"></svg>
+    </div>
+
+    <aside class="card legend" aria-label="Legend">
+      <section>
+        <h2>Nodes</h2>
+        <div class="row"><svg viewBox="0 0 44 24"><circle cx="22" cy="12" r="6" fill="var(--node)"/></svg><span>2 relationships</span></div>
+        <div class="row"><svg viewBox="0 0 44 24"><circle cx="22" cy="12" r="11" fill="var(--node)"/></svg><span>6 relationships</span></div>
+        <div class="row"><span class="m">Size = number of relationships a group holds (shown inside each circle)</span></div>
+      </section>
+      <section>
+        <h2>Friction points</h2>
+        <div class="row"><svg viewBox="0 0 44 24"><line x1="4" y1="12" x2="40" y2="12" stroke="var(--scam)" stroke-width="3.5" stroke-linecap="round"/></svg><span><b style="color:var(--scam)">Scam risk</b> (may also involve time pressure)</span></div>
+        <div class="row"><svg viewBox="0 0 44 24"><line x1="4" y1="12" x2="40" y2="12" stroke="var(--time)" stroke-width="3.5" stroke-linecap="round"/></svg><span><b style="color:var(--time)">Time pressure</b> only</span></div>
+        <div class="row"><svg viewBox="0 0 44 24"><line x1="4" y1="12" x2="40" y2="12" stroke="var(--edge)" stroke-width="2" stroke-linecap="round"/></svg><span>No friction identified</span></div>
+      </section>
+      <section>
+        <h2>Edges</h2>
+        <div class="row"><svg viewBox="0 0 44 24"><line x1="4" y1="12" x2="40" y2="12" stroke="var(--edge)" stroke-width="1.5" stroke-linecap="round"/></svg><span>Monthly or less</span></div>
+        <div class="row"><svg viewBox="0 0 44 24"><line x1="4" y1="12" x2="40" y2="12" stroke="var(--edge)" stroke-width="3.5" stroke-linecap="round"/></svg><span>Weekly</span></div>
+        <div class="row"><svg viewBox="0 0 44 24"><line x1="4" y1="12" x2="40" y2="12" stroke="var(--edge)" stroke-width="6" stroke-linecap="round"/></svg><span>Daily</span></div>
+        <div class="row"><svg viewBox="0 0 44 24"><line x1="4" y1="12" x2="40" y2="12" stroke="var(--edge)" stroke-width="2" stroke-dasharray="4 4" stroke-linecap="round"/></svg><span>Frequency not yet known</span></div>
+        <div class="row"><span class="m">Arrow points from the group reaching out to the group it relies on.</span></div>
+      </section>
+      <section>
+        <h2>Overlap</h2>
+        <div class="row"><svg viewBox="0 0 44 24"><line x1="6" y1="12" x2="38" y2="12" class="overlap" style="stroke-width:10"/></svg><span>Shared membership</span></div>
+        <div class="row"><span class="m">Not a relationship; not counted in circle size.</span></div>
+      </section>
+      <div class="row"><span class="m">Hover a line, circle or list item for details.</span></div>
+    </aside>
+  </div>
+
+  <p class="caption"><strong>Caption.</strong> International students sit at the center of this network, holding six of the ten relationships. Their riskiest link is with landlords, where deliberate scams and rushed, time-pressured decisions both occur. Scam risk also travels through peer channels, when fake sublets and listings circulate in student groups. Harvard housing timing adds pressure that pushes students into the private market. Some MC/MPA students are also international, so they share these risks.</p>
+  <div class="note">Draft: friction points are suggested from common patterns and still need confirming. Channel and frequency have not been provided, so every line is dashed and labeled "channel: unknown." Edit the <code>EDGES</code> and <code>PAINS</code> lists at the top of the script and the chart redraws itself.</div>
+
+  <div class="pains">
+    <div class="card pain scam">
+      <h3><span class="sw" style="background:var(--scam)"></span>Scams</h3>
+      <p class="lede">Deliberate deception: someone sets out to take the student's money.</p>
+      <ul id="list-scam"></ul>
+      <div class="fix"><b>What helps:</b> warnings and verification, such as confirming who owns a unit and never paying before viewing.</div>
+    </div>
+    <div class="card pain time">
+      <h3><span class="sw" style="background:var(--time)"></span>Rushed decisions</h3>
+      <p class="lede">Time pressure, not fraud: deadlines, distance and missing information lead to poor choices.</p>
+      <ul id="list-time"></ul>
+      <div class="fix"><b>What helps:</b> earlier information, local pricing benchmarks, and backup temporary housing.</div>
+    </div>
+  </div>
+  <p class="gap"><b>Gap to note:</b> no group on the map links to landlords in a way that could hold them accountable or warn students about them.</p>
+
+  <div class="card tablewrap">
+    <details>
+      <summary>Table view of all relationships</summary>
+      <table id="tbl" style="margin-top:10px">
+        <thead><tr><th>Relationship</th><th>From</th><th>To</th><th>Channel</th><th>Frequency</th><th>Friction</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </details>
+  </div>
+</main>
+<div id="tip" role="tooltip"></div>
+
+<script>
+/* ===== DATA — edit here =====
+   frequency: "daily" | "weekly" | "monthly" | null (unknown)
+   channel:   text, or null (unknown)
+   Each edge has an id; pain points below list the edge ids where they occur. */
+const NODES = [
+  { id: "IS",  name: "International students",  x: 470, y: 330 },
+  { id: "HKS", name: "HKS Intl Student groups",  x: 190, y: 150 },
+  { id: "HH",  name: "Harvard housing",          x: 800, y: 150 },
+  { id: "LL",  name: "Landlords",                x: 545, y: 595 },
+  { id: "MC",  name: "MC/MPA",                   x: 840, y: 470 },
+  { id: "HGC", name: "Harvard Graduate council", x: 170, y: 590 },
+];
+const EDGES = [
+  { id: "is-hh",    rel: "People seeking houses",        from: "IS",  to: "HH",  channel: null, frequency: null },
+  { id: "mc-hh",    rel: "People seeking houses",        from: "MC",  to: "HH",  channel: null, frequency: null },
+  { id: "is-hks-t", rel: "Student seeking temp housing", from: "IS",  to: "HKS", channel: null, frequency: null },
+  { id: "is-ll",    rel: "Landlord relationship",        from: "IS",  to: "LL",  channel: null, frequency: null },
+  { id: "mc-ll",    rel: "Landlord relationship",        from: "MC",  to: "LL",  channel: null, frequency: null },
+  { id: "is-hks-a", rel: "People seeking advice",        from: "IS",  to: "HKS", channel: null, frequency: null },
+  { id: "mc-hgc",   rel: "People seeking advice",        from: "MC",  to: "HGC", channel: null, frequency: null },
+  { id: "hh-is",    rel: "Information distributor",      from: "HH",  to: "IS",  channel: null, frequency: null },
+  { id: "hks-is",   rel: "Information distributor",      from: "HKS", to: "IS",  channel: null, frequency: null },
+  { id: "hgc-hks",  rel: "Information distributor",      from: "HGC", to: "HKS", channel: null, frequency: null },
+];
+const PAINS = {
+  scam: [
+    { t: "Fake listings", d: "Photos copied from real rentals, posted by someone who doesn't own or control the apartment.", on: ["is-ll", "mc-ll", "hks-is"] },
+    { t: "Pay-to-hold deposits", d: "Money requested by wire, Zelle, crypto or gift card to “reserve” an unseen unit; the poster then disappears.", on: ["is-ll", "mc-ll"] },
+    { t: "Illegal upfront charges", d: "Fees beyond what Massachusetts generally allows before move-in (first month, last month, a security deposit up to one month, a lock-change fee), labeled “application” or “holding” fees.", on: ["is-ll", "mc-ll"] },
+    { t: "Withheld security deposits", d: "Kept without a valid reason, often after the student has left the country.", on: ["is-ll", "mc-ll"] },
+    { t: "Fake sublets", d: "Posted in student group chats or on social media, sometimes by outsiders or by someone with no right to rent the unit.", on: ["is-hks-t", "hks-is"] },
+    { t: "Bait and switch", d: "The student arrives to find a different, worse unit from the one advertised.", on: ["is-ll", "mc-ll"] },
+  ],
+  time: [
+    { t: "Signing sight unseen", d: "Committing to a real apartment from abroad without checking its condition, neighborhood or commute.", on: ["is-ll", "mc-ll"] },
+    { t: "Overpaying", d: "Accepting high rent or broker fees without knowing local prices, for fear of losing the place.", on: ["is-ll", "mc-ll"] },
+    { t: "Unfavorable lease terms", d: "Signing without understanding automatic renewals, break fees, utilities or maintenance duties.", on: ["is-ll", "mc-ll"] },
+    { t: "Costly guarantor services", d: "Paying a guarantor company, or prepaying months of rent, for lack of a US credit history or SSN.", on: ["is-ll", "mc-ll"] },
+    { t: "Timing mismatches", d: "Expensive or poorly located short-term housing because of early arrival, or because Harvard housing results come too late.", on: ["is-hh", "is-hks-t"] },
+    { t: "Settling for the first option", d: "Taking whatever is available as a deadline nears, even if it doesn't fit the budget or family needs.", on: ["is-ll", "mc-ll"] },
+  ],
+};
+// Shared membership (not a relationship; not counted in node size)
+const OVERLAPS = [
+  { a: "IS", b: "MC", label: "Some MC/MPA are international students" },
+];
+/* ============================ */
+
+const NS = "http://www.w3.org/2000/svg";
+const svg = document.getElementById("map");
+const tip = document.getElementById("tip");
+const byId = Object.fromEntries(NODES.map(n => [n.id, n]));
+const deg = {}; NODES.forEach(n => deg[n.id] = 0);
+EDGES.forEach(e => { deg[e.from]++; deg[e.to]++; });
+const radius = id => 10 + 11 * Math.sqrt(deg[id]);
+const WIDTH = { daily: 6, weekly: 3.5, monthly: 1.5 };
+const el = (tag, attrs, parent) => { const x = document.createElementNS(NS, tag);
+  for (const k in attrs) x.setAttribute(k, attrs[k]); (parent || svg).appendChild(x); return x; };
+const fmt = v => v === null || v === undefined ? "unknown" : v;
+
+EDGES.forEach(e => { e.scam = PAINS.scam.filter(p => p.on.includes(e.id)); e.time = PAINS.time.filter(p => p.on.includes(e.id)); });
+const kind = e => e.scam.length ? "scam" : e.time.length ? "time" : "none";
+const COLOR = { scam: "var(--scam)", time: "var(--time)", none: "var(--edge)" };
+
+const defs = el("defs", {});
+Object.entries(COLOR).forEach(([id, c]) => {
+  const m = el("marker", { id: "a-" + id, viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 12, markerHeight: 12,
+    orient: "auto-start-reverse", markerUnits: "userSpaceOnUse" }, defs);
+  el("path", { d: "M0,0 L10,5 L0,10 z", fill: c }, m);
+});
+
+const pairKey = e => [e.from, e.to].sort().join("|");
+const groups = {};
+EDGES.forEach((e, i) => (groups[pairKey(e)] ||= []).push(i));
+
+const gOverlap = el("g", {}), gEdges = el("g", {}), gLabels = el("g", {}), gNodes = el("g", {});
+const edgeEls = [];
+
+// draw neutral edges first so friction edges sit on top
+const order = EDGES.map((e, i) => i).sort((a, b) => (kind(EDGES[a]) !== "none") - (kind(EDGES[b]) !== "none"));
+order.forEach(i => {
+  const e = EDGES[i];
+  const a = byId[e.from], b = byId[e.to];
+  const grp = groups[pairKey(e)], k = grp.indexOf(i), n = grp.length;
+  const [p, q] = [a, b].sort((u, v) => u.id < v.id ? -1 : 1);
+  const dx = q.x - p.x, dy = q.y - p.y, len = Math.hypot(dx, dy);
+  const nx = -dy / len, ny = dx / len;
+  const off = (k - (n - 1) / 2) * 95;
+  const cx = (a.x + b.x) / 2 + nx * off, cy = (a.y + b.y) / 2 + ny * off;
+  const trim = (from, toX, toY, r) => { const vx = toX - from.x, vy = toY - from.y, l = Math.hypot(vx, vy);
+    return [from.x + vx / l * r, from.y + vy / l * r]; };
+  const [sx, sy] = trim(a, cx, cy, radius(a.id) + 4);
+  const [tx, ty] = trim(b, cx, cy, radius(b.id) + 6);
+  const d = `M${sx},${sy} Q${cx},${cy} ${tx},${ty}`;
+  const kd = kind(e);
+  const w = WIDTH[e.frequency] || (kd === "none" ? 2 : 3.5);
+  const path = el("path", { d, class: "edge", stroke: COLOR[kd], "stroke-width": w, "marker-end": `url(#a-${kd})` }, gEdges);
+  if (!e.frequency) path.setAttribute("stroke-dasharray", kd === "none" ? "6 6" : "9 5");
+  const hit = el("path", { d, class: "edge-hit" }, gEdges);
+  const mx = .25 * sx + .5 * cx + .25 * tx, my = .25 * sy + .5 * cy + .25 * ty;
+  const t = el("text", { class: "elabel", x: mx, y: my - 3 }, gLabels);
+  el("tspan", { class: "rel", x: mx }, t).textContent = e.rel;
+  el("tspan", { class: "ch", x: mx, dy: 13 }, t).textContent = "channel: " + fmt(e.channel);
+  if (kd !== "none") {
+    const tags = [];
+    if (e.scam.length) tags.push(["rs", "Scam risk"]);
+    if (e.time.length) tags.push(["rt", "Time pressure"]);
+    const line = el("tspan", { x: mx, dy: 13 }, t);
+    tags.forEach(([c, s], j) => { el("tspan", { class: c }, line).textContent = (j ? " · " : "") + s; });
+  }
+  edgeEls.push({ e, path, t });
+  const list = arr => "<ul>" + arr.map(p => `<li>${p.t}</li>`).join("") + "</ul>";
+  let html = `<b>${e.rel}</b><span class="k">${a.name} → ${b.name}</span><br>
+    <span class="k">Channel:</span> ${fmt(e.channel)} · <span class="k">Frequency:</span> ${fmt(e.frequency)}`;
+  if (e.scam.length) html += `<span class="ts">Scam risk</span>${list(e.scam)}`;
+  if (e.time.length) html += `<span class="tt">Time pressure</span>${list(e.time)}`;
+  if (kd === "none") html += `<br><span class="k">No friction identified</span>`;
+  hit.addEventListener("mousemove", ev => show(ev, html, x => x.e === e));
+  hit.addEventListener("mouseleave", hide);
+});
+
+OVERLAPS.forEach(o => {
+  const a = byId[o.a], b = byId[o.b];
+  el("line", { x1: a.x, y1: a.y, x2: b.x, y2: b.y, class: "overlap" }, gOverlap);
+  const hit = el("line", { x1: a.x, y1: a.y, x2: b.x, y2: b.y, class: "edge-hit" }, gOverlap);
+  const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+  const ang = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
+  el("text", { class: "olabel", x: mx + 10, y: my - 13, transform: `rotate(${ang} ${mx} ${my})` }, gLabels).textContent = o.label;
+  const html = `<b>Overlap</b>${o.label}.<br><span class="k">Shared membership, not a relationship. Not counted in circle size.</span>`;
+  hit.addEventListener("mousemove", ev => show(ev, html, () => false));
+  hit.addEventListener("mouseleave", hide);
+});
+
+NODES.forEach(nd => {
+  const g = el("g", { class: "node", tabindex: 0 }, gNodes);
+  const r = radius(nd.id);
+  el("circle", { cx: nd.x, cy: nd.y, r }, g);
+  el("text", { class: "deg", x: nd.x, y: nd.y + 5 }, g).textContent = deg[nd.id];
+  el("text", { x: nd.x, y: nd.y + (nd.y < 250 ? -r - 12 : r + 22) }, g).textContent = nd.name;
+  const list = EDGES.filter(e => e.from === nd.id || e.to === nd.id)
+    .map(e => `• ${e.rel} (${e.from === nd.id ? "→ " + byId[e.to].name : "← " + byId[e.from].name})`).join("<br>");
+  const html = `<b>${nd.name}</b><span class="k">${deg[nd.id]} relationships</span><br>${list}`;
+  g.addEventListener("mousemove", ev => show(ev, html, x => x.e.from === nd.id || x.e.to === nd.id));
+  g.addEventListener("mouseleave", hide);
+});
+
+function highlight(keep) { edgeEls.forEach(o => { const on = keep(o); o.path.classList.toggle("dim", !on); o.t.classList.toggle("dim", !on); }); }
+function show(ev, html, keep) {
+  tip.innerHTML = html; tip.style.opacity = 1;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = ev.clientX + 14, y = ev.clientY + 14;
+  if (x + w > innerWidth - 8) x = ev.clientX - w - 14;
+  if (y + h > innerHeight - 8) y = ev.clientY - h - 14;
+  tip.style.left = x + "px"; tip.style.top = y + "px";
+  highlight(keep);
+}
+function hide() { tip.style.opacity = 0; edgeEls.forEach(o => { o.path.classList.remove("dim"); o.t.classList.remove("dim"); }); }
+
+["scam", "time"].forEach(k => {
+  const ul = document.getElementById("list-" + k);
+  PAINS[k].forEach(p => {
+    const li = document.createElement("li"); li.tabIndex = 0;
+    const where = [...new Set(p.on.map(id => { const e = EDGES.find(x => x.id === id); return `${byId[e.from].name} → ${byId[e.to].name}`; }))];
+    li.innerHTML = `<strong>${p.t}</strong><p>${p.d}</p><span class="where">On the map: ${where.join("; ")}</span>`;
+    const on = () => highlight(o => p.on.includes(o.e.id)), off = () => hide();
+    li.addEventListener("mouseenter", on); li.addEventListener("mouseleave", off);
+    li.addEventListener("focus", on); li.addEventListener("blur", off);
+    ul.appendChild(li);
+  });
+});
+
+const tb = document.querySelector("#tbl tbody");
+EDGES.forEach(e => {
+  const tr = document.createElement("tr");
+  const fr = [e.scam.length ? "Scam risk" : "", e.time.length ? "Time pressure" : ""].filter(Boolean).join(", ") || "None identified";
+  [e.rel, byId[e.from].name, byId[e.to].name, fmt(e.channel), fmt(e.frequency), fr].forEach((v, i) => {
+    const td = document.createElement("td"); td.textContent = v;
+    if ((i === 3 && e.channel == null) || (i === 4 && e.frequency == null)) td.className = "u"; tr.appendChild(td);
+  });
+  tb.appendChild(tr);
+});
+OVERLAPS.forEach(o => {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td>Overlap (shared membership)</td><td>${byId[o.a].name}</td><td>${byId[o.b].name}</td><td colspan="3" class="u">${o.label}; not a relationship</td>`;
+  tb.appendChild(tr);
+});
+</script>
+</body>
+</html>
