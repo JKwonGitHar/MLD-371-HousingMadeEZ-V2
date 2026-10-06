@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Furniture Process Map (Vertical)</title>
+<style>
+  :root{
+    --ink:#1F2A30; --ink-soft:#4F5D63; --ink-faint:#7D8A8F;
+    --paper:#F6F8F7; --raised:#FFFFFF; --line:#D9E1DE; --arrow:#6B7A80; --loop:#5B6FB0;
+    --step:#FFFFFF; --step-border:#9AA9AE;
+    --added:#F2FAF7; --added-border:#0E8F68;
+    --cost:#FCE6E4; --cost-border:#C8302B; --cost-ink:#9E211C;
+    --signal:#FFF3D1; --signal-border:#C99212; --signal-ink:#7A5800;
+    --accent:#0E8F68;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;line-height:1.5}
+  main{margin:0 auto;padding:32px 24px 56px}
+  .kicker{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(26px,4vw,36px);margin:4px 0 8px;text-wrap:balance}
+  h2{font-family:Georgia,"Times New Roman",serif;font-size:21px;margin:36px 0 8px}
+  .caption{max-width:86ch;color:var(--ink-soft);margin:0 0 18px}
+  .panel{background:var(--raised);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .hint{font-size:13px;color:var(--ink-faint);margin:0 0 8px}
+  .chart-wrap{overflow-x:auto;overflow-y:hidden;border-radius:10px}
+  #flow{display:block;width:100%;max-width:1520px;min-width:900px;height:auto;margin:0 auto}
+  .legend{display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);
+    font-size:13px;color:var(--ink-soft);align-items:center}
+  .legend .item{display:inline-flex;align-items:center;gap:8px}
+  .sw{width:26px;height:16px;border-radius:4px;border:2px solid}
+  .pill{white-space:nowrap;font-size:11px;font-weight:600;border:1px solid var(--line);border-radius:999px;padding:0 8px;background:#fff;color:var(--ink-soft)}
+  .plus{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;border:1.5px dashed var(--accent);
+    color:var(--accent);font-size:12px;font-weight:700}
+  table{border-collapse:collapse;width:100%;font-size:14px;background:var(--raised)}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);background:#FAFCFB}
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;max-width:1200px}
+  ul.tight{margin:0;padding-left:18px}
+  ul.tight li{margin:2px 0}
+  .note{font-size:13px;color:var(--ink-faint);margin-top:10px;max-width:1200px}
+  footer{margin-top:28px;font-size:12.5px;color:var(--ink-faint)}
+</style>
+</head>
+<body>
+<main>
+  <div class="kicker">Housing Made EZ · Midpoint memo · Current process</div>
+  <h1>How international students furnish an unfurnished apartment today</h1>
+  <p class="caption">This map traces the full process, top to bottom, from agreeing to rent an unfurnished unit to living with the furniture
+  and eventually moving out. Furniture usually becomes a problem only after the lease is signed and the student has moved in, so most of the search
+  happens while they are already living in an empty room. Whether a student has a roommate isn't guaranteed, so the map splits there: with a roommate, they agree on shared items and split the cost; without one, they choose and pay for everything alone. Students then split six ways to find furniture, and three ways to move it, before
+  inspecting, paying, getting tools, assembling and disposing of what's left. Two loops matter: items that don't fit or arrive damaged send students back to the
+  search, and furniture left behind at move-out becomes next year's second-hand and curbside supply, so the process is really a cycle.
+  Red steps are friction that costs students time, money or safety, and gold steps are friction worth keeping because it prevents a bigger problem.
+  The team first marked three (items not as advertised, hidden shipping fees, and mandatory dimension checks); the rest were identified on review.
+  The costs cluster around money and timing: upfront lease costs, the September 1 rush, and payment apps that need a U.S. bank account. Delays on the arrows are typical estimates, not measured times.</p>
+
+  <div class="panel">
+    <p class="hint">Read top to bottom. Hover a box for its full details.</p>
+    <div class="chart-wrap" id="chart-wrap"><svg id="flow" role="img" aria-labelledby="flow-title">
+      <title id="flow-title">Top-to-bottom flowchart of how international students find, move and set up furniture</title>
+    </svg></div>
+    <div class="legend">
+      <span class="item"><span class="sw" style="background:var(--step);border-color:var(--step-border)"></span>Step</span>
+      <span class="item"><span class="sw" style="background:var(--cost);border-color:var(--cost-border)"></span>Friction: a cost</span>
+      <span class="item"><span class="sw" style="background:var(--signal);border-color:var(--signal-border)"></span>Friction: a signal worth keeping</span>
+      <span class="item"><span class="pill">1–3 days</span>Typical wait or hand-off (estimate)</span>
+      <span class="item"><svg width="40" height="14" aria-hidden="true"><line x1="2" y1="7" x2="38" y2="7" stroke="#6B7A80" stroke-width="2" stroke-dasharray="6 5"/></svg>Alternative path (students take one)</span>
+      <span class="item"><svg width="40" height="14" aria-hidden="true"><line x1="2" y1="7" x2="38" y2="7" stroke="#5B6FB0" stroke-width="2.2"/></svg>Loop back to an earlier step</span>
+      <span class="item"><span class="plus">+</span>Checklist items, listed below the map</span>
+    </div>
+  </div>
+
+  <h2>Friction in the process</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Step</th><th>Friction</th><th>Type</th><th>Why</th><th>Source</th></tr></thead>
+    <tbody id="friction"></tbody>
+  </table></div>
+
+  <h2>Checklist items for each step</h2>
+  <p class="caption">Smaller things students often forget. They aren't separate steps, so they're listed here against the step where they come up.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Step</th><th>Often forgotten</th></tr></thead>
+    <tbody id="forgotten"></tbody>
+  </table></div>
+
+  <p class="note">The steps come from the team's description plus later additions, slotted in where they happen.
+  "Role" names who acts at each step and "Tool" names what they use; where no tool was named, the box says so. Delays are team estimates to confirm with the survey.</p>
+
+  <footer>Team Housing Made EZ: John Kwon, Andrea Pavlick, Eze Chukwu, Elsa Nisa, Mustafa Naqvi · MLD-371 · Partner: International Student Groups.</footer>
+</main>
+
+<script>
+/* =========================================================================
+   DATA
+   col: position left to right. row: 0 (top) to 5 (bottom); 2.5 = main line.
+   added: true for steps added after the team's first draft.
+   friction: "cost" | "signal"; src: "Team" (marked by the team) or "Review" (identified on review)
+   ========================================================================= */
+var MAIN = 2.5;
+var STEPS = [
+  { id:"housing",   col:0,  row:MAIN, title:["Find unfurnished","housing and agree","to move in"], role:"Student", tool:"Rental websites, Harvard Housing" },
+  { id:"lease",     col:1,  row:MAIN, title:["Sign the lease"], role:"Student + landlord", tool:"Lease agreement", friction:"cost", tag:"Big upfront costs first", why:"First and last month's rent, a security deposit and often a broker fee are due at signing, leaving less money for furniture.", src:"Review" },
+  { id:"fromhome",  col:2,  row:1,    title:["Bring or ship","items from home"], sub:"kitchenware, bedding in luggage or boxes", role:"Student", tool:"Luggage, international shipping", added:true },
+  { id:"preorder",  col:2,  row:4,    title:["Order online","before arriving"], sub:"timed for move-in day", role:"Student → store", tool:"Online stores", added:true },
+  { id:"movein",    col:3,  row:MAIN, title:["Move into the house"], role:"Student", tool:"Not specified" },
+  { id:"realize",   col:4,  row:MAIN, title:["Realize they","need furniture"], role:"Student", tool:"The empty unit", friction:"cost", tag:"Needs found only after move-in", why:"Students discover what's missing only once they're living in the empty unit, so every later delay is spent without a bed or desk.", src:"Review" },
+  { id:"identify",  col:5,  row:MAIN, title:["Identify items","needed"], sub:"bed · desk · closet organizer · pots & pans", role:"Student", tool:"Own list", friction:"signal", tag:"List needs before buying", why:"Writing down what's needed (and measuring for it) curbs impulse buys and duplicate purchases.", src:"Review" },
+  { id:"roommates", col:7,  row:1.5,  title:["With a roommate:","agree on shared","items"], sub:"couch, kitchen gear; split costs", role:"Student ↔ roommates", tool:"Group chat", added:true, friction:"signal", tag:"Agree before buying", why:"Deciding together who buys what avoids two couches and splits the cost of shared items.", src:"Review" },
+  { id:"solo",      col:7,  row:3.5,  title:["No roommate: pick","every item alone"], sub:"pays the full cost of shared items", role:"Student", tool:"Own list", added:true, friction:"cost", tag:"Pays full cost alone", why:"Without a roommate, the student pays for every shared item, such as a couch or kitchen gear, alone.", src:"Review" },
+  { id:"secondhand",col:9,  row:0,    title:["Search second-hand","avenues"], sub:"plus other resale or donation sources", role:"Student ↔ seller", tool:"WhatsApp, FB Marketplace, Craigslist", friction:"cost", tag:"Condition not as advertised", why:"Second-hand items often don't match the listing. The problem is discovered at the inspection step.", src:"Team" },
+  { id:"harvard",   col:9,  row:1,    title:["Check Harvard and","school channels"], sub:"move-out drives, free & for sale lists", role:"Student", tool:"School email lists, Harvard Student Agencies", added:true },
+  { id:"inherit",   col:9,  row:2,    title:["Take over items from","the previous tenant"], role:"Student ↔ outgoing tenant", tool:"Landlord or tenant contact", added:true },
+  { id:"allston",   col:9,  row:3,    title:["Wait for “Allston","Christmas,” rent","a truck"], sub:"free curbside furniture", role:"Student", tool:"Rental truck", friction:"cost", tag:"Weeks of waiting, bedbug risk", why:"Students wait until around September 1 and take curbside items that may carry bedbugs or hidden damage.", src:"Review" },
+  { id:"rent",      col:9,  row:4,    title:["Rent furniture","by the month"], sub:"suits one-year students", role:"Student → rental company", tool:"Furniture rental service", added:true },
+  { id:"buynew",    col:9,  row:5,    title:["Buy new from IKEA","or other stores"], role:"Student → store", tool:"IKEA, other stores" },
+  { id:"pick",      col:10,  row:MAIN, title:["Pick the furniture"], role:"Student", tool:"Not specified", friction:"signal", tag:"Mandatory dimension check", why:"Measuring the room, doorways and stairs before committing avoids buying something that won't fit or can't be moved.", src:"Team" },
+  { id:"hold",      col:11,  row:MAIN, title:["Ask the seller to","hold the item"], sub:"risk of no-shows or a faster buyer", role:"Student ↔ seller", tool:"Messaging app", added:true, friction:"cost", tag:"No-shows and lost items", why:"Sellers often don't hold items, don't show up, or sell to a faster buyer, sending students back to search.", src:"Review" },
+  { id:"plan",      col:12, row:MAIN, title:["Figure out how to","move the furniture"], role:"Student", tool:"Not specified" },
+  { id:"friend",    col:13, row:1.5,  title:["Too big: ask","someone with a car","for help"], role:"Student → friend", tool:"Friend's car", friction:"cost", tag:"Needs a local network", why:"New arrivals often don't yet know anyone with a car.", src:"Review" },
+  { id:"truck",     col:13, row:MAIN, title:["Too big: rent a truck"], role:"Student → rental co.", tool:"Rental truck", friction:"cost", tag:"Peak Sept 1 demand", why:"Truck rentals are scarce and pricier around the September 1 moving rush.", src:"Review" },
+  { id:"shipping",  col:13, row:3.5,  title:["Purchased: pay","the shipping fee"], role:"Student → store", tool:"Store delivery", friction:"cost", tag:"Hidden shipping & delivery fees", why:"Delivery fees for new furniture are often revealed only at checkout or added later.", src:"Team" },
+  { id:"permit",    col:14, row:MAIN, title:["Get a street parking","permit for the truck"], sub:"required in Boston and Cambridge", role:"Student → city", tool:"City permit website", added:true, friction:"signal", tag:"Permit before parking", why:"Getting a street permit adds a step but avoids tickets and towing, and keeps the street clear.", src:"Review" },
+  { id:"stopgap",   col:14, row:3.5,  title:["Delivery late: use","a stopgap"], sub:"air mattress, borrowed items", role:"Student", tool:"Not specified", added:true, friction:"cost", tag:"Living without items", why:"A late delivery means more nights without the furniture already paid for.", src:"Review" },
+  { id:"elevator",  col:15, row:MAIN, title:["Book elevator and","move-in time"], role:"Student → building manager", tool:"Building office", added:true },
+  { id:"inspect",   col:16, row:MAIN, title:["Inspect the item at","pickup or delivery"], sub:"where “not as advertised” shows up", role:"Student", tool:"In person", added:true, friction:"signal", tag:"Inspect before paying", why:"Seeing the item first catches damage, pests and scams before any money changes hands.", src:"Review" },
+  { id:"pay",       col:17, row:MAIN, title:["Pay the seller"], sub:"often needs a U.S. bank account", role:"Student → seller", tool:"Venmo, Zelle, cash", added:true, friction:"cost", tag:"Apps need a U.S. bank account", why:"Sellers expect Venmo or Zelle, which require a U.S. bank account many new arrivals don't have yet.", src:"Review" },
+  { id:"tools",     col:18, row:MAIN, title:["Buy or borrow","assembly tools"], sub:"screwdrivers, Allen keys, a drill", role:"Student → store or friend", tool:"Hardware store, online order", added:true },
+  { id:"assemble",  col:19, row:MAIN, title:["Assemble the","furniture"], sub:"flat-pack takes time", role:"Student or paid helper", tool:"Tools, assembly service", added:true },
+  { id:"dispose",   col:20, row:MAIN, title:["Dispose of packaging","and broken items"], sub:"mattresses can't go in MA trash", role:"Student → city", tool:"Bulk pickup, recycling", added:true, friction:"cost", tag:"Disposal rules", why:"Massachusetts bans mattresses from the trash, so students must arrange recycling or bulk pickup.", src:"Review" },
+  { id:"moveout",   col:22, row:MAIN, title:["Move out: sell,","donate or leave","furniture"], sub:"at the end of the year", role:"Student", tool:"WhatsApp, FB Marketplace, curb", added:true }
+];
+
+// turn: where a bend happens when rows differ ("src" = near the source, "dst" = near the target)
+var EDGES = [
+  { from:"start",     to:"housing" },
+  { from:"housing",   to:"lease",     delay:"1–7 days · application" },
+  { from:"lease",     to:"movein",    delay:"1–4 weeks · until lease starts" },
+  { from:"lease",     to:"fromhome",  delay:"weeks · before departure", alt:true, turn:"src" },
+  { from:"lease",     to:"preorder",  delay:"1–3 weeks · delivery", alt:true, turn:"src" },
+  { from:"fromhome",  to:"movein",    delay:"arrives with you", alt:true, turn:"dst" },
+  { from:"preorder",  to:"movein",    delay:"on move-in day", alt:true, turn:"dst" },
+  { from:"movein",    to:"realize",   delay:"same day" },
+  { from:"realize",   to:"identify",  delay:"same day" },
+  { from:"identify",  to:"decision",  delay:"same day" },
+  { from:"decision",  to:"roommates", delay:"Yes", turn:"src", alt:true },
+  { from:"decision",  to:"solo",      delay:"No", turn:"src", alt:true },
+  { from:"roommates", to:"hub",       delay:"1–3 days · agreeing", turn:"dst" },
+  { from:"solo",      to:"hub",       delay:"same day", turn:"dst" },
+  { from:"hub",       to:"secondhand",delay:"same day", alt:true, turn:"src" },
+  { from:"hub",       to:"harvard",   delay:"same day", alt:true, turn:"src" },
+  { from:"hub",       to:"inherit",   delay:"at move-in", alt:true, turn:"src" },
+  { from:"hub",       to:"allston",   delay:"days–weeks · wait for ~Sept 1", alt:true, turn:"src" },
+  { from:"hub",       to:"rent",      delay:"same day", alt:true, turn:"src" },
+  { from:"hub",       to:"buynew",    delay:"same day", alt:true, turn:"src" },
+  { from:"secondhand",to:"pick",      delay:"1–3 days · seller replies", turn:"dst" },
+  { from:"harvard",   to:"pick",      delay:"days–weeks · drive dates", turn:"dst" },
+  { from:"inherit",   to:"pick",      delay:"same day", turn:"dst" },
+  { from:"allston",   to:"pick",      delay:"same day", turn:"dst" },
+  { from:"rent",      to:"pick",      delay:"same day", turn:"dst" },
+  { from:"buynew",    to:"pick",      delay:"same day", turn:"dst" },
+  { from:"pick",      to:"hold",      delay:"same day · seller agrees" },
+  { from:"hold",      to:"plan",      delay:"same day" },
+  { from:"plan",      to:"friend",    delay:"1–7 days · finding a ride", alt:true, turn:"src" },
+  { from:"plan",      to:"truck",     delay:"1–3 days · booking a truck", alt:true },
+  { from:"plan",      to:"shipping",  delay:"same day · at checkout", alt:true, turn:"src" },
+  { from:"truck",     to:"permit",    delay:"a few days · approval" },
+  { from:"shipping",  to:"stopgap",   delay:"while waiting" },
+  { from:"friend",    to:"elevator",  delay:"same day", turn:"dst" },
+  { from:"permit",    to:"elevator",  delay:"same day" },
+  { from:"stopgap",   to:"elevator",  delay:"2–14 days · delivery", turn:"dst" },
+  { from:"elevator",  to:"inspect",   delay:"1–7 days · building approval" },
+  { from:"inspect",   to:"pay",       delay:"same day · on pickup" },
+  { from:"pay",       to:"tools",     delay:"same day" },
+  { from:"tools",     to:"assemble",  delay:"same day–2 days · if ordered" },
+  { from:"assemble",  to:"dispose",   delay:"hours–2 days" },
+  { from:"dispose",   to:"end",       delay:"days · bulk pickup" },
+  { from:"end",       to:"moveout",   delay:"~1 year later" }
+];
+
+var LOOPS = [
+  { from:"inspect", to:"trunk", label:"Doesn't fit or damaged: return or resell, then search again" },
+  { from:"moveout", to:"secondhand", label:"Left-behind furniture becomes next year's second-hand and curbside supply" }
+];
+
+var FORGOTTEN = {
+  housing:   ["Check what the unit includes (fridge, bed frame, blinds, light fixtures) before agreeing", "Set a furniture budget alongside rent"],
+  lease:     ["Read the lease for move-in rules: allowed hours and building access for deliveries", "Consider renters insurance"],
+  movein:    ["Plan where to sleep and eat while the unit is empty (air mattress, basic kitchen items)"],
+  identify:  ["Measure the room, doorways and stairwells, and write the dimensions down", "Prioritize: what is needed the first night versus later"],
+  secondhand:["Ask for recent photos or a video call before going", "Check mattresses and upholstered items for bedbugs", "Avoid sending money before seeing the item"],
+  inherit:   ["Confirm with the landlord that leftover furniture can stay, and check its condition"],
+  allston:   ["Inspect curbside items for bedbugs and damage before taking them"],
+  rent:      ["Compare a year of rental fees with buying and reselling"],
+  buynew:    ["Check delivery dates against the move-in date"],
+  plan:      ["Count stairs and check for an elevator", "Check that the item fits through doors and into the vehicle"],
+  truck:     ["Line up a helper to carry heavy items"],
+  shipping:  ["Confirm the delivery fee before paying; check for extra charges for stairs or assembly"]
+};
+/* ========================================================================= */
+
+(function(){
+  var NS = "http://www.w3.org/2000/svg";
+  var css = getComputedStyle(document.documentElement);
+  function tok(n){ return css.getPropertyValue(n).trim(); }
+  function el(tag, attrs, parent){ var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+  function txt(parent, s, attrs){ var t = el("text", attrs, parent); t.textContent = s; return t; }
+  function wrap(str, max){
+    var words = str.split(" "), line = "", out = [];
+    words.forEach(function(w){ if ((line + " " + w).trim().length > max){ out.push(line); line = w; } else line = (line + " " + w).trim(); });
+    if (line) out.push(line);
+    return out;
+  }
+
+  var W = 232, H = 172, X0 = 170, XP = 264, Y0 = 170, LG = 280;
+  function colX(r){ return X0 + r * XP; }
+  function levY(c){ return Y0 + c * LG; }
+  var VBW = colX(5) + W + 70, VBH = levY(22) + H + 80;
+  var LANE1 = 118, LANE2 = 88;   // left-side loop lanes
+
+  // number steps top to bottom, left to right
+  var ordered = STEPS.slice().sort(function(a, b){ return a.col - b.col || a.row - b.row; });
+  ordered.forEach(function(s, i){ s.n = i + 1; });
+  var byId = {}; STEPS.forEach(function(s){ byId[s.id] = s; s.x = colX(s.row); s.y = levY(s.col); });
+
+  var svg = document.getElementById("flow");
+  svg.setAttribute("viewBox", "0 0 " + VBW + " " + VBH);
+  var defs = el("defs", {}, svg);
+  function marker(id, color){
+    var m = el("marker", { id:id, viewBox:"0 0 10 10", refX:"9", refY:"5", markerWidth:"9", markerHeight:"9", orient:"auto", markerUnits:"userSpaceOnUse" }, defs);
+    el("path", { d:"M0,0 L10,5 L0,10 z", fill:color }, m);
+  }
+  marker("arr", tok("--arrow")); marker("arr-loop", tok("--loop"));
+
+  var gP = el("g", {}, svg), gE = el("g", {}, svg), gD = el("g", {}, svg), gB = el("g", {}, svg);
+  var MAINX = colX(MAIN) + W/2;
+  var DEC = { cx: MAINX, cy: levY(6) + H/2, r: 78 };
+  var HUB = { x: MAINX, y: levY(8) + H/2 };
+
+  // ---- phase bands down the left edge ----
+  var PHASES = [
+    { from:0,  to:3,  label:"1 · Housing and move-in" },
+    { from:4,  to:8,  label:"2 · Deciding what's needed" },
+    { from:9,  to:11, label:"3 · Finding furniture" },
+    { from:12, to:15, label:"4 · Moving it" },
+    { from:16, to:20, label:"5 · Setting up" },
+    { from:21, to:22, label:"6 · Living there and moving out" }
+  ];
+  PHASES.forEach(function(p, i){
+    var y1 = levY(p.from) - 50, y2 = levY(p.to) + H + 50;
+    el("rect", { x:14, y:y1, width:44, height:y2 - y1 - 8, rx:10, fill: i % 2 ? "#EEF3F1" : "#E5EFEB" }, gP);
+    var cy = (y1 + y2) / 2;
+    txt(gP, p.label.toUpperCase(), { x:36, y:cy, transform:"rotate(-90 36 " + cy + ")", "text-anchor":"middle", "dominant-baseline":"middle",
+      "font-size":"12.5", "font-weight":"700", "letter-spacing":"1.1", fill:"#33534A" });
+  });
+
+  // ---- terminals ----
+  var START = { x:MAINX - 45, y:74, w:90, h:44 };
+  var END   = { x:MAINX - 70, y:levY(20) + H + 104, w:140, h:44 };
+  function terminal(t, label){
+    el("rect", { x:t.x, y:t.y, width:t.w, height:t.h, rx:22, fill:"#1F2A30" }, gB);
+    txt(gB, label, { x:t.x + t.w/2, y:t.y + 27, "text-anchor":"middle", "font-size":"13", "font-weight":"700", fill:"#fff" });
+  }
+  terminal(START, "Start");
+  terminal(END, "Furnished");
+  var dg = el("g", {}, gB);
+  el("polygon", { points:[DEC.cx+","+(DEC.cy-DEC.r), (DEC.cx+DEC.r)+","+DEC.cy, DEC.cx+","+(DEC.cy+DEC.r), (DEC.cx-DEC.r)+","+DEC.cy].join(" "),
+    fill:"#FFFFFF", stroke:tok("--ink"), "stroke-width":2 }, dg);
+  txt(dg, "DECISION", { x:DEC.cx, y:DEC.cy-22, "text-anchor":"middle", "font-size":"9.5", "font-weight":"700", "letter-spacing":"1", fill:tok("--ink-faint") });
+  txt(dg, "Living with", { x:DEC.cx, y:DEC.cy-2, "text-anchor":"middle", "font-size":"13.5", "font-weight":"700", fill:tok("--ink") });
+  txt(dg, "a roommate?", { x:DEC.cx, y:DEC.cy+15, "text-anchor":"middle", "font-size":"13.5", "font-weight":"700", fill:tok("--ink") });
+  txt(dg, "not guaranteed", { x:DEC.cx + DEC.r + 12, y:DEC.cy+4, "font-size":"11.5", "font-style":"italic", fill:tok("--ink-faint") });
+  el("title", {}, dg).textContent = "Decision: is the student living with a roommate? Finding one isn't guaranteed.";
+  el("circle", { cx:HUB.x, cy:HUB.y, r:6, fill:tok("--ink") }, gB);
+
+  function outPt(k){
+    if (k === "decision") return { x:DEC.cx, y:DEC.cy + DEC.r };
+    if (k === "hub") return { x:HUB.x, y:HUB.y };
+    if (k === "start") return { x:START.x + START.w/2, y:START.y + START.h };
+    if (k === "end") return { x:END.x + END.w/2, y:END.y + END.h };
+    var s = byId[k]; return { x:s.x + W/2, y:s.y + H };
+  }
+  function inPt(k){
+    if (k === "decision") return { x:DEC.cx, y:DEC.cy - DEC.r };
+    if (k === "hub") return { x:HUB.x, y:HUB.y - 5 };
+    if (k === "end") return { x:END.x + END.w/2, y:END.y };
+    var s = byId[k]; return { x:s.x + W/2, y:s.y };
+  }
+
+  function delayLabel(text, lx, ly){
+    var g = el("g", { transform:"translate("+lx+","+ly+")" }, gD);
+    var parts = text.split(" · ");
+    var t = el("text", { "text-anchor":"middle", y: parts.length > 1 ? "-2" : "4", "font-size":"11.5", fill:tok("--ink-soft") }, g);
+    parts.forEach(function(pt, i){ var sp = el("tspan", { x:0, dy: i ? 14 : 0, "font-weight": i ? "400" : "700" }, t); sp.textContent = pt; });
+    requestAnimationFrame(function(){
+      var bb = t.getBBox();
+      g.insertBefore(el("rect", { x:bb.x-8, y:bb.y-4, width:bb.width+16, height:bb.height+8, rx:8, fill:"#FFFFFF", stroke:tok("--line") }), t);
+    });
+  }
+
+  EDGES.forEach(function(e){
+    var a = outPt(e.from), b = inPt(e.to), d, lx, ly;
+    if (Math.abs(a.x - b.x) < 1){
+      d = "M"+a.x+","+a.y+" L"+b.x+","+b.y; lx = a.x; ly = (a.y + b.y)/2;
+    } else if (e.turn === "src"){
+      var my = a.y + 24;
+      d = "M"+a.x+","+a.y+" L"+a.x+","+my+" L"+b.x+","+my+" L"+b.x+","+b.y; lx = b.x; ly = (my + b.y)/2;
+    } else {
+      var my2 = b.y - 24;
+      d = "M"+a.x+","+a.y+" L"+a.x+","+my2+" L"+b.x+","+my2+" L"+b.x+","+b.y; lx = a.x; ly = (a.y + my2)/2;
+    }
+    var p = el("path", { d:d, fill:"none", stroke:tok("--arrow"), "stroke-width":2, "marker-end":"url(#arr)", "stroke-linejoin":"round" }, gE);
+    if (e.alt) p.setAttribute("stroke-dasharray", "7 5");
+    if (e.delay) delayLabel(e.delay, lx, ly);
+  });
+
+  // ---- loops (up the left side) ----
+  var trunkY = HUB.y + 24, trunkLeft = colX(0) + W/2;
+  LOOPS.forEach(function(l){
+    var s = byId[l.from], d, lx, ly, sy = s.y + H/2;
+    if (l.to === "trunk"){
+      d = "M"+s.x+","+sy+" L"+LANE1+","+sy+" L"+LANE1+","+trunkY+" L"+(trunkLeft - 4)+","+trunkY;
+    } else {
+      var t = byId[l.to], ty2 = t.y + H/2;
+      d = "M"+s.x+","+sy+" L"+LANE2+","+sy+" L"+LANE2+","+ty2+" L"+(t.x - 2)+","+ty2;
+    }
+    lx = (s.x + LANE1)/2 + 10; ly = sy;
+    el("path", { d:d, fill:"none", stroke:tok("--loop"), "stroke-width":2.2, "marker-end":"url(#arr-loop)", "stroke-linejoin":"round" }, gE);
+    var g = el("g", { transform:"translate("+lx+","+ly+")" }, gD);
+    var words = ("↺ " + l.label).split(" "), half = Math.ceil(words.length / 2);
+    var tt = el("text", { "text-anchor":"middle", y:"-3", "font-size":"12", "font-weight":"700", fill:tok("--loop") }, g);
+    [words.slice(0, half).join(" "), words.slice(half).join(" ")].forEach(function(ln, i){
+      var sp = el("tspan", { x:0, dy: i ? 15 : 0 }, tt); sp.textContent = ln;
+    });
+    requestAnimationFrame(function(){
+      var bb = tt.getBBox();
+      g.insertBefore(el("rect", { x:bb.x-10, y:bb.y-5, width:bb.width+20, height:bb.height+10, rx:10, fill:"#FFFFFF", stroke:tok("--loop"), "stroke-opacity":0.5 }), tt);
+    });
+  });
+
+  // ---- boxes ----
+  STEPS.forEach(function(s){
+    var f = s.friction, x = s.x, y = s.y;
+    var fill = f === "cost" ? tok("--cost") : f === "signal" ? tok("--signal") : tok("--step");
+    var stroke = f === "cost" ? tok("--cost-border") : f === "signal" ? tok("--signal-border") : tok("--step-border");
+    var g = el("g", {}, gB);
+    var rect = el("rect", { x:x, y:y, width:W, height:H, rx:12, fill:fill, stroke:stroke, "stroke-width": f ? 2.4 : 1.6 }, g);
+    txt(g, "STEP " + s.n, { x:x+12, y:y+20, "font-size":"10.5", "font-weight":"700", "letter-spacing":"1", fill:tok("--ink-faint") });
+    var ty = y + 42;
+    s.title.forEach(function(line, i){ txt(g, line, { x:x+12, y:ty + i*17, "font-size":"14", "font-weight":"700", fill:tok("--ink") }); });
+    ty += s.title.length * 17;
+    if (s.sub){
+      wrap(s.sub, 38).slice(0, 2).forEach(function(l, i){ txt(g, l, { x:x+12, y:ty + i*14, "font-size":"11", fill:tok("--ink-soft") }); });
+    }
+    var tagLines = s.tag ? wrap((f === "cost" ? "Cost: " : "Signal: ") + s.tag, 31) : [];
+    var toolLines = wrap("Tool: " + s.tool, 33);
+    var toolY = y + H - 12 - tagLines.length * 14 - (tagLines.length ? 4 : 0) - (toolLines.length - 1) * 13;
+    wrap("Role: " + s.role, 36).reverse().forEach(function(l, i){
+      txt(g, l, { x:x+12, y:toolY - 14 - i*13, "font-size":"11", fill:tok("--ink-soft") });
+    });
+    toolLines.forEach(function(l, i){
+      txt(g, l, { x:x+12, y:toolY + i*13, "font-size":"11", "font-weight":"600", fill: s.tool === "Not specified" ? tok("--ink-faint") : tok("--ink") });
+    });
+    if (s.tag){
+      var c = f === "cost" ? tok("--cost-ink") : tok("--signal-ink");
+      tagLines.forEach(function(l, i){ txt(g, l, { x:x+12, y:y+H-12-(tagLines.length-1-i)*14, "font-size":"11", "font-weight":"700", fill:c }); });
+    }
+    if (FORGOTTEN[s.id]){
+      var cx = x + 2, cy = y + H - 2;
+      el("circle", { cx:cx, cy:cy, r:10, fill:"#fff", stroke:tok("--accent"), "stroke-width":1.5, "stroke-dasharray":"3 2" }, g);
+      txt(g, "+", { x:cx, y:cy+4.5, "text-anchor":"middle", "font-size":"13", "font-weight":"700", fill:tok("--accent") });
+    }
+    el("title", {}, g).textContent = "Step " + s.n + ": " + s.title.join(" ") + (s.sub ? " (" + s.sub + ")" : "") +
+      " · Role: " + s.role + " · Tool: " + s.tool + (s.tag ? " · " + s.tag : "");
+  });
+
+  // ---- tables ----
+  var frRows = ordered.filter(function(s){ return s.friction; });
+  frRows.sort(function(a, b){ return (a.friction === b.friction ? 0 : a.friction === "cost" ? -1 : 1) || a.n - b.n; });
+  document.getElementById("friction").innerHTML = frRows.map(function(s){
+    var sig = s.friction === "signal";
+    return '<tr><td><strong>Step ' + s.n + '</strong><br><span style="color:#7D8A8F">' + s.title.join(" ") + '</span></td><td><strong>' + s.tag +
+      '</strong></td><td><span class="pill" style="color:' + (sig ? "var(--signal-ink)" : "var(--cost-ink)") + ';border-color:' +
+      (sig ? "var(--signal-border)" : "var(--cost-border)") + '">' + (sig ? "Signal worth keeping" : "Cost") + '</span></td><td>' + s.why +
+      '</td><td>' + (s.src === "Team" ? "Team" : "Identified on review") + '</td></tr>';
+  }).join("");
+  document.getElementById("forgotten").innerHTML = ordered.filter(function(s){ return FORGOTTEN[s.id]; }).map(function(s){
+    return '<tr><td style="white-space:nowrap"><strong>Step ' + s.n + '</strong><br><span style="color:#7D8A8F">' + s.title.join(" ") + '</span></td><td><ul class="tight">' +
+      FORGOTTEN[s.id].map(function(x){ return '<li>' + x + '</li>'; }).join("") + '</ul></td></tr>';
+  }).join("");
+})();
+</script>
+</body>
+</html>
