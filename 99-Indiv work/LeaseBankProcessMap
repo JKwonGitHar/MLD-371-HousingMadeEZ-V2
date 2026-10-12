@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lease &amp; Bank Process Map</title>
+<style>
+  :root{
+    --bg:#f7f6f3; --ink:#1f2328; --muted:#5b6370; --line:#c9ccd1;
+    --lane-r:#eef3f8; --lane-b:#eef6f0; --lane-l:#f4f0ea; --lane-h:#f1f0f3; --huh:#8c1d2a; --huh-bg:#ffffff; --bad-fill:#fde4e1; --bad-edge:#d63a2c; --bad-ink:#a8261b; --good-fill:#fdf1cc; --good-edge:#b8860b; --good-ink:#7a5a00; --lane-label:#3b4652;
+    --fill:#ffffff; --edge:#8a929c;
+    --intl:#2f5f8f; --intl-bg:#e3edf7;
+    --unsourced:#8f97a1; --pill:#f7f6f3; --warn:#9a4a12;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#16181c; --ink:#e7e9ec; --muted:#a3abb6; --line:#4a505a;
+      --lane-r:#1b222b; --lane-b:#1b2620; --lane-l:#25211c; --lane-h:#202126; --huh:#e58a96; --huh-bg:#202126; --bad-fill:#3d1d1a; --bad-edge:#ef5b4c; --bad-ink:#ff9c90; --good-fill:#3a3115; --good-edge:#e0b84a; --good-ink:#f2d27a; --lane-label:#c9d1db;
+      --fill:#22262d; --edge:#7d8590;
+      --intl:#9cc3ea; --intl-bg:#223447;
+      --unsourced:#7b838e; --pill:#16181c; --warn:#f0a36b;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  main{max-width:1700px;margin:0 auto;padding:28px 16px 40px}
+  h1{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 18px;font-size:14px}
+
+  .scroller{overflow-x:auto;padding:4px 2px 16px}
+  .map{position:relative;display:grid;min-width:max-content;
+       grid-template-columns:132px repeat(11, 196px 112px) 196px;
+       grid-template-rows:auto auto auto auto auto}
+  .colhead{grid-row:1;font-size:12px;font-weight:700;color:var(--muted);
+           padding:0 2px 10px;line-height:1.3;align-self:end}
+  .colhead span{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+  .lane-bg{grid-column:1 / -1;z-index:0}
+  .lane-bg.r{grid-row:2;background:var(--lane-r);border-radius:10px 10px 0 0}
+  .lane-bg.b{grid-row:3;background:var(--lane-b);border-top:2px solid var(--line);border-bottom:2px solid var(--line)}
+  .lane-bg.l{grid-row:4;background:var(--lane-l);border-bottom:4px solid var(--line)}
+  .lane-bg.h{grid-row:5;background:var(--lane-h);border-radius:0 0 10px 10px;box-shadow:inset 6px 0 0 var(--huh)}
+  .tag.huh{color:var(--huh);background:var(--huh-bg);border:1px solid var(--huh)}
+  .cell.ghost{z-index:5}
+  .bub.ghost{background:var(--lane-h);border-style:dashed;color:var(--muted)}
+  .bub.ghost .title{font-weight:600;font-size:13.5px}
+  .tag.skip{color:var(--muted);background:transparent;border:1px solid var(--line)}
+  .lane-label{grid-column:1;z-index:1;display:flex;align-items:center;padding:0 14px;
+              font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--lane-label)}
+  .lane-label small{display:block;font-weight:500;text-transform:none;letter-spacing:0;font-size:12px;color:var(--muted);margin-top:2px}
+
+  .cell{z-index:2;padding:22px 0;align-self:center}
+  .bub{background:var(--fill);border:2px solid var(--edge);border-radius:10px;
+       padding:10px 11px 11px;display:flex;flex-direction:column;gap:6px}
+  .tag{align-self:flex-start;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+       color:var(--intl);background:var(--intl-bg);border-radius:4px;padding:1px 6px}
+  .title{font-weight:700;font-size:14.5px;line-height:1.25}
+  .field{font-size:12.5px;line-height:1.4}
+  .field b{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700}
+  .note{font-size:11.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:6px;line-height:1.4}
+  .note.warn{color:var(--warn)}
+  .inferred{font-style:italic}
+
+  svg.wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;overflow:visible}
+  svg.wires path.w{fill:none;stroke:var(--ink);stroke-width:2}
+  svg.wires path.w.u{stroke:var(--unsourced);stroke-dasharray:5 4}
+  .lbl{position:absolute;z-index:4;max-width:104px;text-align:center;font-size:11.5px;font-weight:600;
+       line-height:1.25;background:var(--pill);border-radius:4px;padding:1px 4px;transform:translate(-50%,-100%)}
+  .lbl.u{color:var(--unsourced);font-weight:500;font-style:italic}
+  .lbl.v{transform:translate(6px,-50%);text-align:left;max-width:180px}
+
+  .legend{display:flex;flex-wrap:wrap;gap:12px 24px;margin:18px 0 6px;font-size:13px;align-items:center}
+  .legend h2{font-size:13px;margin:0;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);width:100%}
+  .key{display:flex;align-items:center;gap:8px}
+  .sw{width:26px;height:18px;border-radius:4px;border:2px solid var(--edge);background:var(--fill)}
+  .key svg{width:40px;height:14px;overflow:visible}
+  .legend .note{border:none;padding:0;width:100%;font-size:12px}
+
+  .caption{max-width:940px;margin-top:22px;font-size:14px}
+  .sources{font-size:12px;color:var(--muted);margin-top:14px;max-width:940px}
+  .sources a{color:inherit}
+  .bub.bad{background:var(--bad-fill);border:3px solid var(--bad-edge)}
+  .bub.good{background:var(--good-fill);border:3px solid var(--good-edge)}
+  .fr{align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+      border-radius:999px;padding:2px 9px;color:#fff}
+  .fr.bad{background:var(--bad-edge)}
+  .fr.good{background:var(--good-edge)}
+  @media (prefers-color-scheme: dark){ .fr{color:#16181c} }
+  .tags{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+  .sw.bad{background:var(--bad-fill);border:3px solid var(--bad-edge)}
+  .sw.good{background:var(--good-fill);border:3px solid var(--good-edge)}
+  .sw.huhlane{background:var(--lane-h);border:none;box-shadow:inset 6px 0 0 var(--huh);width:40px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Leasing in Massachusetts from abroad: private landlord vs. Harvard University Housing</h1>
+  <p class="sub">Housing Made EZ · Process map draft 5 (lease &amp; bank account) · Signing-from-abroad path · Private landlord vs. Harvard University Housing · October 2026</p>
+
+  <div class="scroller" role="region" aria-label="Process map with renter, bank and landlord swim lanes; scroll horizontally">
+    <div class="map" id="map">
+      <div class="lane-bg r"></div><div class="lane-bg b"></div><div class="lane-bg l"></div><div class="lane-bg h"></div>
+      <div class="lane-label" style="grid-row:2"><span>Renter<small>International student, still abroad until stage 10</small></span></div>
+      <div class="lane-label" style="grid-row:3"><span>Bank<small>Harvard Federal Credit Union (formerly HUECU)</small></span></div>
+      <div class="lane-label" style="grid-row:4"><span>Private landlord<small>or property manager / their broker</small></span></div>
+      <div class="lane-label" style="grid-row:5"><span style="color:var(--huh)">Harvard University Housing<small>Alternative path: HUH as landlord. Each bubble replaces the private-market steps above it, including the student's part</small></span></div>
+      <svg class="wires" id="wires" aria-hidden="true">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink)"/></marker>
+          <marker id="ahu" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--unsourced)"/></marker>
+        </defs>
+      </svg>
+    </div>
+  </div>
+
+  <div class="legend" aria-label="Legend">
+    <h2>Legend</h2>
+    <div class="key"><span class="sw bad"></span><span class="fr bad">✕ Eliminate</span>Bad friction: can be removed or automated</div>
+    <div class="key"><span class="sw good"></span><span class="fr good">✓ Keep</span>Good friction: payment steps worth keeping</div>
+    <div class="key"><span class="sw"></span>Not marked as friction</div>
+    <div class="key"><span class="sw huhlane"></span>Crimson edge = Harvard University Housing lane (identity only, not friction)</div>
+    <div class="key"><span class="tag">Intl student</span>Step that differs from the standard US tenant process</div>
+    <div class="key"><span class="tag huh">HUH path</span>Step when Harvard University Housing is the landlord</div>
+    <div class="key"><span class="tag skip">Not needed with HUH</span>Private-market step that drops out with HUH</div>
+    <div class="key"><svg viewBox="0 0 40 14"><line x1="0" y1="7" x2="32" y2="7" stroke="currentColor" stroke-width="2"/><polygon points="32,1 40,7 32,13" fill="currentColor"/></svg>Hand-off, delay from a source</div>
+    <div class="key"><svg viewBox="0 0 40 14"><line x1="0" y1="7" x2="32" y2="7" stroke="#8f97a1" stroke-width="2" stroke-dasharray="4 3"/><polygon points="32,1 40,7 32,13" fill="#8f97a1"/></svg>Hand-off, delay not yet sourced</div>
+    <div class="key"><span class="inferred" style="font-size:12.5px">Italic text</span>&nbsp;inferred, not from a source</div>
+    <p class="note">Columns are stages: actions in the same column happen at the same time. Friction is shown by a filled box and a labeled badge, so color is never the only cue. The crimson edge and label mark the HUH lane; they don't indicate friction.</p>
+  </div>
+
+  <p class="caption">This map follows an international student who signs a Massachusetts lease before arriving in the US, using Harvard Federal Credit Union to hold and send money. Three swim lanes show who acts: the student, the bank, and the landlord. Each column is a stage, so actions in the same column happen at the same time, and arrows show hand-offs between them with the typical delay where a source gives one. The student opens the bank account first because approval takes up to about 10 days, and searches for housing while they wait. Compared with the standard process, the student must also screen for scams, apply without an SSN or US credit, possibly pay for a guarantor, and wire money in from home. They read and understand the lease before signing it. The bottom lane shows the alternative when Harvard University Housing (HUH) is the landlord. The student applies and picks a unit in HUH's own portal, e-signs, and pays the first rent by credit card or wire, and rent is then billed to the student account. Three private-market steps drop out: the scam check, the guarantor, and funding a US bank account before signing. The trade-offs are that HUH offers no tours, units go first click, first served, and every lease ends June 30. Friction is marked in two ways. Red boxes with an “Eliminate” badge are bad friction we aim to remove or automate: the scam check and reading and understanding the lease, in both paths. Gold boxes with a “Keep” badge are good friction: every step that moves money, from wiring funds in to paying rent. Two open questions shape the private-market path: Harvard's international office warns never to wire money for a unit you haven't seen in person, which this path depends on, and it's not yet confirmed how the student can send the deposit from a savings-only account before debit cards and checks are issued at arrival.</p>
+
+  <p class="sources">Sources:
+    <a href="https://harvardfcu.org/international/">Harvard FCU — International Members</a>;
+    <a href="https://www.huhousing.harvard.edu/application-process">HUH — Application Process</a>;
+    <a href="https://www.huhousing.harvard.edu/application-process/FAQ">HUH — Applicant FAQ</a>;
+    <a href="https://huhousing.harvard.edu/application-process/payment">HUH — Payment</a>;
+    <a href="https://www.hio.harvard.edu/housing">Harvard International Office — Housing</a>;
+    <a href="https://consumer.ftc.gov/articles/rental-listing-scams">FTC — Rental Listing Scams</a>;
+    <a href="https://www.rentcafe.com/blog/renting/know-rental-application-process/">RentCafe — Application Process</a>;
+    <a href="https://www.apartments.com/rental-manager/resources/leasing-and-laws/what-landlords-should-know-about-renting-international-students">Apartments.com — Renting to International Students</a>;
+    <a href="https://www.insurent.com/renters/">Insurent — Renters</a>;
+    <a href="https://www.mass.gov/guides/the-attorney-generals-guide-to-landlord-and-tenant-rights">MA Attorney General — Landlord and Tenant Rights</a>;
+    <a href="https://www.masslegalhelp.org/sites/default/files/2025-10/03%20Security%20Deposits%202025-%20Updated%208-13-25.pdf">MassLegalHelp — Security Deposits</a>;
+    <a href="https://www.boston.gov/departments/housing/office-housing-stability/broker-fees-3-things-know-about-new-law">City of Boston — Broker Fees</a>.
+  </p>
+</main>
+
+<script>
+var STAGES = [
+  "Open a bank account","Search while it opens","Scam check","Apply for the apartment",
+  "Guarantor (if required)","Fund the account","Read and understand the lease","Sign the lease",
+  "Pay move-in costs","Arrive in the US","Move in, document condition","Pay rent monthly"
+];
+// lane: r = renter, b = bank, l = landlord
+var NODES = [
+  {id:"r1", c:1, lane:"r", intl:true, title:"Apply online for an HFCU account",
+   tool:"Online application (DocuSign); passport + Harvard acceptance letter; W-8 BEN form instead of an SSN; $5 opening deposit",
+   note:"Without an SSN, this opens a savings account only"},
+  {id:"b2", c:2, lane:"b", intl:true, title:"Review application, open savings account",
+   tool:"Wire instructions emailed to the student", note:"Typically opened within 10 days"},
+  {id:"r2", c:2, lane:"r", title:"Search listings, tour by video",
+   tool:"Harvard Off Campus Partners, listing sites, video call",
+   note:"MA: renter pays a broker fee only if they hired the broker"},
+  {id:"l2", c:2, lane:"l", title:"Show the unit remotely", tool:"Video tour, photos, or broker"},
+  {id:"r3", fr:"bad", c:3, lane:"r", intl:true, title:"Check the listing isn't a scam",
+   tool:"Confirm the owner in public property records; contact the manager through verified channels",
+   note:"FTC red flags: rent far below market, pressure to decide, owner 'abroad', unit can't be seen",
+   warn:"HIO: never wire money for a unit you haven't seen in person"},
+  {id:"r4", c:4, lane:"r", intl:true, title:"Apply without an SSN or US credit",
+   tool:"Rental application, bank statements, scholarship or funding letter"},
+  {id:"l4", c:4, lane:"l", title:"Screen and decide",
+   tool:"Financial documents instead of a credit score; may require a guarantor",
+   note:"MA: application fees are prohibited"},
+  {id:"r5", c:5, lane:"r", intl:true, title:"Get a guarantor (if required)",
+   tool:"Guarantor company (e.g., Insurent) with a parent abroad as the responsible party",
+   note:"Fee ≈ 98–110% of one month's rent for a 1-year lease"},
+  {id:"l5", c:5, lane:"l", title:"Accept guaranty, approve application", tool:"Guaranty certificate"},
+  {id:"r6", fr:"good", c:6, lane:"r", intl:true, title:"Wire money from home bank",
+   tool:"International wire using HFCU's instructions",
+   inf:"Home-bank wire fees and exchange rates apply"},
+  {id:"b6", fr:"good", c:6, lane:"b", intl:true, title:"Receive incoming wire", tool:"Savings account"},
+  {id:"l7", c:7, lane:"l", title:"Send the lease for review",
+   tool:"Written lease", note:"MA: tenant must get a legible copy"},
+  {id:"r7", fr:"bad", c:7, lane:"r", title:"Read and understand the lease",
+   tool:"Lease-terms checklist; MA Attorney General tenant guide; ask HIO or legal aid",
+   note:"MA: no late fee before 30 days; no charges for normal wear and tear"},
+  {id:"r8", c:8, lane:"r", title:"Sign the lease", tool:"E-signature from abroad",
+   note:"Commits to rent for the full term, whether or not the unit is used"},
+  {id:"l8", c:8, lane:"l", title:"Countersign the lease", tool:"E-signature"},
+  {id:"r9", fr:"good", c:9, lane:"r", title:"Authorize move-in payment", tool:"HFCU account",
+   note:"MA: only first and last month, deposit (≤ 1 month), lock fee"},
+  {id:"b9", fr:"good", c:9, lane:"b", intl:true, title:"Send payment to landlord",
+   tool:"Method to confirm with HFCU", note:"Debit cards and checks aren't issued until arrival"},
+  {id:"l9", fr:"good", c:9, lane:"l", title:"Receive payment, issue receipts",
+   tool:"Deposit receipt; deposit held in a separate MA bank account",
+   note:"Bank receipt within 30 days"},
+  {id:"r10", c:10, lane:"r", intl:true, title:"Arrive; visit an HFCU branch", tool:"Passport, Harvard ID"},
+  {id:"b10", c:10, lane:"b", intl:true, title:"Issue debit card and checks", note:"Only once the member is in the US"},
+  {id:"l11", c:11, lane:"l", title:"Issue statement of condition", tool:"Statement of condition",
+   note:"MA: within 10 days of move-in"},
+  {id:"r11", c:11, lane:"r", title:"Move in, note damage, return statement", tool:"Statement of condition",
+   note:"MA: renter has 15 days to return it"},
+  {id:"r12", fr:"good", c:12, lane:"r", title:"Pay rent each month", tool:"Landlord's portal, check, or transfer"},
+  {id:"b12", fr:"good", c:12, lane:"b", title:"Process rent payment", tool:"ACH, bill pay, or check",
+   inf:"Confirm whether a no-SSN member can get checking, and whether Zelle is available"},
+  {id:"l12", fr:"good", c:12, lane:"l", title:"Receive rent",
+   note:"MA: deposit earns interest yearly; returned within 30 days after the lease ends"},
+  {id:"h2", c:2, lane:"h", huh:true, title:"Apply in the HUH portal; HUH approves",
+   tool:"Online housing application", note:"Free and non-binding; apply by May 1 for the spring lottery"},
+  {id:"h3", c:3, lane:"h", ghost:true, title:"Scam check largely unnecessary",
+   inf:"Harvard is the landlord and listings are in its own portal"},
+  {id:"h4", c:4, lane:"h", huh:true, title:"Select a unit online",
+   tool:"Applicant portal: listings, photos, floorplans",
+   note:"No tours. Lottery selection is first click, first served"},
+  {id:"h5", c:5, lane:"h", ghost:true, title:"No guarantor or credit check",
+   inf:"None mentioned in HUH's application materials; confirm with HUH"},
+  {id:"h6", c:6, lane:"h", ghost:true, title:"US bank account not needed to secure the unit",
+   inf:"Initial payment can be made by credit card or wire"},
+  {id:"h7", fr:"bad", c:7, lane:"h", huh:true, title:"Review the HUH lease",
+   tool:"Lease in the housing portal",
+   note:"Lease can't be altered; all leases end June 30. Free to cancel before signing and paying; $500 after"},
+  {id:"h8", c:8, lane:"h", huh:true, title:"E-sign the lease",
+   tool:"Housing portal (link emailed by a leasing coordinator)"},
+  {id:"h9", fr:"good", c:9, lane:"h", huh:true, title:"Pay initial rent; HUH countersigns",
+   tool:"Credit card (in portal), wire, check, or money order",
+   note:"Prorated first month (plus the next month if the lease starts after the 15th). No security deposit mentioned"},
+  {id:"h10", c:10, lane:"h", huh:true, title:"Pick up keys",
+   tool:"Property management office",
+   note:"Lease may start June–August, before arrival; subletting is allowed"},
+  {id:"h11", c:11, lane:"h", huh:true, title:"Move in",
+   inf:"HUH's move-in condition process not found in its materials"},
+  {id:"h12", fr:"good", c:12, lane:"h", huh:true, title:"Rent billed to the student account",
+   tool:"my.harvard student account", note:"Due the 1st; HUH says this is typical, not guaranteed",
+   inf:"How international students pay the student account to confirm"}
+];
+// from, to, label, sourced
+var EDGES = [
+  ["r1","b2","Within ~10 days",1],
+  ["r1","r2","not sourced",0],
+  ["l2","l4","not sourced",0],
+  ["b2","r6","At opening: wire instructions emailed",1],
+  ["r2","r3","not sourced",0],
+  ["r3","r4","not sourced",0],
+  ["r4","l4","Decision in up to ~72 hours",1],
+  ["l4","r5","not sourced",0],
+  ["r5","l5","not sourced",0],
+  ["r6","b6","not sourced",0],
+  ["l5","l7","not sourced",0],
+  ["l7","r7","not sourced",0],
+  ["r7","r8","not sourced",0],
+  ["r8","r9","At signing",1],
+  ["r8","l8","not sourced",0],
+  ["b6","b9","not sourced",0],
+  ["r9","b9","not sourced",0],
+  ["b9","l9","not sourced",0],
+  ["r9","r10","not sourced",0],
+  ["r10","b10","not sourced",0],
+  ["l9","l11","not sourced",0],
+  ["r10","r11","not sourced",0],
+  ["l11","r11","Within 10 days of move-in",1],
+  ["r11","r12","not sourced",0],
+  ["b10","b12","not sourced",0],
+  ["r12","b12","not sourced",0],
+  ["b12","l12","not sourced",0],
+  ["h2","h4","Approval in ~3–5 business days",1],
+  ["h4","h7","Lease email within ~2 business days",1],
+  ["h7","h8","not sourced",0],
+  ["h8","h9","Payment due before countersigning",1],
+  ["h9","h10","Keys on/after lease start; book 2–7 business days ahead",1],
+  ["h10","h11","not sourced",0],
+  ["h11","h12","not sourced",0]
+];
+var ROW = {r:2,b:3,l:4,h:5};
+var map = document.getElementById("map");
+function col(c){ return 2 + 2*(c-1); }
+STAGES.forEach(function(s,i){
+  var h=document.createElement("div"); h.className="colhead";
+  h.style.gridColumn=col(i+1);
+  h.innerHTML="<span>Stage "+(i+1)+"</span>"+s; map.appendChild(h);
+});
+function esc(t){var d=document.createElement("div");d.textContent=t;return d.innerHTML;}
+NODES.forEach(function(n){
+  var cell=document.createElement("div"); cell.className="cell"+(n.ghost?" ghost":"");
+  cell.style.gridColumn=col(n.c); cell.style.gridRow=ROW[n.lane];
+  var h='<div class="bub'+(n.ghost?' ghost':'')+(n.fr?' '+n.fr:'')+'" id="'+n.id+'"><div class="tags">';
+  if(n.fr==="bad") h+='<span class="fr bad">✕ Eliminate</span>';
+  if(n.fr==="good") h+='<span class="fr good">✓ Keep</span>';
+  if(n.intl) h+='<span class="tag">Intl student</span>';
+  if(n.huh) h+='<span class="tag huh">HUH path</span>';
+  if(n.ghost) h+='<span class="tag skip">Not needed with HUH</span>';
+  h+='</div>';
+  h+='<div class="title">'+esc(n.title)+'</div>';
+  if(n.tool) h+='<div class="field"><b>Tool</b>'+esc(n.tool)+'</div>';
+  if(n.note) h+='<div class="note">'+esc(n.note)+'</div>';
+  if(n.inf) h+='<div class="note inferred">'+esc(n.inf)+'</div>';
+  if(n.warn) h+='<div class="note warn">'+esc(n.warn)+'</div>';
+  h+='</div>'; cell.innerHTML=h; map.appendChild(cell);
+});
+var NS="http://www.w3.org/2000/svg", GAP=112;
+function byId(id){return document.getElementById(id);}
+function nodeCol(id){for(var i=0;i<NODES.length;i++) if(NODES[i].id===id) return NODES[i].c;}
+function draw(){
+  var svg=byId("wires"), box=map.getBoundingClientRect();
+  svg.querySelectorAll("path.w").forEach(function(p){p.remove();});
+  map.querySelectorAll(".lbl").forEach(function(p){p.remove();});
+  EDGES.forEach(function(e){
+    var a=byId(e[0]).getBoundingClientRect(), b=byId(e[1]).getBoundingClientRect();
+    var L=function(x){return x-box.left;}, T=function(y){return y-box.top;};
+    var d, lx, ly, vert=false;
+    if(nodeCol(e[0])===nodeCol(e[1])){
+      vert=true;
+      var x=L(a.left+a.width/2);
+      if(b.top>a.bottom){ d="M"+x+","+T(a.bottom)+" V"+(T(b.top)-2); ly=(T(a.bottom)+T(b.top))/2; }
+      else { d="M"+x+","+T(a.top)+" V"+(T(b.bottom)+2); ly=(T(a.top)+T(b.bottom))/2; }
+      lx=x;
+    } else {
+      var sx=L(a.right), sy=T(a.top+a.height/2), tx=L(b.left)-2, ty=T(b.top+b.height/2);
+      var gx=L(b.left)-GAP/2;
+      d = Math.abs(sy-ty)<1 ? "M"+sx+","+sy+" H"+tx : "M"+sx+","+sy+" H"+gx+" V"+ty+" H"+tx;
+      lx=gx; ly=ty-6;
+    }
+    var p=document.createElementNS(NS,"path");
+    p.setAttribute("d",d); p.setAttribute("class","w"+(e[3]?"":" u"));
+    p.setAttribute("marker-end",e[3]?"url(#ah)":"url(#ahu)"); svg.appendChild(p);
+    var lab=document.createElement("div");
+    lab.className="lbl"+(e[3]?"":" u")+(vert?" v":"");
+    lab.textContent=e[2]; lab.style.left=lx+"px"; lab.style.top=ly+"px"; map.appendChild(lab);
+  });
+}
+window.addEventListener("load",draw);
+window.addEventListener("resize",draw);
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(draw);
+</script>
+</body>
+</html>
