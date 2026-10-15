@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Housing Made EZ prototype: a guided way for Harvard affiliates to find a housemate safely.">
+<title>Housemate Navigator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --ink:#1F3A34; --ink-soft:#4E6B64; --ink-faint:#7A958F;
+    --paper:#F4F8F6; --raised:#FFFFFF; --line:#DCEBE5; --line-strong:#C3D9D1;
+    --accent:#0E8F68; --accent-ink:#0A5C44; --accent-soft:#E2F5EC;
+    --amber:#B8791C; --amber-ink:#7A5410; --amber-soft:#FFF3DC;
+    --warn:#C1473F; --warn-soft:#FDEDEA;
+    --blue:#2F4A7A; --blue-soft:#E7EDF7;
+    --radius:14px; --shadow:0 1px 3px rgba(31,58,52,.06),0 8px 24px rgba(31,58,52,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Work Sans',system-ui,sans-serif;line-height:1.5;font-size:16px}
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;margin:0;text-wrap:balance}
+  a{color:var(--accent-ink)}
+  button{font:inherit;color:inherit}
+  [hidden]{display:none!important}
+
+  /* ---------- app shell ---------- */
+  .bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:12px 20px;background:rgba(255,255,255,.95);
+    backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+  .brand{font-family:'Fraunces',serif;font-weight:700;font-size:19px;white-space:nowrap}
+  .brand small{display:block;font-family:'Work Sans',sans-serif;font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+  .overall{flex:1;max-width:340px;margin-left:auto}
+  .overall .lbl{font-size:12px;color:var(--ink-faint);display:flex;justify-content:space-between}
+  .meter{height:7px;background:var(--line);border-radius:99px;overflow:hidden}
+  .meter i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s ease}
+  .ghost{background:none;border:1px solid var(--line-strong);border-radius:8px;padding:6px 10px;font-size:13px;color:var(--ink-soft);cursor:pointer}
+  .ghost:hover{background:var(--accent-soft)}
+
+  .shell{display:grid;grid-template-columns:250px 1fr;max-width:1180px;margin:0 auto;gap:28px;padding:24px 20px 60px}
+  .rail{position:sticky;top:84px;align-self:start;display:flex;flex-direction:column;gap:4px}
+  .rail button{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:center;text-align:left;background:none;border:0;border-radius:12px;padding:9px 10px;cursor:pointer}
+  .rail button:hover{background:#EAF3EF}
+  .rail button.on{background:var(--raised);box-shadow:var(--shadow)}
+  .rail .num{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:2px solid var(--line-strong);font-size:13px;font-weight:700;color:var(--ink-soft);background:#fff;transition:all .25s}
+  .rail button.on .num{border-color:var(--accent);color:var(--accent)}
+  .rail button.done .num{background:var(--accent);border-color:var(--accent);color:#fff}
+  .rail b{display:block;font-size:14.5px}
+  .rail span.s{display:block;font-size:12.5px;color:var(--ink-faint)}
+  .rail .proto{margin-top:14px;font-size:12px;color:var(--amber-ink);background:var(--amber-soft);border-radius:10px;padding:10px 12px}
+
+  /* ---------- stages ---------- */
+  .stage{animation:in .35s ease}
+  @keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .stage-head{margin-bottom:18px}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+  .stage-head h1{font-size:clamp(26px,3.6vw,36px);margin:4px 0 6px;line-height:1.15}
+  .stage-head p{margin:0;color:var(--ink-soft);max-width:64ch}
+  .mapnote{display:inline-flex;align-items:center;gap:8px;margin-top:10px;font-size:12.5px;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 12px 4px 5px}
+  .badge{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;color:#fff;font-size:11px;font-weight:700;flex:none}
+  .bG{background:#2E6B47} .bA{background:#C9922E} .bR{background:#C0473A} .bB{background:#2F4A7A}
+
+  .card{background:var(--raised);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+  .stack{display:flex;flex-direction:column;gap:16px}
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;align-items:start}
+  .cols.wide{grid-template-columns:minmax(0,2fr) minmax(260px,1fr)}
+  .shell > main,.cols > *{min-width:0}
+  @media (prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important} }
+  .nav-row{display:flex;justify-content:space-between;gap:10px;margin-top:26px;flex-wrap:wrap}
+  .btn{font-weight:600;font-size:15px;border-radius:10px;padding:10px 18px;border:1px solid var(--accent);cursor:pointer;background:#fff;color:var(--accent-ink);transition:transform .1s,filter .15s}
+  .btn:hover{filter:brightness(.97)} .btn:active{transform:scale(.98)}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-quiet{border-color:var(--line-strong);color:var(--ink-soft)}
+  .hint{font-size:13px;color:var(--ink-faint)}
+  label.f{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+  input[type=text],input[type=email],input[type=number],select,textarea{font:inherit;font-size:15px;font-weight:400;color:var(--ink);background:#fff;border:1px solid var(--line-strong);border-radius:9px;padding:9px 11px;width:100%}
+  textarea{min-height:70px;resize:vertical}
+  input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  input[type=range]{width:100%;accent-color:var(--accent)}
+
+  /* ---------- intake (one question at a time) ---------- */
+  .intake{max-width:680px}
+  .qprog{display:flex;gap:5px;margin-bottom:22px}
+  .qprog i{flex:1;height:5px;border-radius:99px;background:var(--line);transition:background .3s}
+  .qprog i.on{background:var(--accent)}
+  .q{animation:slide .3s ease}
+  @keyframes slide{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+  .q h2{font-size:clamp(22px,3vw,28px);margin-bottom:6px}
+  .q .help{color:var(--ink-soft);margin:0 0 18px}
+  .opts{display:grid;gap:10px}
+  .opts.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+  @media (max-width:520px){ .opts.two{grid-template-columns:1fr} }
+  .opts.months{grid-template-columns:repeat(auto-fill,minmax(118px,1fr))}
+  .opt{display:flex;gap:12px;align-items:center;text-align:left;background:#fff;border:1.5px solid var(--line-strong);border-radius:12px;padding:14px 16px;cursor:pointer;transition:all .15s}
+  .opt:hover{border-color:var(--accent);background:#F7FCFA}
+  .opt.sel{border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent)}
+  .opt .ic{font-size:22px;flex:none}
+  .opt b{display:block;font-size:15.5px}
+  .opt span.d{display:block;font-size:13px;color:var(--ink-soft)}
+  .opts.months .opt{justify-content:center;padding:12px 8px;text-align:center}
+  .opt .tagx{display:block;font-size:11px;color:var(--amber-ink);font-weight:600}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1.5px solid var(--line-strong);background:#fff;border-radius:999px;padding:8px 14px;font-size:14.5px;cursor:pointer;transition:all .15s}
+  .chip.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+  .bigval{font-family:'Fraunces',serif;font-size:42px;font-weight:700;color:var(--accent-ink);margin:4px 0}
+  .life{display:grid;gap:14px}
+  .life .row{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:center}
+  .life .lbl{font-size:14px;font-weight:600}
+  .seg{display:flex;flex-wrap:wrap;gap:6px}
+  .seg button{border:1.5px solid var(--line-strong);background:#fff;border-radius:9px;padding:7px 12px;font-size:13.5px;cursor:pointer}
+  .seg button.sel{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+  .formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  .err{color:var(--warn);font-size:13.5px;min-height:20px;margin:8px 0 0}
+
+  /* plan timeline */
+  .timeline{list-style:none;margin:0;padding:0;position:relative}
+  .timeline:before{content:"";position:absolute;left:15px;top:8px;bottom:8px;width:2px;background:var(--line)}
+  .timeline li{position:relative;padding:0 0 18px 46px}
+  .timeline li:last-child{padding-bottom:0}
+  .timeline .dot{position:absolute;left:6px;top:2px;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--accent)}
+  .timeline li.now .dot{background:var(--accent);box-shadow:0 0 0 5px var(--accent-soft)}
+  .timeline li.warn .dot{border-color:var(--amber)}
+  .timeline .when{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+  .timeline li.warn .when{color:var(--amber-ink)}
+  .timeline b{display:block}
+  .timeline p{margin:2px 0 0;font-size:14px;color:var(--ink-soft)}
+
+  /* ---------- match deck ---------- */
+  .deckbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .toggle{display:inline-flex;background:#fff;border:1px solid var(--line-strong);border-radius:10px;padding:3px}
+  .toggle button{border:0;background:none;padding:6px 12px;border-radius:7px;font-size:13.5px;cursor:pointer;color:var(--ink-soft)}
+  .toggle button.sel{background:var(--accent-soft);color:var(--accent-ink);font-weight:600}
+  .deck{position:relative;max-width:560px}
+  .pcard{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:22px;transition:transform .35s ease,opacity .35s ease}
+  .pcard.out-l{transform:translateX(-60px) rotate(-4deg);opacity:0}
+  .pcard.out-r{transform:translateX(60px) rotate(4deg);opacity:0}
+  .phead{display:flex;gap:14px;align-items:center;margin-bottom:12px}
+  .avatar{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;font-family:'Fraunces',serif;font-weight:700;font-size:21px;color:#fff;flex:none}
+  .phead h3{font-size:22px}
+  .phead .meta{font-size:13.5px;color:var(--ink-soft)}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+  .tag{display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;padding:3px 10px;white-space:nowrap}
+  .t-green{background:var(--accent-soft);color:var(--accent-ink)}
+  .t-blue{background:var(--blue-soft);color:var(--blue)}
+  .t-amber{background:var(--amber-soft);color:var(--amber-ink)}
+  .t-grey{background:#EEF2F1;color:var(--ink-faint)}
+  .quote{font-size:15px;margin:0 0 14px;padding-left:12px;border-left:3px solid var(--accent-soft)}
+  .dims{display:grid;gap:7px;margin:0}
+  .dim{display:grid;grid-template-columns:20px 92px 1fr;gap:8px;align-items:start;font-size:14px}
+  .dim .ic{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;color:#fff;margin-top:1px}
+  .dim.same .ic{background:var(--accent)} .dim.talk .ic{background:var(--amber)} .dim.na .ic{background:var(--line-strong)}
+  .dim .k{color:var(--ink-faint)}
+  .dim.talk .v{color:var(--amber-ink)}
+  .fitline{display:flex;align-items:center;gap:10px;margin:14px 0 4px;font-size:13.5px;color:var(--ink-soft)}
+  .fitline .meter{flex:1}
+  .actions{display:flex;gap:12px;margin-top:16px}
+  .actions .btn{flex:1;padding:12px}
+  .shortlist{margin-top:22px}
+  .shortlist h3{font-size:17px;margin-bottom:8px}
+  .slchips{display:flex;flex-wrap:wrap;gap:8px}
+  .slchip{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line-strong);border-radius:999px;padding:4px 6px 4px 4px;font-size:14px}
+  .slchip .avatar{width:26px;height:26px;font-size:12px}
+  .slchip button{border:0;background:none;cursor:pointer;color:var(--ink-faint);font-size:16px;line-height:1;padding:2px 6px}
+  .listview{display:grid;gap:12px}
+  .lrow{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}
+  .lrow .avatar{width:44px;height:44px;font-size:17px}
+  .lrow .meta{font-size:13px;color:var(--ink-soft)}
+  .empty{color:var(--ink-soft);padding:26px;border:1.5px dashed var(--line-strong);border-radius:16px;text-align:center;background:#fff}
+
+  /* ---------- checks ---------- */
+  .cand{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+  .cand + .cand{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}
+  .ticks{display:flex;flex-wrap:wrap;gap:8px}
+  .tick{display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--line-strong);background:#fff;border-radius:999px;padding:6px 12px;font-size:13.5px;cursor:pointer;transition:all .15s}
+  .tick .box{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line-strong);display:grid;place-items:center;font-size:10px;color:#fff}
+  .tick.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-ink)}
+  .tick.sel .box{background:var(--accent);border-color:var(--accent)}
+  .status{font-size:12.5px;font-weight:700;margin-top:6px}
+  .chat{display:flex;flex-direction:column;gap:9px;background:#EEF3F1;border-radius:14px;padding:16px}
+  .chat .who{font-size:12.5px;color:var(--ink-faint);margin-bottom:2px}
+  .bubble{align-self:flex-start;max-width:88%;background:#fff;border:1.5px solid transparent;border-radius:4px 16px 16px 16px;padding:9px 13px;font-size:14.5px;cursor:pointer;text-align:left;transition:all .15s;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+  .bubble:hover{border-color:var(--line-strong)}
+  .bubble.sel{border-color:var(--warn);background:var(--warn-soft)}
+  .bubble .why{display:block;margin-top:6px;font-size:12.5px;font-weight:600}
+  .bubble.right .why{color:var(--accent-ink)} .bubble.wrong .why{color:var(--warn)} .bubble.missed .why{color:var(--amber-ink)}
+  .bubble.missed{border-color:var(--amber);border-style:dashed}
+  .score{margin-top:12px;border-radius:12px;padding:12px 14px;font-size:14.5px}
+
+  /* ---------- talk ---------- */
+  .tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px}
+  .tabs button{white-space:nowrap;border:1px solid var(--line-strong);background:#fff;border-radius:999px;padding:6px 13px;font-size:13.5px;cursor:pointer}
+  .tabs button.sel{background:var(--ink);border-color:var(--ink);color:#fff}
+  .tabs button .c{font-size:11.5px;opacity:.75;margin-left:4px}
+  .qcard{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+  .qcard:last-child{border-bottom:0}
+  .qcard p{margin:0;font-size:15px}
+  .ab{display:flex;gap:6px}
+  .ab button{border:1.5px solid var(--line-strong);background:#fff;border-radius:9px;padding:6px 10px;font-size:13px;cursor:pointer;white-space:nowrap}
+  .ab button.same.sel{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+  .ab button.diff.sel{background:var(--amber-soft);border-color:var(--amber);color:var(--amber-ink);font-weight:600}
+  .ready{display:flex;gap:16px;align-items:center}
+  .ring{width:84px;height:84px;flex:none}
+  .ring text{font-family:'Fraunces',serif;font-weight:700}
+  ul.diffs{margin:8px 0 0;padding-left:18px;font-size:14px;color:var(--amber-ink)}
+
+  /* ---------- money ---------- */
+  .money-out{display:grid;gap:10px}
+  .line{display:flex;justify-content:space-between;gap:12px;font-size:15px;padding:6px 0;border-bottom:1px dashed var(--line)}
+  .line.total{border-bottom:0;font-weight:700;font-size:17px}
+  .big{font-family:'Fraunces',serif;font-size:38px;font-weight:700;color:var(--accent-ink);line-height:1.1}
+  .flag{display:flex;gap:10px;align-items:flex-start;border-radius:10px;padding:10px 12px;font-size:14px}
+  .flag.bad{background:var(--warn-soft);color:#8E2C25}
+  .flag.okk{background:var(--accent-soft);color:var(--accent-ink)}
+  .switches{display:grid;gap:10px}
+  .sw{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:14.5px}
+  .sw .note{display:block;font-size:12.5px;color:var(--ink-faint)}
+  .switch{position:relative;width:42px;height:24px;flex:none;border-radius:99px;background:var(--line-strong);border:0;cursor:pointer;transition:background .2s}
+  .switch:after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+  .switch[aria-checked=true]{background:var(--accent)}
+  .switch[aria-checked=true]:after{transform:translateX(18px)}
+  .people{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .people .p{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:14px;transition:all .3s}
+  .people .p.gone{background:#D5DEDA!important;color:#fff;text-decoration:line-through}
+  .stepper{display:inline-flex;align-items:center;border:1px solid var(--line-strong);border-radius:10px;overflow:hidden}
+  .stepper button{border:0;background:#fff;width:36px;height:36px;font-size:18px;cursor:pointer}
+  .stepper span{min-width:36px;text-align:center;font-weight:700}
+
+  /* ---------- agreement ---------- */
+  .doc{background:#FFFDF8;border:1px solid #EADFC8;border-radius:12px;padding:22px 24px;font-size:14.5px;box-shadow:var(--shadow)}
+  .doc h3{font-size:20px;margin-bottom:2px}
+  .doc .sub{font-size:12.5px;color:var(--ink-faint);margin-bottom:12px}
+  .doc ol{margin:0;padding-left:20px}
+  .doc li{margin:6px 0}
+  .doc mark{background:#FFF0C7;border-radius:3px;padding:0 2px}
+  .doc .sign{margin-top:16px;display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--ink-faint)}
+  .doc .sign span{border-top:1px solid var(--ink-faint);padding-top:4px;min-width:120px}
+
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--ink);color:#fff;padding:11px 18px;border-radius:12px;font-size:14px;z-index:50;transition:all .3s;max-width:calc(100vw - 32px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .foot{grid-column:1/-1;margin-top:20px;font-size:12.5px;color:var(--ink-faint);border-top:1px solid var(--line);padding-top:16px}
+
+  @media (max-width:860px){
+    .shell{grid-template-columns:1fr;gap:16px;padding:12px 16px 50px}
+    .rail{position:sticky;top:62px;z-index:15;flex-direction:row;overflow-x:auto;background:var(--paper);padding:6px 0;margin:0 -16px;padding-left:16px;padding-right:16px}
+    .rail button{grid-template-columns:26px auto;padding:6px 10px;flex:none}
+    .rail .num{width:26px;height:26px;font-size:12px}
+    .rail span.s,.rail .proto{display:none}
+    .bar{padding:10px 16px}
+    .overall{max-width:none}
+    .card{padding:16px}
+    .life .row{grid-template-columns:1fr}
+    .qcard{grid-template-columns:1fr}
+    .cols.wide{grid-template-columns:1fr}
+    .overall .lbl span:first-child{display:none}
+    .ghost{white-space:nowrap}
+    .brand{font-size:17px}
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand"><small>Housing Made EZ</small>Housemate Navigator</div>
+  <div class="overall"><div class="lbl"><span>Your progress</span><span id="ov-txt">0 of 6</span></div><div class="meter"><i id="ov-bar" style="width:0"></i></div></div>
+  <button class="ghost" id="reset" type="button" title="Clear everything and start over">Start over</button>
+</header>
+
+<div class="shell">
+  <nav class="rail" id="rail" aria-label="Steps"></nav>
+  <main id="main" aria-live="polite"></main>
+  <div class="foot">Housing Made EZ · MLD-371, Harvard Kennedy School · student prototype for testing. Sample people are made up, and nothing you enter leaves this browser.
+  General information, not legal advice. It supplements Harvard University Housing and does not replace it.</div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* =====================================================================
+   DATA: edit here.
+   ===================================================================== */
+const STAGES = [
+  { id:"start", t:"Start",          s:"Your plan & profile",   badge:"B", note:"Timing is the bottleneck: a housemate and a place must line up." },
+  { id:"match", t:"Matches",        s:"Browse & shortlist",    badge:"R", note:"Replaces re-posting the same intro in ten chats (delete it)." },
+  { id:"check", t:"Is it real?",    s:"Verify & spot scams",   badge:"A", note:"Everyone invents their own check today (shrink it); side channels skip every check." },
+  { id:"talk",  t:"The talk",       s:"Questions that matter", badge:"G", note:"Good friction: slow on purpose. We guide it, we don't replace it." },
+  { id:"money", t:"Lease & money",  s:"What you'll pay",       badge:"A", note:"Up-front costs and joint leases are necessary, but should be clear." },
+  { id:"agree", t:"Live together",  s:"House agreement",       badge:"G", note:"Good friction: decide together now, argue less later." }
+];
+const SCHOOLS = ["Harvard Kennedy School","Harvard Business School","Graduate School of Arts & Sciences","Harvard Law School","Harvard Medical School",
+  "Harvard Chan School of Public Health","Graduate School of Design","Graduate School of Education","Harvard Divinity School","SEAS",
+  "Fellow (e.g. Mason, Nieman)","Visiting researcher or postdoc"];
+const AREAS = ["Harvard Square","Central Square","Porter / Davis","Somerville","Allston / Brighton","Longwood / Mission Hill","Jamaica Plain"];
+const LIFE = [
+  { k:"sleep",  l:"Sleep",          o:["Early","Late","Varies"] },
+  { k:"clean",  l:"Shared spaces",  o:["Very tidy","Tidy enough","Relaxed"] },
+  { k:"guests", l:"Guests",         o:["Rarely","Sometimes","Often"] },
+  { k:"smoke",  l:"Smoking",        o:["Never at home","Outside only","I smoke"] },
+  { k:"pets",   l:"Pets",           o:["Fine either way","No pets, please","I have a pet"] },
+  { k:"kitchen",l:"Kitchen",        o:["Anything goes","Vegetarian","Halal","Kosher"] }
+];
+const COLORS = ["#0E8F68","#2F4A7A","#B8791C","#8B4C9E","#C1473F","#1F7A8C","#5E6B2E"];
+
+// Made-up sample people for testing. Not real.
+const SAMPLES = [
+  { id:"s1", name:"Amara K.", school:"Harvard Kennedy School", type:"seek", move:"2027-08", budget:1700, arrive:"abroad",
+    areas:["Central Square","Porter / Davis","Somerville"], sleep:"Early", clean:"Very tidy", guests:"Sometimes", smoke:"Never at home", pets:"Fine either way", kitchen:"Anything goes",
+    note:"MPA/ID from Nairobi. I cook a lot and like a calm home." },
+  { id:"s2", name:"Diego R.", school:"Fellow (e.g. Mason, Nieman)", type:"seek", move:"2027-07", budget:1500, arrive:"abroad",
+    areas:["Somerville","Allston / Brighton"], sleep:"Varies", clean:"Tidy enough", guests:"Sometimes", smoke:"Never at home", pets:"Fine either way", kitchen:"Anything goes",
+    note:"Mason Fellow arriving in July, with a bicycle and a guitar (played quietly)." },
+  { id:"s3", name:"Lin W.", school:"Graduate School of Arts & Sciences", type:"room", move:"2027-09", budget:1450, arrive:"here",
+    areas:["Porter / Davis"], sleep:"Early", clean:"Very tidy", guests:"Rarely", smoke:"Never at home", pets:"No pets, please", kitchen:"Vegetarian",
+    note:"Second-year PhD. A room in my 2-bed near Davis; the landlord is happy to add you to the lease." },
+  { id:"s4", name:"Farah N.", school:"Harvard Chan School of Public Health", type:"seek", move:"2027-08", budget:1800, arrive:"abroad",
+    areas:["Longwood / Mission Hill","Jamaica Plain"], sleep:"Early", clean:"Very tidy", guests:"Rarely", smoke:"Never at home", pets:"Fine either way", kitchen:"Halal",
+    note:"MPH student, hoping for a housemate near Longwood." },
+  { id:"s5", name:"Tomás P.", school:"Harvard Kennedy School", type:"replace", move:"2027-01", budget:1650, arrive:"here",
+    areas:["Harvard Square"], sleep:"Late", clean:"Tidy enough", guests:"Sometimes", smoke:"Outside only", pets:"Fine either way", kitchen:"Anything goes",
+    note:"Leaving in December for a field placement. Room in a 3-bed; the landlord has agreed to a replacement." },
+  { id:"s6", name:"Ji-woo S.", school:"Graduate School of Design", type:"seek", move:"2027-08", budget:1400, arrive:"abroad",
+    areas:["Allston / Brighton","Somerville","Central Square"], sleep:"Late", clean:"Relaxed", guests:"Often", smoke:"Never at home", pets:"I have a pet", kitchen:"Anything goes",
+    note:"MArch student, often in studio late. I have a small, quiet cat." },
+  { id:"s7", name:"Priya M.", school:"Harvard Business School", type:"seek", move:"2027-08", budget:2000, arrive:"abroad",
+    areas:["Allston / Brighton","Harvard Square"], sleep:"Varies", clean:"Tidy enough", guests:"Sometimes", smoke:"Never at home", pets:"Fine either way", kitchen:"Vegetarian",
+    note:"MBA from Mumbai. Up for a friendly house that cooks together sometimes." }
+];
+
+// The scam-spotter chat. bad: true = a red flag.
+const SCAM = [
+  { m:"Hi! Yes, the room is still available. $850 a month in Harvard Square, all utilities included 🙂", bad:true, why:"Far below the going rate for a room in Harvard Square. Too good to be true is the most common hook." },
+  { m:"What program are you in at Harvard?", bad:false, why:"A normal question. Genuine housemates want to know who you are." },
+  { m:"I'm in London for work right now, so I can't show you the room, but I'll mail you the keys.", bad:true, why:"An owner who is abroad and will 'mail the keys' is a classic scam script." },
+  { m:"Here are some photos of the room and kitchen.", bad:false, why:"Photos alone are fine, but ask for a live video walk-through too." },
+  { m:"Others are interested, so send the first month + deposit by Zelle today to hold it.", bad:true, why:"Money before a viewing or a lease, plus pressure to decide today. Never pay to 'hold' a room." },
+  { m:"I hold the lease, so the landlord doesn't need to know about you.", bad:true, why:"An off-lease deal: no landlord, no lease, no protection, and no way to get your money back." },
+  { m:"Can you send a photo of your passport so I can prepare the contract?", bad:true, why:"No one needs your passport before there's a real lease from the landlord." }
+];
+
+const QUESTIONS = [
+  { h:"Money", q:["What's the most you can pay each month, including utilities?","Do we split rent equally, or by room size?","Whose name are the bills in, and how do we pay them back?","If one of us can't pay one month, what happens?"] },
+  { h:"Daily life", q:["What time do you usually sleep and get up?","How tidy do shared spaces need to be? How do we split chores?","Do you work or study from home, or take calls at odd hours?","How do you feel about noise, music and cooking smells?"] },
+  { h:"People", q:["How often will you have guests? Overnight guests?","Will family visit and stay? For how long?","Do you want a friendly household, or mostly separate lives?"] },
+  { h:"Values & needs", q:["Any dietary, religious or cultural needs at home?","Smoking, alcohol, pets: what's fine and what's not?","Any allergies or health needs I should know about?"] },
+  { h:"Plans", q:["How long do you plan to stay? Any chance you leave early?","What happens if one of us leaves before the lease ends?","Who can view a place in person before we sign?"] },
+  { h:"Conflict", q:["When something bothers you, how do you like to raise it?","What made a past living situation work, or not?","Shall we check in after the first month?"] }
+];
+/* ===================================================================== */
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+const money = n => "$" + Math.round(n).toLocaleString("en-US");
+const KEY = "hmez-navigator-v2";
+
+function fresh(){
+  return { stage:"start", qi:0, intake:{ areas:[], life:{} }, profile:null, deckIdx:0, view:"deck", shortlist:[], skipped:[],
+    checks:{}, scam:{ sel:[], done:false }, talk:{ who:"", tab:0, a:{} },
+    money:{ rent:3400, n:2, split:"equal", mine:50, first:true, last:true, dep:3400, lock:true, appfee:false, hold:false, broker:false, brokerBy:"landlord", leaver:false },
+    agree:{ rent:"Equally", bills:"", pay:"by the 5th of each month", chores:"Weekly rota", quiet:"11pm–7am on weeknights", guests:"Fine, with a heads-up", notice:"60 days", leave:"They keep paying their share", other:"" },
+    done:{}, posted:false };
+}
+let S;
+try { S = Object.assign(fresh(), JSON.parse(localStorage.getItem(KEY)) || {}); } catch(e){ S = fresh(); }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+
+function toast(msg){ const t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2800); }
+function avatar(p, i){ const c = COLORS[(p.id || p.name).split("").reduce((a, ch) => a + ch.charCodeAt(0), 0) % COLORS.length];
+  return '<span class="avatar" style="background:'+c+'">'+esc(p.name.trim()[0] || "?")+'</span>'; }
+function monthName(m, short){ if (!m) return ""; const [y, mo] = m.split("-").map(Number); return new Date(y, mo-1, 1).toLocaleString("en-US", short ? { month:"short", year:"numeric" } : { month:"long", year:"numeric" }); }
+function addMonths(m, d){ const [y, mo] = m.split("-").map(Number); const t = y*12 + (mo-1) + d; return Math.floor(t/12) + "-" + String(t%12 + 1).padStart(2, "0"); }
+function monthIdx(m){ const [y, mo] = m.split("-").map(Number); return y*12 + mo - 1; }
+const NOW = (() => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2, "0"); })();
+
+function markDone(id){ if (!S.done[id]){ S.done[id] = true; save(); renderRail(); } }
+function go(id){ S.stage = id; save(); render(); window.scrollTo({ top:0, behavior:"smooth" }); }
+
+/* ---------- rail ---------- */
+function renderRail(){
+  $("rail").innerHTML = STAGES.map((st, i) =>
+    '<button type="button" data-go="'+st.id+'" class="'+(S.stage === st.id ? "on " : "")+(S.done[st.id] ? "done" : "")+'"'+(S.stage === st.id ? ' aria-current="step"' : '')+'>'+
+    '<span class="num">'+(S.done[st.id] ? "✓" : i+1)+'</span><span><b>'+st.t+'</b><span class="s">'+st.s+'</span></span></button>').join("") +
+    '<div class="proto">Prototype · sample people are made up · your answers stay in this browser.</div>';
+  $("rail").querySelectorAll("[data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
+  const n = STAGES.filter(s => S.done[s.id]).length;
+  $("ov-txt").textContent = n + " of 6 done";
+  $("ov-bar").style.width = (n/6*100) + "%";
+}
+
+function head(id, title, text){
+  const st = STAGES.find(s => s.id === id), i = STAGES.indexOf(st);
+  const BN = { G:"Keep", A:"Shrink", R:"Delete", B:"Bottleneck" };
+  return '<div class="stage-head"><div class="eyebrow">Step '+(i+1)+' of 6 · '+st.t+'</div><h1>'+title+'</h1><p>'+text+'</p>'+
+    '<div class="mapnote"><span class="badge b'+st.badge+'">'+st.badge+'</span>From our friction map: '+st.note+'</div></div>';
+}
+function navRow(id){
+  const i = STAGES.findIndex(s => s.id === id), prev = STAGES[i-1], next = STAGES[i+1];
+  return '<div class="nav-row">'+(prev ? '<button class="btn btn-quiet" data-go="'+prev.id+'">← '+prev.t+'</button>' : '<span></span>')+
+    (next ? '<button class="btn btn-primary" data-go="'+next.id+'">Next: '+next.t+' →</button>' : '')+'</div>';
+}
+function wireGo(root){ root.querySelectorAll("[data-go]").forEach(b => b.onclick = () => go(b.dataset.go)); }
+
+/* =====================================================================
+   1. START: one question at a time, then a plan
+   ===================================================================== */
+const INTAKE = ["goal","month","where","budget","areas","life","you"];
+function renderStart(m){
+  if (S.profile && S.qi >= INTAKE.length){ return renderPlan(m); }
+  const qid = INTAKE[S.qi], I = S.intake;
+  let body = "";
+  if (qid === "goal"){
+    const o = [["seek","🤝","Find a housemate, then a place together","You don't have a place yet"],["room","🔑","Fill a room in my place","You have a lease and a spare room"],
+               ["takeover","📦","Take over someone's room","Moving into an existing lease"],["replace","👋","I'm leaving early","Find someone to take my room"]];
+    body = '<h2>What brings you here?</h2><p class="help">We\'ll shape the plan around it.</p><div class="opts two">'+
+      o.map(x => '<button class="opt'+(I.goal === x[0] ? " sel" : "")+'" data-v="'+x[0]+'"><span class="ic">'+x[1]+'</span><span><b>'+x[2]+'</b><span class="d">'+x[3]+'</span></span></button>').join("")+'</div>';
+  } else if (qid === "month"){
+    const ms = []; for (let i = 0; i < 15; i++) ms.push(addMonths(NOW, i));
+    body = '<h2>When do you need to move in?</h2><p class="help">Pick the month your lease or room would start.</p><div class="opts months">'+
+      ms.map(x => { const mo = +x.split("-")[1]; const tag = mo === 9 ? "Sept 1 rush" : (mo === 7 || mo === 6) ? "off-cycle" : "";
+        return '<button class="opt'+(I.month === x ? " sel" : "")+'" data-v="'+x+'"><span><b>'+monthName(x, true)+'</b>'+(tag ? '<span class="tagx">'+tag+'</span>' : '')+'</span></button>'; }).join("")+'</div>';
+  } else if (qid === "where"){
+    body = '<h2>Where are you right now?</h2><p class="help">If you\'re abroad, you\'ll need someone you trust to see places for you.</p><div class="opts two">'+
+      [["abroad","✈️","Outside the U.S.","Searching from abroad"],["here","🏙️","In the Boston area","Can view places in person"]].map(x =>
+      '<button class="opt'+(I.where === x[0] ? " sel" : "")+'" data-v="'+x[0]+'"><span class="ic">'+x[1]+'</span><span><b>'+x[2]+'</b><span class="d">'+x[3]+'</span></span></button>').join("")+'</div>';
+  } else if (qid === "budget"){
+    const v = I.budget || 1600;
+    body = '<h2>What\'s the most you can pay for your room?</h2><p class="help">Per month, for your share, before utilities.</p>'+
+      '<div class="card"><div class="bigval" id="bv">'+money(v)+'</div><input type="range" id="br" min="800" max="3500" step="50" value="'+v+'" aria-label="Max rent per month">'+
+      '<div class="hint" style="display:flex;justify-content:space-between"><span>$800</span><span id="bh"></span><span>$3,500</span></div></div>'+
+      '<div class="nav-row"><span></span><button class="btn btn-primary" id="next">Continue →</button></div>';
+  } else if (qid === "areas"){
+    body = '<h2>Where would you live?</h2><p class="help">Pick every area you\'d consider. More areas, more matches.</p><div class="chips">'+
+      AREAS.map(a => '<button class="chip'+(I.areas.includes(a) ? " sel" : "")+'" data-a="'+esc(a)+'">'+esc(a)+'</button>').join("")+'</div>'+
+      '<p class="err" id="err"></p><div class="nav-row"><span></span><button class="btn btn-primary" id="next">Continue →</button></div>';
+  } else if (qid === "life"){
+    body = '<h2>How do you like to live?</h2><p class="help">No right answers. This is how we show what you have in common with someone.</p><div class="card life">'+
+      LIFE.map(L => '<div class="row"><span class="lbl">'+L.l+'</span><div class="seg" data-k="'+L.k+'">'+
+        L.o.map(o => '<button class="'+(I.life[L.k] === o ? "sel" : "")+'" data-o="'+esc(o)+'">'+esc(o)+'</button>').join("")+'</div></div>').join("")+'</div>'+
+      '<p class="err" id="err"></p><div class="nav-row"><span></span><button class="btn btn-primary" id="next">Continue →</button></div>';
+  } else {
+    body = '<h2>Last step: about you</h2><p class="help">Only your first name, school and answers are shown to others. Your email stays private until you both agree to an intro.</p>'+
+      '<div class="card"><div class="formgrid">'+
+      '<label class="f">First name or initials<input type="text" id="yn" maxlength="40" value="'+esc(I.name || "")+'" placeholder="e.g. Amara K."></label>'+
+      '<label class="f">Harvard email<input type="email" id="ye" value="'+esc(I.email || "")+'" placeholder="you@hks.harvard.edu"></label>'+
+      '<label class="f">School or role<select id="ys">'+SCHOOLS.map(s => '<option'+(I.school === s ? " selected" : "")+'>'+esc(s)+'</option>').join("")+'</select></label>'+
+      '<label class="f" style="grid-column:1/-1">A line about you <span class="hint">· no phone numbers or addresses</span><textarea id="yt" maxlength="200" placeholder="Program, languages, what a good home feels like to you…">'+esc(I.note || "")+'</textarea></label>'+
+      '</div><p class="err" id="err"></p><div class="nav-row" style="margin-top:8px"><span class="hint">In the real tool we\'d email you a code to confirm the address.</span><button class="btn btn-primary" id="next">See my plan →</button></div></div>';
+  }
+  m.innerHTML = '<div class="stage">'+head("start","Let's find you a housemate","Seven quick questions. You'll get a month-by-month plan and a profile that does the posting for you.")+
+    '<div class="intake"><div class="qprog">'+INTAKE.map((_, i) => '<i class="'+(i <= S.qi ? "on" : "")+'"></i>').join("")+'</div>'+
+    '<div class="q">'+body+'</div>'+
+    (S.qi > 0 ? '<button class="ghost" id="back" style="margin-top:18px">← Back</button>' : '<p class="hint" style="margin-top:18px">Just looking? <a href="#" id="peek">Browse matches first</a>.</p>')+'</div></div>';
+
+  const next = () => { S.qi++; save(); renderStart(m); };
+  if ($("back")) $("back").onclick = () => { S.qi--; save(); renderStart(m); };
+  if ($("peek")) $("peek").onclick = e => { e.preventDefault(); go("match"); };
+  m.querySelectorAll(".opt[data-v]").forEach(b => b.onclick = () => {
+    I[qid] = b.dataset.v; m.querySelectorAll(".opt").forEach(x => x.classList.toggle("sel", x === b)); save(); setTimeout(next, 220);
+  });
+  if (qid === "budget"){
+    const r = $("br"), hint = () => { const v = +r.value; $("bv").textContent = money(v);
+      $("bh").textContent = v < 1200 ? "Tight for most areas" : v < 1800 ? "Typical shared-room range" : "Room for more choice"; };
+    r.oninput = () => { I.budget = +r.value; hint(); }; hint(); I.budget = +r.value;
+    $("next").onclick = () => { save(); next(); };
+  }
+  if (qid === "areas"){
+    m.querySelectorAll(".chip").forEach(c => c.onclick = () => {
+      const a = c.dataset.a; I.areas = I.areas.includes(a) ? I.areas.filter(x => x !== a) : I.areas.concat(a); c.classList.toggle("sel"); save(); });
+    $("next").onclick = () => { if (!I.areas.length){ $("err").textContent = "Pick at least one area."; return; } next(); };
+  }
+  if (qid === "life"){
+    m.querySelectorAll(".seg").forEach(sg => sg.querySelectorAll("button").forEach(b => b.onclick = () => {
+      I.life[sg.dataset.k] = b.dataset.o; sg.querySelectorAll("button").forEach(x => x.classList.toggle("sel", x === b)); save(); }));
+    $("next").onclick = () => { const miss = LIFE.filter(L => !I.life[L.k]); if (miss.length){ $("err").textContent = "Still to answer: " + miss.map(L => L.l.toLowerCase()).join(", ") + "."; return; } next(); };
+  }
+  if (qid === "you"){
+    $("next").onclick = () => {
+      const name = $("yn").value.trim(), email = $("ye").value.trim().toLowerCase(), note = $("yt").value.trim();
+      let err = "";
+      if (!name) err = "Add a first name or initials.";
+      else if (!/@([a-z0-9-]+\.)*harvard\.edu$/.test(email)) err = "Use your Harvard email (ending in harvard.edu). It's how others know you're real.";
+      else if (/\d{3}[\s.-]?\d{3}[\s.-]?\d{4}|\+\d{6,}/.test(note)) err = "Please remove the phone number. Contact details are shared only when both people agree.";
+      if (err){ $("err").textContent = err; return; }
+      Object.assign(I, { name, email, school:$("ys").value, note });
+      const type = I.goal === "takeover" ? "seek" : I.goal;
+      S.profile = Object.assign({ id:"me", name, school:I.school, type, move:I.month, budget:I.budget, arrive:I.where, areas:I.areas.slice(), note }, I.life);
+      S.qi = INTAKE.length; S.deckIdx = 0; markDone("start"); save(); renderStart(m);
+      toast("Profile posted. Others can now find you.");
+    };
+  }
+}
+
+function planSteps(){
+  const I = S.intake, M = I.month, abroad = I.where === "abroad", mo = +M.split("-")[1];
+  const sept = mo === 8 || mo === 9, july = mo === 6 || mo === 7, lead = sept ? 6 : 4;
+  let st = [];
+  if (I.goal === "seek"){
+    st = [ [ -lead, "Shortlist 3–5 people", "Browse matches and save the ones you have most in common with." ],
+           [ -lead+1, "Check they're real, then talk", "Harvard email and a live video call first. Then the big conversation." ],
+           [ -3, "Search for places together", abroad ? "You're abroad, so decide who views: a housemate in Boston, a classmate, or a live video tour." : "View places in person and share live video with your housemates." ],
+           [ -2, "Sign the lease, then pay", "Never pay before a lease signed by the landlord. Check what can be charged up front.", true ],
+           [ -1, "Write your house agreement", "Rent, bills, chores, guests, and what happens if someone leaves." ],
+           [ 0, "Move in", "" ] ];
+    if (july) st.splice(3, 0, [ -1, "Plan a fallback", "Fewer leases start in July. Book 2–4 weeks of temporary housing so you aren't rushed.", true ]);
+  } else if (I.goal === "room"){
+    st = [ [ -3, "Ask your landlord how to add someone", "On the lease, or a written sublease? Get the answer in writing.", true ],
+           [ -3, "Your room is on the board", "People looking in your areas can now find it." ],
+           [ -2, "Check and talk to your shortlist", "Harvard email, live video, then the big conversation." ],
+           [ -1, "Sign, then write the house agreement", "" ], [ 0, "They move in", "" ] ];
+  } else if (I.goal === "takeover"){
+    st = [ [ -3, "Shortlist rooms and replacements", "Filter matches for rooms offered and people leaving early." ],
+           [ -2, "Confirm with the landlord yourself", "Not just the person leaving. Get the landlord's yes in writing.", true ],
+           [ -1, "Get on the lease or sign a sublease", "Pay the landlord, not the person leaving, unless the sublease says otherwise.", true ],
+           [ 0, "Move in", "" ] ];
+  } else {
+    st = [ [ -3, "Tell your housemates and landlord in writing", "Give the notice you agreed in your house agreement.", true ],
+           [ -3, "Your room is on the board as a replacement", "The next person arriving will find it there." ],
+           [ -2, "Check and talk to candidates", "Your housemates should meet them too." ],
+           [ -1, "Landlord approves, new person signs", "Until then you're usually still responsible for your rent.", true ],
+           [ 0, "Hand over keys", "" ] ];
+  }
+  return st.map(s => { const when = addMonths(M, s[0]); return { when, past: monthIdx(when) < monthIdx(NOW), now: when === NOW, t:s[1], d:s[2], warn:!!s[3] }; });
+}
+
+function renderPlan(m){
+  const P = S.profile, steps = planSteps();
+  let nowMarked = false;
+  const items = steps.map(s => {
+    let cls = s.warn ? "warn" : "";
+    let label = monthName(s.when);
+    if ((s.past || s.now) && !nowMarked){ cls += " now"; label = s.past ? "Now (you're behind, start here)" : "Now"; nowMarked = true; }
+    else if (s.past) { label = "Now, alongside the step above"; }
+    return '<li class="'+cls+'"><span class="dot"></span><div class="when">'+label+'</div><b>'+esc(s.t)+'</b>'+(s.d ? '<p>'+esc(s.d)+'</p>' : '')+'</li>';
+  }).join("");
+  m.innerHTML = '<div class="stage">'+head("start","Your plan, month by month","Built from your answers. The amber steps are where students most often lose money or a match.")+
+    '<div class="cols"><div class="card"><h3 style="font-size:19px;margin-bottom:14px">Moving in '+esc(monthName(P.move))+'</h3><ol class="timeline">'+items+'</ol></div>'+
+    '<div class="stack"><div class="card"><div class="eyebrow" style="margin-bottom:8px">Your profile is on the board</div>'+profileCard(P, true)+
+    '<button class="ghost" id="edit" style="margin-top:12px">Edit my answers</button></div>'+
+    '<div class="card" style="background:var(--accent-soft);border-color:#BFE5D3"><b>No more re-posting.</b><p style="margin:4px 0 0;font-size:14.5px;color:var(--ink-soft)">'+
+    'One profile replaces the intro you\'d paste into every group chat. Everyone answers the same questions, so you can compare at a glance.</p></div></div></div>'+
+    navRow("start")+'</div>';
+  $("edit").onclick = () => { S.qi = 0; save(); renderStart(m); };
+  wireGo(m);
+}
+
+/* =====================================================================
+   2. MATCHES: a deck you can swipe through, or a list
+   ===================================================================== */
+const TYPE = { seek:["Looking together","t-green"], room:["Room offered","t-blue"], replace:["Replacement room","t-amber"] };
+function compare(p){
+  const me = S.profile; if (!me) return null;
+  const rows = [], add = (k, same, v) => rows.push({ k, same, v });
+  const shared = p.areas.filter(a => me.areas.includes(a));
+  add("Areas", shared.length > 0, shared.length ? shared.join(", ") : "None shared: "+p.areas.join(", "));
+  add("Budget", Math.abs(p.budget - me.budget) <= 200, "Up to "+money(p.budget)+(Math.abs(p.budget - me.budget) <= 200 ? "" : " (you: "+money(me.budget)+")"));
+  const md = Math.abs(monthIdx(p.move) - monthIdx(me.move));
+  add("Move in", md <= 1, monthName(p.move)+(md <= 1 ? "" : " (you: "+monthName(me.move, true)+")"));
+  LIFE.forEach(L => add(L.l, p[L.k] === me[L.k], p[L.k]+(p[L.k] === me[L.k] ? "" : " (you: "+me[L.k].toLowerCase()+")")));
+  return rows;
+}
+function dimsHtml(p){
+  const rows = compare(p);
+  if (!rows){
+    return '<div class="dims">'+[["Areas",p.areas.join(", ")],["Budget","Up to "+money(p.budget)],["Move in",monthName(p.move)]].concat(LIFE.map(L => [L.l, p[L.k]]))
+      .map(r => '<div class="dim na"><span class="ic"></span><span class="k">'+r[0]+'</span><span class="v">'+esc(r[1])+'</span></div>').join("")+'</div>'+
+      '<p class="hint" style="margin:10px 0 0"><a href="#" class="mkprof">Make your profile</a> to see what you have in common.</p>';
+  }
+  const same = rows.filter(r => r.same).length;
+  return '<div class="fitline"><span><b style="color:var(--ink)">'+same+' of '+rows.length+'</b> in common</span><div class="meter"><i style="width:'+(same/rows.length*100)+'%"></i></div></div>'+
+    '<div class="dims">'+rows.map(r => '<div class="dim '+(r.same ? "same" : "talk")+'"><span class="ic">'+(r.same ? "✓" : "?")+'</span><span class="k">'+r.k+'</span><span class="v">'+esc(r.v)+'</span></div>').join("")+'</div>'+
+    '<p class="hint" style="margin:10px 0 0"><span style="color:var(--amber-ink);font-weight:600">?</span> = worth talking about, not a deal-breaker.</p>';
+}
+function profileCard(p, mine){
+  const t = TYPE[p.type] || TYPE.seek;
+  return '<div class="phead">'+avatar(p)+'<div><h3>'+esc(p.name)+'</h3><div class="meta">'+esc(p.school)+'</div></div></div>'+
+    '<div class="tags"><span class="tag '+t[1]+'">'+t[0]+'</span><span class="tag t-green">✓ Harvard email</span>'+
+    '<span class="tag t-grey">'+(p.arrive === "abroad" ? "Still abroad" : "In Boston")+'</span>'+(mine ? '<span class="tag t-grey">You</span>' : '<span class="tag t-grey">Sample</span>')+'</div>'+
+    (p.note ? '<p class="quote">'+esc(p.note)+'</p>' : '')+
+    (mine ? '<div class="dims">'+[["Move in",monthName(p.move)],["Budget","Up to "+money(p.budget)],["Areas",p.areas.join(", ")]].map(r =>
+      '<div class="dim na"><span class="ic"></span><span class="k">'+r[0]+'</span><span class="v">'+esc(r[1])+'</span></div>').join("")+'</div>' : dimsHtml(p));
+}
+function pool(){
+  const g = S.profile ? S.profile.type : null, goal = S.intake.goal;
+  let types = ["seek","room","replace"];
+  if (goal === "room" || goal === "replace") types = ["seek"];
+  else if (goal === "takeover") types = ["room","replace"];
+  let list = SAMPLES.filter(p => types.includes(p.type));
+  if (S.profile){ const c = p => compare(p).filter(r => r.same).length; list = list.slice().sort((a, b) => c(b) - c(a)); }
+  return list;
+}
+function renderMatch(m){
+  const all = pool(), queue = all.filter(p => !S.shortlist.includes(p.id) && !S.skipped.includes(p.id));
+  const sl = SAMPLES.filter(p => S.shortlist.includes(p.id));
+  let main;
+  if (S.view === "list"){
+    main = '<div class="listview">'+all.map(p => { const r = compare(p), same = r ? r.filter(x => x.same).length + "/" + r.length + " in common" : "";
+      const on = S.shortlist.includes(p.id);
+      return '<div class="lrow">'+avatar(p)+'<div><b>'+esc(p.name)+'</b> <span class="tag '+TYPE[p.type][1]+'">'+TYPE[p.type][0]+'</span><div class="meta">'+esc(p.school)+' · '+monthName(p.move, true)+' · up to '+money(p.budget)+(same ? ' · <b>'+same+'</b>' : '')+'</div></div>'+
+        '<button class="btn '+(on ? "btn-primary" : "")+'" data-sl="'+p.id+'">'+(on ? "✓ Saved" : "Save")+'</button></div>'; }).join("")+'</div>';
+  } else if (!queue.length){
+    main = '<div class="empty"><h3 style="font-size:20px;margin-bottom:6px">You\'ve seen everyone for now</h3><p style="margin:0 0 14px">'+
+      (sl.length ? 'You saved '+sl.length+'. Next, check they\'re real.' : 'Nobody saved yet.')+'</p>'+
+      (S.skipped.length ? '<button class="btn" id="again">Show the ones I skipped</button> ' : '')+(sl.length ? '<button class="btn btn-primary" data-go="check">Check my shortlist →</button>' : '')+'</div>';
+  } else {
+    const p = queue[0];
+    main = '<div class="deck"><div class="hint" style="margin-bottom:8px">'+(all.length - queue.length + 1)+' of '+all.length+(S.profile ? ' · best matches first' : '')+'</div>'+
+      '<div class="pcard" id="pc">'+profileCard(p)+
+      '<div class="actions"><button class="btn btn-quiet" id="skip">Skip</button><button class="btn btn-primary" id="keep">♥ Save to shortlist</button></div></div>'+
+      '<p class="hint" style="margin-top:8px">Tip: use ← and → keys.</p></div>';
+  }
+  m.innerHTML = '<div class="stage">'+head("match","People looking in your areas", S.profile
+      ? "Everyone answered the same questions, so you can see what you share without scrolling a single chat. Save the people you'd like to talk to."
+      : "These are the people on the board. Make your profile in Step 1 to see what you have in common with each of them.")+
+    '<div class="deckbar"><div class="toggle" role="group" aria-label="View"><button class="'+(S.view === "deck" ? "sel" : "")+'" data-v="deck">One at a time</button><button class="'+(S.view === "list" ? "sel" : "")+'" data-v="list">See all</button></div>'+
+    '<span class="hint">'+sl.length+' saved</span></div>'+main+
+    '<div class="shortlist"><h3>Your shortlist</h3>'+(sl.length ? '<div class="slchips">'+sl.map(p => '<span class="slchip">'+avatar(p)+esc(p.name)+'<button data-rm="'+p.id+'" aria-label="Remove '+esc(p.name)+'">×</button></span>').join("")+'</div>'
+      : '<p class="hint" style="margin:0">Save people to compare, check and talk to them in the next steps.</p>')+'</div>'+navRow("match")+'</div>';
+
+  const decide = keep => {
+    const p = queue[0], pc = $("pc"); if (!p || !pc) return;
+    if (keep){ S.shortlist.push(p.id); markDone("match"); toast("Saved "+p.name+". In the real tool, we'd ask them for an intro."); } else S.skipped.push(p.id);
+    save(); pc.classList.add(keep ? "out-r" : "out-l"); setTimeout(() => renderMatch(m), 300);
+  };
+  if ($("skip")){ $("skip").onclick = () => decide(false); $("keep").onclick = () => decide(true); }
+  document.onkeydown = e => { if (S.stage !== "match" || S.view !== "deck" || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+    if (e.key === "ArrowLeft") decide(false); if (e.key === "ArrowRight") decide(true); };
+  if ($("again")) $("again").onclick = () => { S.skipped = []; save(); renderMatch(m); };
+  m.querySelectorAll(".toggle button").forEach(b => b.onclick = () => { S.view = b.dataset.v; save(); renderMatch(m); });
+  m.querySelectorAll("[data-sl]").forEach(b => b.onclick = () => { const id = b.dataset.sl;
+    S.shortlist = S.shortlist.includes(id) ? S.shortlist.filter(x => x !== id) : S.shortlist.concat(id); S.skipped = S.skipped.filter(x => x !== id);
+    if (S.shortlist.length) markDone("match"); save(); renderMatch(m); });
+  m.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { S.shortlist = S.shortlist.filter(x => x !== b.dataset.rm); save(); renderMatch(m); });
+  m.querySelectorAll(".mkprof").forEach(a => a.onclick = e => { e.preventDefault(); S.qi = 0; go("start"); });
+  wireGo(m);
+}
+
+/* =====================================================================
+   3. IS IT REAL?: per-person checks + scam spotter
+   ===================================================================== */
+const CHECKS = [["email","Emailed me from a Harvard address"],["video","Live video call, camera on"],["money","No money asked before a lease"]];
+function renderCheck(m){
+  const sl = SAMPLES.filter(p => S.shortlist.includes(p.id));
+  const cands = sl.length ? sl.map(p => {
+      const c = S.checks[p.id] || {}, n = CHECKS.filter(k => c[k[0]]).length;
+      return '<div class="cand">'+avatar(p)+'<div><b>'+esc(p.name)+'</b><div class="ticks">'+CHECKS.map(k =>
+        '<button class="tick'+(c[k[0]] ? " sel" : "")+'" data-p="'+p.id+'" data-k="'+k[0]+'" aria-pressed="'+!!c[k[0]]+'"><span class="box">✓</span>'+k[1]+'</button>').join("")+'</div>'+
+        '<div class="status" style="color:'+(n === 3 ? "var(--accent-ink)" : "var(--amber-ink)")+'">'+(n === 3 ? "✓ Ready for the talk" : (3-n)+" check"+(3-n > 1 ? "s" : "")+" to go")+'</div></div></div>'; }).join("")
+    : '<div class="empty" style="padding:18px">Your shortlist is empty. <a href="#" data-go="match">Save someone in Matches</a> to check them here.</div>';
+  const sc = S.scam;
+  const bubbles = SCAM.map((x, i) => {
+    let cls = "bubble", why = "";
+    const sel = sc.sel.includes(i);
+    if (sel) cls += " sel";
+    if (sc.done){ if (x.bad && sel){ cls += " right"; why = "✓ Red flag. " + x.why; } else if (!x.bad && sel){ cls += " wrong"; why = "Actually fine. " + x.why; } else if (x.bad){ cls += " missed"; why = "Missed: " + x.why; } }
+    return '<button class="'+cls+'" data-i="'+i+'" '+(sc.done ? "disabled" : "")+'>'+esc(x.m)+(why ? '<span class="why">'+esc(why)+'</span>' : '')+'</button>';
+  }).join("");
+  let score = "";
+  if (sc.done){
+    const bad = SCAM.filter(x => x.bad).length, got = SCAM.filter((x, i) => x.bad && sc.sel.includes(i)).length, wrong = sc.sel.filter(i => !SCAM[i].bad).length;
+    score = '<div class="score" style="background:'+(got === bad && !wrong ? "var(--accent-soft)" : "var(--amber-soft)")+'"><b>You spotted '+got+' of '+bad+' red flags'+(wrong ? ', and flagged '+wrong+' normal message'+(wrong > 1 ? "s" : "") : '')+'.</b> '+
+      'Any one of these is a reason to stop. If you\'ve already paid someone like this, report it to <a href="https://www.hupd.harvard.edu/scams-targeting-international-affiliates" target="_blank" rel="noopener">Harvard University Police</a> and your bank.'+
+      ' <button class="ghost" id="retry" style="margin-left:6px">Try again</button></div>';
+  }
+  m.innerHTML = '<div class="stage">'+head("check","Is this person, and this room, real?","Three quick checks for everyone on your shortlist, and a two-minute practice at spotting the scams that target new arrivals.")+
+    '<div class="cols"><div class="card"><h3 style="font-size:19px;margin-bottom:4px">Your shortlist</h3><p class="hint" style="margin:0 0 14px">Tick each check as you do it.</p>'+cands+'</div>'+
+    '<div class="card"><h3 style="font-size:19px;margin-bottom:4px">Practice: spot the red flags</h3><p class="hint" style="margin:0 0 12px">A made-up chat about a room from an open marketplace. Tap every message that worries you.</p>'+
+    '<div class="chat"><div class="who">"Kevin" · Room in Harvard Square</div>'+bubbles+'</div>'+
+    (sc.done ? score : '<div class="nav-row" style="margin-top:12px"><span class="hint">'+sc.sel.length+' tapped</span><button class="btn btn-primary" id="reveal">Check my answers</button></div>')+'</div></div>'+navRow("check")+'</div>';
+  m.querySelectorAll(".tick").forEach(b => b.onclick = () => {
+    const c = S.checks[b.dataset.p] = S.checks[b.dataset.p] || {}; c[b.dataset.k] = !c[b.dataset.k];
+    if (CHECKS.every(k => c[k[0]])){ markDone("check"); toast("All three checks done. You're ready for the talk."); }
+    save(); renderCheck(m); });
+  m.querySelectorAll(".bubble:not([disabled])").forEach(b => b.onclick = () => { const i = +b.dataset.i;
+    sc.sel = sc.sel.includes(i) ? sc.sel.filter(x => x !== i) : sc.sel.concat(i); save(); renderCheck(m); });
+  if ($("reveal")) $("reveal").onclick = () => { sc.done = true; markDone("check"); save(); renderCheck(m); };
+  if ($("retry")) $("retry").onclick = () => { S.scam = { sel:[], done:false }; save(); renderCheck(m); };
+  wireGo(m);
+}
+
+/* =====================================================================
+   4. THE TALK: work through questions together, track differences
+   ===================================================================== */
+function talkKey(){ return S.talk.who || "practice"; }
+function renderTalk(m){
+  const sl = SAMPLES.filter(p => S.shortlist.includes(p.id));
+  if (S.talk.who && !S.shortlist.includes(S.talk.who)) S.talk.who = "";
+  if (!S.talk.who && sl.length) S.talk.who = sl[0].id;
+  const A = S.talk.a[talkKey()] = S.talk.a[talkKey()] || {};
+  const total = QUESTIONS.reduce((n, g) => n + g.q.length, 0), answered = Object.keys(A).length;
+  const diffs = []; QUESTIONS.forEach((g, gi) => g.q.forEach((q, qi) => { if (A[gi+"."+qi] === "diff") diffs.push(q); }));
+  const g = QUESTIONS[S.talk.tab], pct = answered / total, R = 34, C = 2*Math.PI*R;
+  const who = SAMPLES.find(p => p.id === S.talk.who);
+  m.innerHTML = '<div class="stage">'+head("talk","Have the real conversation","Do this on a video call, together. Mark each question as you go. Where you differ isn't a failure: it goes straight into your house agreement.")+
+    '<div class="cols wide"><div class="card">'+
+    '<label class="f" style="max-width:320px;margin-bottom:14px">Talking with<select id="who">'+
+      (sl.length ? sl.map(p => '<option value="'+p.id+'"'+(p.id === S.talk.who ? " selected" : "")+'>'+esc(p.name)+'</option>').join("") : '<option value="">Practice (no shortlist yet)</option>')+'</select></label>'+
+    '<div class="tabs" role="tablist">'+QUESTIONS.map((G, i) => { const done = G.q.filter((_, qi) => A[i+"."+qi]).length;
+      return '<button role="tab" aria-selected="'+(i === S.talk.tab)+'" class="'+(i === S.talk.tab ? "sel" : "")+'" data-t="'+i+'">'+G.h+'<span class="c">'+done+'/'+G.q.length+'</span></button>'; }).join("")+'</div>'+
+    g.q.map((q, qi) => { const k = S.talk.tab+"."+qi, v = A[k];
+      return '<div class="qcard"><p>'+esc(q)+'</p><div class="ab"><button class="same'+(v === "same" ? " sel" : "")+'" data-k="'+k+'" data-v="same">✓ We agree</button>'+
+        '<button class="diff'+(v === "diff" ? " sel" : "")+'" data-k="'+k+'" data-v="diff">≠ We differ</button></div></div>'; }).join("")+
+    (S.talk.tab < QUESTIONS.length - 1 ? '<div class="nav-row" style="margin-top:12px"><span></span><button class="btn" id="nexttab">Next topic: '+QUESTIONS[S.talk.tab+1].h+' →</button></div>' : '')+
+    '</div><div class="stack"><div class="card"><div class="ready"><svg class="ring" viewBox="0 0 84 84" aria-hidden="true"><circle cx="42" cy="42" r="'+R+'" fill="none" stroke="#DCEBE5" stroke-width="8"/>'+
+    '<circle cx="42" cy="42" r="'+R+'" fill="none" stroke="#0E8F68" stroke-width="8" stroke-linecap="round" stroke-dasharray="'+C+'" stroke-dashoffset="'+(C*(1-pct))+'" transform="rotate(-90 42 42)" style="transition:stroke-dashoffset .4s"/>'+
+    '<text x="42" y="48" text-anchor="middle" font-size="19" fill="#1F3A34">'+Math.round(pct*100)+'%</text></svg>'+
+    '<div><b>'+answered+' of '+total+' talked through</b><div class="hint">'+(who ? "with "+esc(who.name) : "practice run")+'</div></div></div>'+
+    (diffs.length ? '<div style="margin-top:14px"><b style="font-size:14.5px">To settle in your agreement ('+diffs.length+')</b><ul class="diffs">'+diffs.map(d => '<li>'+esc(d)+'</li>').join("")+'</ul></div>'
+      : '<p class="hint" style="margin:14px 0 0">Differences you mark appear here and carry over to your house agreement.</p>')+'</div>'+
+    '<div class="card"><b style="font-size:14.5px">Why we don\'t automate this</b><p style="margin:4px 0 0;font-size:14px;color:var(--ink-soft)">A match score can\'t tell you whether you\'ll get along. An honest hour can. That\'s why this step stays slow.</p></div></div></div>'+
+    navRow("talk")+'</div>';
+  if ($("who")) $("who").onchange = e => { S.talk.who = e.target.value; save(); renderTalk(m); };
+  m.querySelectorAll(".tabs button").forEach(b => b.onclick = () => { S.talk.tab = +b.dataset.t; save(); renderTalk(m); });
+  m.querySelectorAll(".ab button").forEach(b => b.onclick = () => { const k = b.dataset.k; A[k] = A[k] === b.dataset.v ? undefined : b.dataset.v; if (!A[k]) delete A[k];
+    if (Object.keys(A).length >= Math.ceil(total/2)) markDone("talk"); save(); renderTalk(m); });
+  if ($("nexttab")) $("nexttab").onclick = () => { S.talk.tab++; save(); renderTalk(m); };
+  wireGo(m);
+}
+
+/* =====================================================================
+   5. LEASE & MONEY: live calculator + "what if someone leaves"
+   ===================================================================== */
+function renderMoney(m){
+  const M = S.money;
+  if (M.n < 2) M.n = 2;
+  const sw = (k, label, note) => '<div class="sw"><span>'+label+(note ? '<span class="note">'+note+'</span>' : '')+'</span><button class="switch" role="switch" aria-checked="'+!!M[k]+'" data-k="'+k+'" aria-label="'+esc(label)+'"></button></div>';
+  m.innerHTML = '<div class="stage">'+head("money","What you'll pay, and what you're signing","Enter what the landlord is asking. We\'ll show your share and flag anything Massachusetts doesn\'t allow.")+
+    '<div class="cols"><div class="card stack">'+
+      '<label class="f">Total monthly rent for the whole place<input type="number" id="rent" min="500" step="50" value="'+M.rent+'"></label>'+
+      '<div><span class="f" style="font-size:13.5px;font-weight:600">Housemates, including you</span><div class="stepper" style="margin-top:6px"><button id="nminus" aria-label="Fewer">−</button><span id="nval">'+M.n+'</span><button id="nplus" aria-label="More">+</button></div></div>'+
+      '<div><span style="font-size:13.5px;font-weight:600">Split</span><div class="toggle" style="margin-top:6px;display:flex"><button class="'+(M.split === "equal" ? "sel" : "")+'" data-split="equal">Equally</button><button class="'+(M.split === "custom" ? "sel" : "")+'" data-split="custom">Bigger room pays more</button></div>'+
+        (M.split === "custom" ? '<label class="f" style="margin-top:10px">Your share: <span id="mineval">'+M.mine+'%</span><input type="range" id="mine" min="10" max="80" value="'+M.mine+'"></label>' : '')+'</div>'+
+      '<div><b style="font-size:14.5px">The landlord is asking for…</b><div class="switches" style="margin-top:8px">'+
+        sw("first","First month's rent")+sw("last","Last month's rent")+
+        '<div class="sw"><span>Security deposit<span class="note">Total for the place</span></span><input type="number" id="dep" min="0" step="50" value="'+M.dep+'" style="width:120px"></div>'+
+        sw("lock","New lock and key")+sw("appfee","Application fee")+sw("hold","Fee to \"hold\" the place")+sw("broker","Broker's fee")+
+        (M.broker ? '<div class="sw"><span>Who hired the broker?</span><div class="toggle"><button class="'+(M.brokerBy === "landlord" ? "sel" : "")+'" data-bb="landlord">Landlord</button><button class="'+(M.brokerBy === "us" ? "sel" : "")+'" data-bb="us">We did</button></div></div>' : '')+
+      '</div></div></div>'+
+      '<div class="stack"><div class="card" id="mout"></div><div class="card" id="joint"></div></div></div>'+
+    '<p class="hint" style="margin-top:14px">Based on the <a href="https://www.mass.gov/guides/the-attorney-generals-guide-to-landlord-and-tenant-rights" target="_blank" rel="noopener">Massachusetts Attorney General\'s guide</a>. General information, not legal advice. Worried about a lease? Ask <a href="https://hls.harvard.edu/clinics/in-house-clinics/housing-law-clinic/" target="_blank" rel="noopener">HLS Housing Law Clinic</a> or <a href="https://www.huhousing.harvard.edu/" target="_blank" rel="noopener">Harvard University Housing</a>.</p>'+
+    navRow("money")+'</div>';
+
+  const calc = () => {
+    markDone("money");
+    const rent = Math.max(0, +M.rent || 0), share = M.split === "equal" ? 1/M.n : M.mine/100, other = M.split === "equal" ? 1/M.n : (1 - M.mine/100)/(M.n - 1);
+    const items = [];
+    if (M.first) items.push(["First month", rent]);
+    if (M.last) items.push(["Last month", rent]);
+    if (+M.dep) items.push(["Security deposit", +M.dep]);
+    if (M.lock) items.push(["Lock and key (est.)", 150]);
+    const flags = [];
+    if (+M.dep > rent) flags.push("The security deposit can't be more than one month's rent ("+money(rent)+"). This one is "+money(+M.dep)+".");
+    if (M.appfee) flags.push("Application fees generally aren't allowed in Massachusetts. Ask before you pay.");
+    if (M.hold) flags.push("Fees to \"hold\" a place generally aren't allowed, and they're a common scam. Don't pay.");
+    if (M.broker && M.brokerBy === "landlord") flags.push("Since August 2025, whoever hired the broker pays. The landlord hired them, so you shouldn't be charged.");
+    const legal = items.reduce((n, x) => n + x[1], 0);
+    $("mout").innerHTML = '<div class="eyebrow">Your share up front</div><div class="big">'+money(legal*share)+'</div><p class="hint" style="margin:2px 0 12px">then '+money(rent*share)+' a month'+(M.split === "custom" ? '; each other housemate pays about '+money(rent*other) : '')+'</p>'+
+      '<div class="money-out">'+items.map(x => '<div class="line"><span>'+x[0]+'</span><span>'+money(x[1]*share)+' <span class="hint">of '+money(x[1])+'</span></span></div>').join("")+
+      '<div class="line total"><span>You pay before moving in</span><span>'+money(legal*share)+'</span></div></div>'+
+      (flags.length ? '<div class="stack" style="gap:8px;margin-top:12px">'+flags.map(f => '<div class="flag bad">⚠️ <span>'+f+'</span></div>').join("")+'</div>'
+        : '<div class="flag okk" style="margin-top:12px">✓ <span>Everything here is allowed up front. Pay only after the lease is signed, and keep a receipt for each payment.</span></div>');
+    const n = M.n, people = Array.from({ length:n }, (_, i) => i === 0 ? "You" : String.fromCharCode(65 + i - 1));
+    $("joint").innerHTML = '<div class="eyebrow">If you sign one lease together</div><h3 style="font-size:19px;margin:4px 0 6px">Each of you can owe the whole rent</h3>'+
+      '<p style="margin:0 0 12px;font-size:14.5px;color:var(--ink-soft)">Most shared leases are joint. If a housemate leaves and isn\'t replaced, the landlord can ask the rest of you to cover their share.</p>'+
+      '<div class="people">'+people.map((p, i) => '<span class="p'+(M.leaver && i === n-1 ? " gone" : "")+'" style="background:'+COLORS[i % COLORS.length]+'">'+(p === "You" ? "You" : p)+'</span>').join("")+'</div>'+
+      '<div class="sw" style="margin-top:12px"><span>What if one housemate leaves?</span><button class="switch" role="switch" aria-checked="'+M.leaver+'" id="leaver" aria-label="One housemate leaves"></button></div>'+
+      '<p style="margin:10px 0 0;font-size:15px">'+(M.leaver ? 'Rent stays '+money(rent)+'. '+(n === 2 ? 'Left on your own' : 'Split between the '+(n-1)+' of you left')+', your share could rise from <b>'+money(rent/n)+'</b> to <b style="color:var(--warn)">'+money(rent/(n-1))+'</b> a month.'
+        : 'Today: '+money(rent/n)+' each.')+'</p>'+(M.leaver ? '<p class="hint" style="margin:6px 0 0">That\'s why Step 6 asks what happens when someone leaves early.</p>' : '');
+    $("leaver").onclick = () => { M.leaver = !M.leaver; save(); calc(); };
+  };
+  $("rent").oninput = e => { M.rent = +e.target.value; save(); calc(); };
+  $("dep").oninput = e => { M.dep = +e.target.value; save(); calc(); };
+  $("nminus").onclick = () => { if (M.n > 2){ M.n--; save(); renderMoney(m); } };
+  $("nplus").onclick = () => { if (M.n < 6){ M.n++; save(); renderMoney(m); } };
+  m.querySelectorAll("[data-split]").forEach(b => b.onclick = () => { M.split = b.dataset.split; save(); renderMoney(m); });
+  m.querySelectorAll("[data-bb]").forEach(b => b.onclick = () => { M.brokerBy = b.dataset.bb; save(); renderMoney(m); });
+  if ($("mine")) $("mine").oninput = e => { M.mine = +e.target.value; $("mineval").textContent = M.mine + "%"; save(); calc(); };
+  m.querySelectorAll(".switch[data-k]").forEach(b => b.onclick = () => { M[b.dataset.k] = !M[b.dataset.k]; save(); if (b.dataset.k === "broker") renderMoney(m); else { b.setAttribute("aria-checked", M[b.dataset.k]); calc(); } });
+  calc(); wireGo(m);
+}
+
+/* =====================================================================
+   6. LIVE TOGETHER: agreement with live preview + replacement loop
+   ===================================================================== */
+function renderAgree(m){
+  const G = S.agree, sl = SAMPLES.filter(p => S.shortlist.includes(p.id));
+  const A = S.talk.a[talkKey()] || {}, diffs = [];
+  QUESTIONS.forEach((g, gi) => g.q.forEach((q, qi) => { if (A[gi+"."+qi] === "diff") diffs.push(q); }));
+  if (!G.names) G.names = [S.profile ? S.profile.name : "", sl[0] ? sl[0].name : ""].filter(Boolean).join(", ");
+  const sel = (k, label, opts) => '<label class="f">'+label+'<select data-k="'+k+'">'+opts.map(o => '<option'+(G[k] === o ? " selected" : "")+'>'+esc(o)+'</option>').join("")+'</select></label>';
+  const inp = (k, label, ph) => '<label class="f">'+label+'<input type="text" data-k="'+k+'" value="'+esc(G[k] || "")+'" placeholder="'+esc(ph || "")+'"></label>';
+  m.innerHTML = '<div class="stage">'+head("agree","Write your house agreement","Decide together, fill it in, and watch the agreement write itself. It\'s a record of what you agreed, not a legal contract.")+
+    '<div class="cols"><div class="card"><div class="formgrid">'+
+      '<div style="grid-column:1/-1">'+inp("names","Housemates","e.g. Amara, Diego")+'</div>'+
+      sel("rent","Rent is split",["Equally","By room size","Another way (see below)"])+inp("bills","Bills are in the name of","e.g. Diego")+
+      inp("pay","Others pay them back","e.g. by the 5th, via Zelle")+sel("chores","Chores",["Weekly rota","Clean up after yourself; deep clean monthly","Share the cost of a cleaner"])+
+      inp("quiet","Quiet hours","e.g. 11pm–7am on weeknights")+sel("guests","Overnight guests",["Fine, with a heads-up","Up to 2 nights a week","Ask first every time"])+
+      sel("notice","Notice if someone leaves early",["30 days","60 days","90 days"])+sel("leave","Until they're replaced",["They keep paying their share","We split their share"])+
+      '<label class="f" style="grid-column:1/-1">Anything else<textarea data-k="other" placeholder="Shared groceries, kitchen rules, how we raise problems…">'+esc(G.other || "")+'</textarea></label>'+
+    '</div></div><div class="stack"><div class="doc" id="doc"></div>'+
+    '<div class="row" style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-primary" id="copy">Copy agreement</button><button class="btn" id="print">Print</button></div>'+
+    '<div class="card"><b>Leaving early later?</b><p style="margin:4px 0 10px;font-size:14px;color:var(--ink-soft)">Post your room as a replacement and it goes back on the board, where the next arrival will find it. The search becomes a loop, not a restart.</p>'+
+    '<button class="btn" id="post">'+(S.posted ? "✓ Posted as a replacement" : "Post my room as a replacement")+'</button></div></div></div>'+navRow("agree")+'</div>';
+
+  const draw = () => {
+    const h = s => '<mark>'+esc(s)+'</mark>';
+    const items = [
+      "Rent is split "+h(G.rent.toLowerCase())+". Each of us pays our share to the landlord on time.",
+      "Utilities and internet are in "+h(G.bills || "(name)")+"'s name. The rest of us pay them back "+h(G.pay || "(when and how)")+".",
+      "Chores: "+h(G.chores.toLowerCase())+".",
+      "Quiet hours: "+h(G.quiet || "(to agree)")+".",
+      "Overnight guests: "+h(G.guests.toLowerCase())+".",
+      "If one of us leaves early, they give "+h(G.notice.replace("days", "days'"))+" notice in writing to the others and the landlord. Until a replacement approved by the landlord moves in, "+
+        h(G.leave === "We split their share" ? "the rest of us split their share" : "the person leaving keeps paying their share")+".",
+      "The security deposit goes back to whoever paid it, in the amounts we recorded."
+    ];
+    if (G.other) items.push("Also agreed: "+h(G.other));
+    diffs.forEach(d => items.push("Still to settle (from our talk): "+h(d)));
+    $("doc").innerHTML = '<h3>House agreement</h3><div class="sub">'+esc(G.names || "(housemates)")+' · '+new Date().toLocaleDateString("en-US", { month:"long", day:"numeric", year:"numeric" })+'</div>'+
+      '<ol>'+items.map(i => '<li>'+i+'</li>').join("")+'</ol><p style="margin:12px 0 0">We\'ll check in after the first month and change anything that isn\'t working.</p>'+
+      '<div class="sign">'+(G.names || "Housemate 1, Housemate 2").split(",").map(n => '<span>'+esc(n.trim() || "Signature")+'</span>').join("")+'</div>';
+  };
+  m.querySelectorAll("[data-k]").forEach(el => el.oninput = el.onchange = () => { G[el.dataset.k] = el.value; markDone("agree"); save(); draw(); });
+  $("copy").onclick = () => { const t = $("doc").innerText; markDone("agree");
+    if (navigator.clipboard) navigator.clipboard.writeText(t).then(() => toast("Agreement copied. Paste it into your group chat."), () => toast("Couldn't copy here. Select the text instead.")); };
+  $("print").onclick = () => window.print();
+  $("post").onclick = () => { if (S.posted) return; S.posted = true; save(); $("post").textContent = "✓ Posted as a replacement"; toast("Your room is on the board as a replacement. In the real tool, the next arrival would see it."); };
+  draw(); wireGo(m);
+}
+
+/* ---------- router ---------- */
+function render(){
+  renderRail();
+  const m = $("main");
+  ({ start:renderStart, match:renderMatch, check:renderCheck, talk:renderTalk, money:renderMoney, agree:renderAgree })[S.stage](m);
+}
+$("reset").onclick = () => { if (confirm("Clear all your answers and start over?")){ S = fresh(); save(); render(); toast("Cleared. Starting fresh."); } };
+render();
+</script>
+</body>
+</html>
