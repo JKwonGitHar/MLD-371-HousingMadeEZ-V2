@@ -332,6 +332,89 @@
     background: linear-gradient(transparent, var(--paper-raised)); pointer-events:none;
   }
 
+  /* ---------- Furniture board ---------- */
+  .fb-how{ display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-bottom:18px; }
+  @media (max-width:760px){ .fb-how{ grid-template-columns:1fr; } }
+  .fb-how div{ background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius-m); padding:12px 14px; }
+  .fb-how .n{ font: 600 11.5px 'IBM Plex Mono', monospace; color: var(--accent-ink); }
+  .fb-how b{ display:block; font-size:14.5px; margin:2px 0; }
+  .fb-how span{ font-size:13px; color: var(--ink-soft); }
+
+  .fb-mode{ display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+    font-size:13px; color: var(--ink-soft); background: var(--amber-soft); border:1px solid color-mix(in srgb, var(--amber) 30%, transparent);
+    border-radius: var(--radius-m); padding:10px 14px; margin-bottom:14px; }
+  .fb-mode.live{ background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 30%, transparent); }
+  .fb-linkbtn{ background:none; border:none; padding:0; font: 600 13px 'Work Sans', sans-serif; color: var(--accent-ink); text-decoration: underline; cursor:pointer; }
+
+  .fb-tabs{ display:inline-flex; gap:2px; margin-bottom:16px; flex-wrap:wrap; max-width:100%; }
+  .fb-toolbar{ display:grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap:10px; margin-bottom:10px; }
+  @media (max-width:760px){ .fb-toolbar{ grid-template-columns: 1fr 1fr; } .fb-toolbar .fb-search{ grid-column: 1 / -1; } }
+  .fb-chips{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .fb-chip{ font: 600 12.5px 'Work Sans', sans-serif; padding:6px 12px; border-radius:999px; border:1px solid var(--line);
+    background: var(--paper-raised); color: var(--ink-soft); cursor:pointer; }
+  .fb-chip[aria-pressed="true"]{ background: var(--ink); border-color: var(--ink); color: var(--paper-raised); }
+  .fb-count{ font-size:13px; color: var(--ink-faint); margin: 4px 0 12px; }
+  .fb-check{ display:inline-flex; align-items:center; gap:7px; font-size:13px; color: var(--ink-soft); cursor:pointer; }
+  .fb-check input{ accent-color: var(--accent); }
+
+  .fb-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:14px; }
+  @media (max-width:900px){ .fb-grid{ grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width:560px){ .fb-grid{ grid-template-columns: 1fr; } }
+  .fb-card{ background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius-m); overflow:hidden;
+    display:flex; flex-direction:column; box-shadow: var(--shadow-1); transition: border-color .15s, box-shadow .15s; }
+  .fb-card:hover{ border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); box-shadow: var(--shadow-2); }
+  .fb-card.is-reserved{ opacity:.82; }
+  .fb-photo{ position:relative; aspect-ratio: 4 / 3; background: var(--accent-soft); display:grid; place-items:center; overflow:hidden; }
+  .fb-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .fb-photo svg{ width:42%; height:auto; color: var(--accent-ink); opacity:.7; }
+  .fb-photo[data-cat="seating"]{ background:#FFF3DC; } .fb-photo[data-cat="seating"] svg{ color: var(--amber); }
+  .fb-photo[data-cat="storage"]{ background:#E3EDF7; } .fb-photo[data-cat="storage"] svg{ color:#2F5F8F; }
+  .fb-photo[data-cat="kitchen"]{ background:#FDEDEA; } .fb-photo[data-cat="kitchen"] svg{ color: var(--warn); }
+  .fb-photo[data-cat="other"]{ background:#EFEDF5; } .fb-photo[data-cat="other"] svg{ color:#5B4F8A; }
+  .fb-price{ position:absolute; left:10px; bottom:10px; background: var(--paper-raised); color: var(--ink);
+    font: 600 15px 'IBM Plex Mono', monospace; padding:4px 10px; border-radius:999px; box-shadow: var(--shadow-1); }
+  .fb-price.free{ background: var(--accent); color:#fff; }
+  .fb-status{ position:absolute; right:10px; top:10px; }
+  .fb-body{ padding:14px 16px 16px; display:flex; flex-direction:column; gap:8px; flex:1; }
+  .fb-body h3{ font-family:'Work Sans', sans-serif; font-size:15.5px; font-weight:600; line-height:1.3; }
+  .fb-tags{ display:flex; gap:6px; flex-wrap:wrap; }
+  .fb-tags .tag{ font-size:10.5px; padding:2px 8px; }
+  .tag-ink{ background: var(--line); color: var(--ink-soft); }
+  .fb-facts{ display:grid; grid-template-columns: auto 1fr; gap:3px 10px; font-size:12.5px; margin:0; }
+  .fb-facts dt{ color: var(--ink-faint); }
+  .fb-facts dd{ margin:0; color: var(--ink); min-width:0; overflow-wrap:anywhere; }
+  .fb-note{ font-size:13px; color: var(--ink-soft); margin:0; }
+  .fb-seller{ display:flex; align-items:center; gap:6px; font-size:12.5px; color: var(--ink-soft); margin-top:auto; padding-top:8px; border-top:1px dashed var(--line); }
+  .fb-verified{ display:inline-flex; align-items:center; gap:3px; font-size:11px; font-weight:700; color: var(--accent-ink); }
+  .fb-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+  .fb-actions .btn{ padding:8px 14px; font-size:13.5px; }
+  .fb-reserved-note{ font-size:12.5px; color: var(--amber); font-weight:600; }
+
+  .fb-form{ display:grid; grid-template-columns: repeat(6, 1fr); gap:12px; }
+  .fb-form .c2{ grid-column: span 2; } .fb-form .c3{ grid-column: span 3; } .fb-form .c6{ grid-column: 1 / -1; }
+  @media (max-width:760px){ .fb-form{ grid-template-columns: 1fr 1fr; } .fb-form .c2, .fb-form .c3{ grid-column: span 1; } .fb-form .c6{ grid-column: 1 / -1; } }
+  .fb-form fieldset{ border:1px solid var(--line); border-radius: var(--radius-s); padding:10px 12px; margin:0; }
+  .fb-form legend{ font-size:12.5px; font-weight:600; color: var(--ink-soft); padding:0 4px; }
+  .fb-form .opts{ display:flex; gap:8px 16px; flex-wrap:wrap; }
+  .fb-hint{ font-size:12px; color: var(--ink-faint); margin-top:4px; }
+  .fb-error{ font-size:13px; color: var(--warn); font-weight:600; }
+  .fb-photo-preview{ width:84px; height:63px; border-radius:6px; object-fit:cover; border:1px solid var(--line); display:block; margin-top:6px; }
+  .fb-dims{ display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; }
+
+  .fb-movedays{ display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-top:18px; }
+  @media (max-width:760px){ .fb-movedays{ grid-template-columns:1fr; } }
+  .fb-day{ background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius-m); padding:12px 14px; }
+  .fb-day b{ font-family:'Fraunces', serif; font-size:16px; display:block; }
+  .fb-day .mono{ font-size:12.5px; color: var(--ink-soft); }
+
+  dialog.fb-dialog{ border:none; border-radius: var(--radius-l); padding:0; width:min(520px, calc(100vw - 32px));
+    box-shadow: 0 24px 60px rgba(31,58,52,.25); color: var(--ink); background: var(--paper-raised); }
+  dialog.fb-dialog::backdrop{ background: rgba(31,58,52,.35); }
+  .fb-dialog form{ padding:20px 22px; display:grid; gap:12px; }
+  .fb-dialog h3{ font-size:20px; }
+  .fb-dialog .row2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:480px){ .fb-dialog .row2{ grid-template-columns:1fr; } }
+
   footer{ padding: 40px 0 60px; border-top: 1px solid var(--line); margin-top: 20px; }
   footer p{ font-size:13px; color: var(--ink-faint); margin:0 0 6px; }
 </style>
@@ -348,6 +431,7 @@
       <a href="#checklist">Checklist</a>
       <a href="#rent">Rent map</a>
       <a href="#roommates">Roommates</a>
+      <a href="#furniture">Furniture</a>
       <a href="#childcare">Childcare</a>
     </nav>
   </div>
@@ -367,7 +451,7 @@
       <a href="#scams"><span class="n">01</span><span class="t">Avoid scams</span><span class="d">Verify the agent and owner</span></a>
       <a href="#lease"><span class="n">02</span><span class="t">Decipher your lease</span><span class="d">Check a lease with LeaseCheck</span></a>
       <a href="#banking"><span class="n">03</span><span class="t">Open a bank account</span><span class="d">No SSN needed with HFCU</span></a>
-      <a href="#checklist"><span class="n">04</span><span class="t">Move in</span><span class="d">Checklist, rent, roommates</span></a>
+      <a href="#checklist"><span class="n">04</span><span class="t">Move in</span><span class="d">Checklist, roommates, furniture</span></a>
     </nav>
   </section>
 
@@ -623,9 +707,153 @@
     </div>
   </section>
 
+  <!-- ================= FURNITURE BOARD (prototype) ================= -->
+  <section class="stop" id="furniture">
+    <div class="stop-kicker">Stop 7</div>
+    <h2>Furnish your place: the HKS furniture board</h2>
+    <p class="sub">Graduating students leave in May and June; incoming students arrive in August to an empty room. This board closes that gap: sellers list before they leave, you reserve from abroad, and you pick up when you land.</p>
+
+    <div class="fb-how">
+      <div><span class="n">01 · Spring</span><b>Leaving students list</b><span>Photos, dimensions, condition and how pickup will work after they leave.</span></div>
+      <div><span class="n">02 · From abroad</span><b>You reserve for your arrival</b><span>Tell the seller your landing date. No payment until you've seen it.</span></div>
+      <div><span class="n">03 · August</span><b>Pick up or join a moving day</b><span>Collect it yourself, or share a van on a group moving day.</span></div>
+    </div>
+
+    <div class="fb-mode" id="fb-mode">
+      <span id="fb-mode-text">Prototype mode: these are sample listings. Anything you post or reserve is saved only in this browser.</span>
+      <button class="fb-linkbtn" type="button" id="fb-reset">Reset sample listings</button>
+    </div>
+
+    <div class="fb-tabs seg" role="tablist" aria-label="Furniture board">
+      <button type="button" role="tab" data-fbtab="browse" aria-pressed="true">Browse listings</button>
+      <button type="button" role="tab" data-fbtab="sell" aria-pressed="false">Sell something</button>
+      <button type="button" role="tab" data-fbtab="move" aria-pressed="false">Moving days</button>
+    </div>
+
+    <!-- Browse -->
+    <div id="fb-browse">
+      <div class="fb-toolbar">
+        <div class="field fb-search"><label for="fb-q">Search</label><input id="fb-q" type="search" placeholder="desk, queen bed, lamp…" autocomplete="off"></div>
+        <div class="field"><label for="fb-area">Area</label>
+          <select id="fb-area"><option value="">Anywhere</option></select></div>
+        <div class="field"><label for="fb-arrive">I arrive on</label><input id="fb-arrive" type="date"></div>
+        <div class="field"><label for="fb-sort">Sort</label>
+          <select id="fb-sort">
+            <option value="new">Newest</option>
+            <option value="price">Price: low to high</option>
+            <option value="soon">Available soonest</option>
+          </select></div>
+      </div>
+      <div class="fb-chips" id="fb-cats" role="group" aria-label="Category"></div>
+      <div style="display:flex; gap:18px; flex-wrap:wrap; margin-bottom:6px;">
+        <label class="fb-check"><input type="checkbox" id="fb-only-avail" checked> Hide reserved</label>
+        <label class="fb-check"><input type="checkbox" id="fb-only-bundle"> Bundles only</label>
+        <label class="fb-check"><input type="checkbox" id="fb-only-free"> Free only</label>
+      </div>
+      <p class="fb-count" id="fb-count" aria-live="polite"></p>
+      <div class="fb-grid" id="fb-grid"></div>
+    </div>
+
+    <!-- Sell -->
+    <div id="fb-sell" hidden>
+      <form class="card fb-form" id="fb-form" novalidate>
+        <div class="field c6"><label for="fs-title">What are you selling?</label><input id="fs-title" required maxlength="70" placeholder="e.g. Queen bed frame + mattress"></div>
+        <div class="field c2"><label for="fs-cat">Category</label><select id="fs-cat" required></select></div>
+        <div class="field c2"><label for="fs-price">Price (USD, 0 = free)</label><input id="fs-price" type="number" min="0" max="5000" step="5" required placeholder="60"></div>
+        <div class="field c2"><label for="fs-cond">Condition</label>
+          <select id="fs-cond"><option>Like new</option><option selected>Good</option><option>Fair</option></select></div>
+
+        <div class="field c3"><label>Dimensions in inches (W × D × H)</label>
+          <div class="fb-dims">
+            <input id="fs-w" type="number" min="1" max="200" placeholder="W" aria-label="Width in inches">
+            <input id="fs-d" type="number" min="1" max="200" placeholder="D" aria-label="Depth in inches">
+            <input id="fs-h" type="number" min="1" max="200" placeholder="H" aria-label="Height in inches">
+          </div>
+          <div class="fb-hint">Required for anything bigger than a lamp. Buyers need to check it fits through their door.</div>
+        </div>
+        <div class="field c3"><label for="fs-area">Where is it?</label><select id="fs-area" required></select>
+          <div class="fb-hint">Neighborhood only. Share the exact address after someone reserves.</div></div>
+
+        <div class="field c2"><label for="fs-from">Available from</label><input id="fs-from" type="date" required></div>
+        <div class="field c2"><label for="fs-until">Pick up by</label><input id="fs-until" type="date" required></div>
+        <div class="field c2"><label for="fs-handoff">If you've left before pickup</label>
+          <select id="fs-handoff">
+            <option value="here">I'll still be here</option>
+            <option value="friend">A friend will hand it over</option>
+            <option value="storage">It'll be in storage</option>
+            <option value="unit">It stays in the apartment</option>
+          </select></div>
+
+        <fieldset class="c3"><legend>Payment you accept</legend>
+          <div class="opts" id="fs-pay">
+            <label class="fb-check"><input type="checkbox" value="Cash at pickup" checked> Cash at pickup</label>
+            <label class="fb-check"><input type="checkbox" value="Venmo / Zelle"> Venmo / Zelle</label>
+            <label class="fb-check"><input type="checkbox" value="Pay after arrival"> Pay after buyer's bank account opens</label>
+          </div></fieldset>
+        <fieldset class="c3"><legend>Extras</legend>
+          <div class="opts">
+            <label class="fb-check"><input type="checkbox" id="fs-bundle"> This is a bundle of several items</label>
+            <label class="fb-check"><input type="checkbox" id="fs-stay"> Can stay in the unit for the next tenant</label>
+            <label class="fb-check"><input type="checkbox" id="fs-moveday"> Fine with a group moving day pickup</label>
+          </div></fieldset>
+
+        <div class="field c3"><label for="fs-pickup">Pickup notes</label><input id="fs-pickup" maxlength="100" placeholder="3rd floor walk-up, no elevator"></div>
+        <div class="field c3"><label for="fs-photo">Photo</label><input id="fs-photo" type="file" accept="image/*">
+          <img id="fs-photo-prev" class="fb-photo-preview" alt="Photo preview" hidden></div>
+        <div class="field c6"><label for="fs-note">Description</label><textarea id="fs-note" maxlength="300" placeholder="What's included, any wear, why you're selling…"></textarea></div>
+
+        <div class="field c3"><label for="fs-name">Your name</label><input id="fs-name" required maxlength="40" placeholder="Priya S."></div>
+        <div class="field c3"><label for="fs-email">Harvard email</label><input id="fs-email" type="email" required maxlength="80" placeholder="you@hks.harvard.edu">
+          <div class="fb-hint">Only Harvard addresses can list. In the live version this would be confirmed with HarvardKey.</div></div>
+
+        <div class="c6" style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+          <span class="fb-error" id="fs-error" role="alert"></span>
+          <button type="submit" class="btn btn-primary">Post listing</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Moving days -->
+    <div id="fb-move" hidden>
+      <p class="prose" style="margin:0; color:var(--ink-soft); font-size:14.5px;">One rented van and a few volunteers can move a dozen students' furniture in a morning, for a fraction of what separate movers cost. Pick a day when you reserve something; the counts below update as people sign up. <em>Dates shown are examples for the August 2027 arrival season.</em></p>
+      <div class="fb-movedays" id="fb-movedays"></div>
+    </div>
+
+    <div class="callout" style="background:var(--accent-soft); border:1px solid color-mix(in srgb, var(--accent) 25%, transparent); margin-top:20px;">
+      <div><strong>Buy safely, even from classmates.</strong>
+        <p>See it (in person or on a live video call) before you pay. Measure your doorway and stairs against the listed dimensions. Never wire money; cash at pickup or paying after your US account opens is fine.</p></div>
+    </div>
+
+    <dialog class="fb-dialog" id="fb-dialog" aria-labelledby="fr-title">
+      <form id="fr-form" method="dialog" novalidate>
+        <div>
+          <span class="tag tag-good">Reserve for your arrival</span>
+          <h3 id="fr-title" style="margin-top:8px;">Reserve this item</h3>
+          <p id="fr-item" style="margin:4px 0 0; font-size:14px; color:var(--ink-soft);"></p>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="fr-name">Your name</label><input id="fr-name" required maxlength="40"></div>
+          <div class="field"><label for="fr-email">Harvard email</label><input id="fr-email" type="email" required maxlength="80" placeholder="you@hks.harvard.edu"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="fr-arrive">You arrive in Boston</label><input id="fr-arrive" type="date" required></div>
+          <div class="field"><label for="fr-pickup">How will you collect it?</label>
+            <select id="fr-pickup"><option value="self">I'll pick it up myself</option></select></div>
+        </div>
+        <div class="field"><label for="fr-msg">Message to the seller (optional)</label><textarea id="fr-msg" maxlength="240" placeholder="Hi! I land on Aug 20 and would love this for my room in Allston."></textarea></div>
+        <p class="fb-hint" style="margin:0;">Reserving holds the item for you until your arrival date. It isn't a payment, and you pay only once you've seen it.</p>
+        <span class="fb-error" id="fr-error" role="alert"></span>
+        <div style="display:flex; justify-content:flex-end; gap:8px;">
+          <button type="button" class="btn btn-ghost" id="fr-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="fr-submit">Reserve</button>
+        </div>
+      </form>
+    </dialog>
+  </section>
+
   <!-- ================= CHILDCARE ================= -->
   <section class="stop" id="childcare">
-    <div class="stop-kicker">Stop 7</div>
+    <div class="stop-kicker">Stop 8</div>
     <h2>Childcare: Cambridge vs. Boston/Allston</h2>
     <p class="sub">Bringing a family changes the calculus. Cambridge centers run at a premium — university-affiliated care and long waitlists push prices up — while Boston-wide averages (the closest available data for Allston/Brighton) run somewhat lower.</p>
 
@@ -1142,6 +1370,395 @@
       setTimeout(fit, 800);
     });
   });
+})();
+</script>
+<script>
+/* ============ FURNITURE BOARD (prototype) ============
+   Works two ways:
+   - Shared mode: when the page runs as a Claude artifact with the `db` capability,
+     listings live in the shared "furniture_listings" collection.
+   - Prototype mode (anywhere else, e.g. GitHub Pages or opening the file): sample
+     listings, and anything posted or reserved is kept in this browser only. */
+(function(){
+  var root = document.getElementById("furniture");
+  if (!root) return;
+
+  var CATS = [
+    { id:"bed",     label:"Beds & mattresses" },
+    { id:"desk",    label:"Desks & chairs" },
+    { id:"seating", label:"Sofas & seating" },
+    { id:"storage", label:"Storage" },
+    { id:"kitchen", label:"Kitchen" },
+    { id:"other",   label:"Lamps & other" }
+  ];
+  var AREAS = ["Cambridge – Harvard Sq", "Cambridge – Central / Kendall", "Cambridge – Porter / North",
+               "Somerville", "Allston / Brighton", "Harvard University Housing", "Boston – other"];
+  var MOVE_DAYS = [
+    { id:"2027-08-21", label:"Sat, Aug 21", note:"Early arrivals, pre-orientation" },
+    { id:"2027-08-28", label:"Sat, Aug 28", note:"Main arrival weekend" },
+    { id:"2027-09-01", label:"Wed, Sep 1",  note:"Lease turnover day: expect traffic" }
+  ];
+  var HANDOFF = { here:"Seller still in town", friend:"A friend hands it over", storage:"Collected from storage", unit:"Stays in the apartment" };
+  var ICONS = {
+    bed: '<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6v30M60 22v14M4 28h56M4 22h56"/><rect x="8" y="14" width="14" height="8" rx="3"/></svg>',
+    desk: '<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h40M8 14v24M40 14v24M28 14v12h12"/><path d="M50 22h10M52 22v-10h6v10M51 22v16M59 22v16"/></svg>',
+    seating: '<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 20v-10a4 4 0 0 1 4-4h36a4 4 0 0 1 4 4v10"/><path d="M4 22a4 4 0 0 1 8 0v4h40v-4a4 4 0 0 1 8 0v10H4z"/><path d="M8 32v5M56 32v5"/></svg>',
+    storage: '<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="2" width="32" height="36" rx="2"/><path d="M16 14h32M16 26h32M30 8h4M30 20h4M30 32h4"/></svg>',
+    kitchen: '<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 14h32v16a6 6 0 0 1-6 6H18a6 6 0 0 1-6-6z"/><path d="M44 18h10M6 18h6M22 8c0-3 3-3 3-6M32 8c0-3 3-3 3-6"/></svg>',
+    other: '<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M24 4h16l6 14H18z"/><path d="M32 18v18M24 37h16"/></svg>'
+  };
+
+  /* Fictional sample listings for prototype mode only */
+  var SAMPLES = [
+    { id:"s1", title:"Queen bed frame + mattress", cat:"bed", price:180, cond:"Like new", w:63, d:84, h:14, area:"Cambridge – Central / Kendall",
+      from:"2027-06-01", until:"2027-08-31", handoff:"friend", pay:["Cash at pickup","Pay after arrival"], bundle:true, stay:false, moveday:true,
+      pickup:"2nd floor, wide staircase", note:"Mattress is 2 years old with a protector the whole time. Frame comes apart with an Allen key (included).",
+      name:"Amara O.", program:"MPA/ID '27", verified:true, postedAt: 9 },
+    { id:"s2", title:"Desk + ergonomic desk chair", cat:"desk", price:60, cond:"Good", w:47, d:24, h:30, area:"Allston / Brighton",
+      from:"2027-05-28", until:"2027-08-25", handoff:"storage", pay:["Cash at pickup","Venmo / Zelle"], bundle:true, stay:false, moveday:true,
+      pickup:"Picked up from a storage unit near Packard's Corner", note:"Chair has adjustable lumbar support. Small scratch on the desk's left corner.",
+      name:"Daniel K.", program:"MPP '27", verified:true, postedAt: 8 },
+    { id:"s3", title:"3-seat sofa, grey", cat:"seating", price:150, cond:"Good", w:84, d:35, h:33, area:"Somerville",
+      from:"2027-06-10", until:"2027-08-31", handoff:"here", pay:["Cash at pickup"], bundle:false, stay:false, moveday:true,
+      pickup:"3rd floor walk-up, no elevator. Measure your stairs!", note:"Comfortable, pet-free and smoke-free home. Cushion covers are machine washable.",
+      name:"Lucía M.", program:"MC/MPA '27", verified:true, postedAt: 7 },
+    { id:"s4", title:"5-shelf bookcase", cat:"storage", price:25, cond:"Good", w:31, d:11, h:71, area:"Cambridge – Harvard Sq",
+      from:"2027-05-25", until:"2027-08-20", handoff:"friend", pay:["Cash at pickup","Venmo / Zelle"], bundle:false, stay:false, moveday:true,
+      pickup:"Ground floor", note:"Sturdy, easy to carry with two people.",
+      name:"Wei L.", program:"MPP '27", verified:true, postedAt: 6 },
+    { id:"s5", title:"Kitchen starter kit for two", cat:"kitchen", price:0, cond:"Good", w:null, d:null, h:null, area:"Harvard University Housing",
+      from:"2027-05-30", until:"2027-08-31", handoff:"friend", pay:["Cash at pickup"], bundle:true, stay:false, moveday:false,
+      pickup:"Fits in one box", note:"Two pans, a pot, cutting board, knives, and plates, bowls and mugs for two. Free to a new student.",
+      name:"Fatima R.", program:"MPA '27", verified:true, postedAt: 5 },
+    { id:"s6", title:"6-drawer dresser", cat:"storage", price:70, cond:"Fair", w:55, d:19, h:31, area:"Cambridge – Porter / North",
+      from:"2027-06-01", until:"2027-08-31", handoff:"here", pay:["Cash at pickup","Pay after arrival"], bundle:false, stay:false, moveday:true,
+      pickup:"Elevator building", note:"One drawer handle is loose (tightens with a screwdriver).",
+      name:"Jonas B.", program:"MPA '27", verified:true, postedAt: 4,
+      reservation:{ name:"Incoming student", arrive:"2027-08-24", pickup:"2027-08-28", at: 1 } },
+    { id:"s7", title:"Floor lamp + 5×8 rug", cat:"other", price:30, cond:"Like new", w:60, d:96, h:null, area:"Allston / Brighton",
+      from:"2027-06-05", until:"2027-08-31", handoff:"here", pay:["Venmo / Zelle","Cash at pickup"], bundle:true, stay:false, moveday:true,
+      pickup:"Rug is rolled and tied", note:"Warm-light floor lamp and a neutral rug, sold together.",
+      name:"Priya S.", program:"MPP '27", verified:true, postedAt: 3 },
+    { id:"s8", title:"Whole bedroom: bed, desk, dresser", cat:"bed", price:250, cond:"Good", w:null, d:null, h:null, area:"Cambridge – Central / Kendall",
+      from:"2027-08-31", until:"2027-09-01", handoff:"unit", pay:["Pay after arrival","Cash at pickup"], bundle:true, stay:true, moveday:false,
+      pickup:"Stays in the room: nothing to move", note:"If you're taking over my room on Sept 1, everything can stay. Full-size bed, desk, chair and dresser.",
+      name:"Kofi A.", program:"MPA/ID '27", verified:true, postedAt: 2 }
+  ];
+
+  var LS_KEY = "hme-furniture-v1";
+  var state = { mode:"local", listings:[], cat:"", tab:"browse" };
+  var dbCol = null;
+
+  /* ---------- helpers ---------- */
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+  function parseDay(s){ if (!s) return null; var p = String(s).split("-"); return p.length === 3 ? new Date(+p[0], +p[1]-1, +p[2]) : null; }
+  function fmtDay(s){ var d = parseDay(s); return d ? d.toLocaleDateString("en-US", { month:"short", day:"numeric" }) : "—"; }
+  function catLabel(id){ for (var i=0;i<CATS.length;i++) if (CATS[i].id === id) return CATS[i].label; return "Other"; }
+  function isHarvard(email){ return /^[^\s@]+@([a-z0-9-]+\.)*harvard\.edu$/i.test(String(email||"").trim()); }
+  function dayLabel(id){ for (var i=0;i<MOVE_DAYS.length;i++) if (MOVE_DAYS[i].id === id) return MOVE_DAYS[i].label; return null; }
+
+  function loadLocal(){
+    try {
+      var raw = localStorage.getItem(LS_KEY);
+      if (raw){ var v = JSON.parse(raw); if (v && Array.isArray(v.listings)) return v.listings; }
+    } catch(e){}
+    return SAMPLES.map(function(x){ return JSON.parse(JSON.stringify(x)); });
+  }
+  function saveLocal(){
+    try { localStorage.setItem(LS_KEY, JSON.stringify({ listings: state.listings })); return true; }
+    catch(e){ return false; }
+  }
+
+  /* ---------- store: local or shared db ---------- */
+  var store = {
+    add: function(item){
+      if (state.mode === "db") return dbCol.add(item);
+      item.id = "l" + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+      state.listings.unshift(item);
+      if (!saveLocal() && item.photo){ delete item.photo; saveLocal(); }
+      render();
+      return Promise.resolve();
+    },
+    reserve: function(id, reservation){
+      if (state.mode === "db") return dbCol.doc(id).update({ reservation: reservation });
+      state.listings.forEach(function(l){ if (l.id === id) l.reservation = reservation; });
+      saveLocal(); render();
+      return Promise.resolve();
+    }
+  };
+
+  /* ---------- filters + render ---------- */
+  function buildControls(){
+    var areaSel = $("fb-area"), fsArea = $("fs-area"), fsCat = $("fs-cat");
+    AREAS.forEach(function(a){
+      areaSel.insertAdjacentHTML("beforeend", "<option>" + esc(a) + "</option>");
+      fsArea.insertAdjacentHTML("beforeend", "<option>" + esc(a) + "</option>");
+    });
+    CATS.forEach(function(c){ fsCat.insertAdjacentHTML("beforeend", '<option value="' + c.id + '">' + esc(c.label) + "</option>"); });
+    var chips = $("fb-cats");
+    [{ id:"", label:"All" }].concat(CATS).forEach(function(c){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "fb-chip"; b.textContent = c.label;
+      b.setAttribute("aria-pressed", c.id === state.cat ? "true" : "false");
+      b.addEventListener("click", function(){
+        state.cat = c.id;
+        chips.querySelectorAll(".fb-chip").forEach(function(x){ x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+        render();
+      });
+      chips.appendChild(b);
+    });
+    ["fb-q","fb-area","fb-arrive","fb-sort","fb-only-avail","fb-only-bundle","fb-only-free"].forEach(function(id){
+      $(id).addEventListener(id === "fb-q" ? "input" : "change", render);
+    });
+  }
+
+  function filtered(){
+    var q = $("fb-q").value.trim().toLowerCase();
+    var area = $("fb-area").value, arrive = parseDay($("fb-arrive").value);
+    var onlyAvail = $("fb-only-avail").checked, onlyBundle = $("fb-only-bundle").checked, onlyFree = $("fb-only-free").checked;
+    var list = state.listings.filter(function(l){
+      if (state.cat && l.cat !== state.cat) return false;
+      if (area && l.area !== area) return false;
+      if (onlyAvail && l.reservation) return false;
+      if (onlyBundle && !l.bundle) return false;
+      if (onlyFree && +l.price !== 0) return false;
+      if (arrive){
+        var f = parseDay(l.from), u = parseDay(l.until);
+        if (u && arrive > u) return false;          // gone before you land
+      }
+      if (q){
+        var hay = (l.title + " " + l.note + " " + catLabel(l.cat) + " " + l.area).toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+    var sort = $("fb-sort").value;
+    list.sort(function(a, b){
+      if (sort === "price") return (+a.price) - (+b.price);
+      if (sort === "soon") return String(a.from).localeCompare(String(b.from));
+      return (+b.postedAt || 0) - (+a.postedAt || 0);
+    });
+    return list;
+  }
+
+  function dims(l){
+    var parts = [l.w, l.d, l.h].filter(function(x){ return x; });
+    if (!parts.length) return null;
+    return (l.w || "?") + "″ W × " + (l.d || "?") + "″ D" + (l.h ? " × " + l.h + "″ H" : "");
+  }
+
+  function card(l){
+    var free = +l.price === 0;
+    var res = l.reservation;
+    var photo = l.photo && /^data:image\//.test(l.photo)
+      ? '<img alt="" src="' + esc(l.photo) + '">'
+      : (ICONS[l.cat] || ICONS.other);
+    var tags = '<span class="tag tag-ink">' + esc(l.cond || "Good") + "</span>";
+    if (l.bundle) tags += '<span class="tag tag-good">Bundle</span>';
+    if (l.stay) tags += '<span class="tag tag-amber">Can stay in unit</span>';
+    if (l.moveday) tags += '<span class="tag tag-ink">Moving-day OK</span>';
+    var d = dims(l);
+    var facts =
+      "<dt>Where</dt><dd>" + esc(l.area) + "</dd>" +
+      "<dt>Available</dt><dd>" + fmtDay(l.from) + " – " + fmtDay(l.until) + "</dd>" +
+      (d ? "<dt>Size</dt><dd>" + esc(d) + "</dd>" : "") +
+      "<dt>Handoff</dt><dd>" + esc(HANDOFF[l.handoff] || HANDOFF.here) + "</dd>" +
+      "<dt>Payment</dt><dd>" + esc((l.pay || []).join(" · ") || "Ask seller") + "</dd>" +
+      (l.pickup ? "<dt>Pickup</dt><dd>" + esc(l.pickup) + "</dd>" : "");
+    var actions;
+    if (res){
+      actions = '<span class="fb-reserved-note">Reserved until ' + fmtDay(res.arrive) +
+        (dayLabel(res.pickup) ? " · moving day " + esc(dayLabel(res.pickup)) : "") + "</span>";
+    } else {
+      actions = '<button class="btn btn-primary" type="button" data-reserve="' + esc(l.id) + '">Reserve for my arrival</button>';
+    }
+    if (l.email){
+      actions += '<a class="btn btn-ghost" href="mailto:' + encodeURIComponent(l.email) +
+        "?subject=" + encodeURIComponent("HKS furniture board: " + l.title) + '">Email seller</a>';
+    }
+    var verified = (l.verified || isHarvard(l.email)) ? '<span class="fb-verified">✓ Harvard</span>' : "";
+    return '<article class="fb-card' + (res ? " is-reserved" : "") + '">' +
+      '<div class="fb-photo" data-cat="' + esc(l.cat) + '">' + photo +
+        '<span class="fb-price' + (free ? " free" : "") + '">' + (free ? "Free" : "$" + esc(l.price)) + "</span>" +
+        '<span class="fb-status">' + (res ? '<span class="tag tag-amber">Reserved</span>' : "") + "</span>" +
+      "</div>" +
+      '<div class="fb-body">' +
+        "<h3>" + esc(l.title) + "</h3>" +
+        '<div class="fb-tags">' + tags + "</div>" +
+        '<dl class="fb-facts">' + facts + "</dl>" +
+        (l.note ? '<p class="fb-note">' + esc(l.note) + "</p>" : "") +
+        '<div class="fb-actions">' + actions + "</div>" +
+        '<div class="fb-seller"><span>' + esc(l.name || "Someone") + (l.program ? " · " + esc(l.program) : "") + "</span>" + verified + "</div>" +
+      "</div></article>";
+  }
+
+  function render(){
+    var list = filtered();
+    var total = state.listings.length;
+    $("fb-count").textContent = list.length + " of " + total + " listing" + (total === 1 ? "" : "s") +
+      ($("fb-arrive").value ? " still available when you land" : "");
+    var grid = $("fb-grid");
+    if (!total){
+      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;">No listings yet. Leaving soon? Be the first to post something in "Sell something".</div>';
+    } else if (!list.length){
+      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;">Nothing matches those filters. Try another area or category.</div>';
+    } else {
+      grid.innerHTML = list.map(card).join("");
+    }
+    renderMoveDays();
+  }
+
+  function renderMoveDays(){
+    var wrap = $("fb-movedays");
+    wrap.innerHTML = MOVE_DAYS.map(function(day){
+      var items = state.listings.filter(function(l){ return l.reservation && l.reservation.pickup === day.id; });
+      return '<div class="fb-day"><b>' + esc(day.label) + "</b>" +
+        '<span class="mono">' + items.length + " item" + (items.length === 1 ? "" : "s") + " booked</span>" +
+        '<p class="fb-note" style="margin-top:4px;">' + esc(day.note) + "</p>" +
+        (items.length ? '<p class="fb-hint" style="margin:6px 0 0;">' + items.map(function(i){ return esc(i.title); }).join(" · ") + "</p>" : "") +
+        "</div>";
+    }).join("");
+  }
+
+  /* ---------- tabs ---------- */
+  function showTab(t){
+    state.tab = t;
+    root.querySelectorAll("[data-fbtab]").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-fbtab") === t ? "true" : "false"); });
+    $("fb-browse").hidden = t !== "browse";
+    $("fb-sell").hidden = t !== "sell";
+    $("fb-move").hidden = t !== "move";
+  }
+  root.querySelectorAll("[data-fbtab]").forEach(function(b){
+    b.addEventListener("click", function(){ showTab(b.getAttribute("data-fbtab")); });
+  });
+
+  /* ---------- sell form ---------- */
+  var photoData = null;
+  $("fs-photo").addEventListener("change", function(e){
+    var f = e.target.files && e.target.files[0];
+    photoData = null; $("fs-photo-prev").hidden = true;
+    if (!f || !/^image\//.test(f.type)) return;
+    var img = new Image(), url = URL.createObjectURL(f);
+    img.onload = function(){
+      var max = 480, s = Math.min(1, max / Math.max(img.width, img.height));
+      var c = document.createElement("canvas");
+      c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      var q = 0.72, out = c.toDataURL("image/jpeg", q);
+      while (out.length > 150000 && q > 0.3){ q -= 0.1; out = c.toDataURL("image/jpeg", q); }
+      photoData = out;
+      $("fs-photo-prev").src = out; $("fs-photo-prev").hidden = false;
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
+  });
+
+  $("fb-form").addEventListener("submit", function(e){
+    e.preventDefault();
+    var err = $("fs-error"); err.textContent = "";
+    var v = function(id){ return $(id).value.trim(); };
+    var num = function(id){ var x = parseInt($(id).value, 10); return isFinite(x) && x > 0 ? x : null; };
+    if (!v("fs-title") || v("fs-price") === "" || !v("fs-from") || !v("fs-until") || !v("fs-name") || !v("fs-email")){
+      err.textContent = "Fill in the item, price, dates, your name and email."; return;
+    }
+    if (!isHarvard(v("fs-email"))){ err.textContent = "Use your Harvard email address (ending in harvard.edu)."; return; }
+    if (parseDay(v("fs-until")) < parseDay(v("fs-from"))){ err.textContent = "The pick-up-by date must be after the available-from date."; return; }
+    var big = ["bed","desk","seating","storage"].indexOf($("fs-cat").value) !== -1;
+    if (big && !(num("fs-w") && num("fs-d"))){ err.textContent = "Add at least the width and depth so buyers can check it fits."; return; }
+    var item = {
+      title: v("fs-title").slice(0,70), cat: $("fs-cat").value,
+      price: Math.max(0, Math.min(5000, parseInt($("fs-price").value, 10) || 0)),
+      cond: $("fs-cond").value, w: num("fs-w"), d: num("fs-d"), h: num("fs-h"),
+      area: $("fs-area").value, from: v("fs-from"), until: v("fs-until"), handoff: $("fs-handoff").value,
+      pay: Array.prototype.map.call($("fs-pay").querySelectorAll("input:checked"), function(i){ return i.value; }),
+      bundle: $("fs-bundle").checked, stay: $("fs-stay").checked, moveday: $("fs-moveday").checked,
+      pickup: v("fs-pickup").slice(0,100), note: v("fs-note").slice(0,300),
+      name: v("fs-name").slice(0,40), email: v("fs-email").slice(0,80),
+      postedAt: Date.now()
+    };
+    if (photoData) item.photo = photoData;
+    var btn = e.target.querySelector("button[type=submit]");
+    btn.disabled = true; btn.textContent = "Posting…";
+    store.add(item).then(function(){
+      e.target.reset(); photoData = null; $("fs-photo-prev").hidden = true;
+      $("fb-only-avail").checked = true; state.cat = "";
+      $("fb-cats").querySelectorAll(".fb-chip").forEach(function(x, i){ x.setAttribute("aria-pressed", i === 0 ? "true" : "false"); });
+      $("fb-sort").value = "new";
+      showTab("browse"); render();
+      root.scrollIntoView({ block:"start" });
+    }).catch(function(){
+      err.textContent = "Couldn't post right now. Please try again in a moment.";
+    }).finally(function(){ btn.disabled = false; btn.textContent = "Post listing"; });
+  });
+
+  /* ---------- reserve dialog ---------- */
+  var dlg = $("fb-dialog"), current = null;
+  $("fb-grid").addEventListener("click", function(e){
+    var b = e.target.closest("[data-reserve]");
+    if (!b) return;
+    var id = b.getAttribute("data-reserve");
+    current = state.listings.filter(function(l){ return l.id === id; })[0];
+    if (!current) return;
+    $("fr-item").textContent = current.title + " · " + (+current.price === 0 ? "Free" : "$" + current.price) + " · " + current.area +
+      " · available until " + fmtDay(current.until);
+    var sel = $("fr-pickup");
+    sel.innerHTML = '<option value="self">I\'ll pick it up myself</option>' +
+      (current.moveday ? MOVE_DAYS.map(function(d){ return '<option value="' + d.id + '">Moving day · ' + esc(d.label) + "</option>"; }).join("") : "");
+    $("fr-error").textContent = "";
+    if ($("fb-arrive").value) $("fr-arrive").value = $("fb-arrive").value;
+    if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
+  });
+  function closeDlg(){ if (typeof dlg.close === "function") dlg.close(); else dlg.removeAttribute("open"); }
+  $("fr-cancel").addEventListener("click", closeDlg);
+  ["fb-form","fr-form"].forEach(function(id){
+    $(id).addEventListener("input", function(){ $(id === "fb-form" ? "fs-error" : "fr-error").textContent = ""; });
+  });
+  $("fr-form").addEventListener("submit", function(e){
+    e.preventDefault();
+    var err = $("fr-error"); err.textContent = "";
+    var name = $("fr-name").value.trim(), email = $("fr-email").value.trim(), arrive = $("fr-arrive").value;
+    if (!name || !email || !arrive){ err.textContent = "Add your name, Harvard email and arrival date."; return; }
+    if (!isHarvard(email)){ err.textContent = "Use your Harvard email address (ending in harvard.edu)."; return; }
+    if (current && parseDay(arrive) > parseDay(current.until)){
+      err.textContent = "The seller needs it collected by " + fmtDay(current.until) + ". Email them to ask if a friend or storage could hold it for you."; return;
+    }
+    var reservation = { name: name.slice(0,40), email: email.slice(0,80), arrive: arrive,
+      pickup: $("fr-pickup").value, msg: $("fr-msg").value.trim().slice(0,240), at: Date.now() };
+    var btn = $("fr-submit"); btn.disabled = true; btn.textContent = "Reserving…";
+    store.reserve(current.id, reservation).then(function(){
+      closeDlg(); $("fr-form").reset();
+    }).catch(function(){
+      err.textContent = "Couldn't reserve right now. Someone may have just reserved it; refresh and try again.";
+    }).finally(function(){ btn.disabled = false; btn.textContent = "Reserve"; });
+  });
+
+  /* ---------- prototype reset ---------- */
+  $("fb-reset").addEventListener("click", function(){
+    try { localStorage.removeItem(LS_KEY); } catch(e){}
+    state.listings = loadLocal(); render();
+  });
+
+  /* ---------- boot ---------- */
+  buildControls();
+  state.listings = loadLocal();
+  render();
+
+  // Upgrade to the shared board when the page runs with the `db` capability.
+  if (window.claude && typeof window.claude.use === "function"){
+    window.claude.use("db").then(function(db){
+      if (!db) return;
+      var col = db.collection("furniture_listings");
+      col.orderBy("postedAt", "desc").limit(100).onSnapshot(function(snap){
+        dbCol = col; state.mode = "db";
+        state.listings = snap.docs.map(function(d){ var o = Object.assign({}, d.data()); o.id = d.id; return o; });
+        var m = $("fb-mode"); m.classList.add("live");
+        $("fb-mode-text").textContent = "Live board: listings and reservations are shared with everyone who can open this page.";
+        $("fb-reset").hidden = true;
+        render();
+      }, function(){ /* stay in prototype mode */ });
+    }).catch(function(){});
+  }
 })();
 </script>
 </body>
