@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Housemate Search Process Map</title>
+<style>
+  :root{
+    --ink:#1F2A30; --ink-soft:#4F5D63; --ink-faint:#7D8A8F;
+    --paper:#F7F5EE; --raised:#FFFFFF; --line:#DDD8CB; --arrow:#5E6A62; --loop:#5B6FB0;
+    --lane1:#F4EADA; --lane2:#F3E4D6; --lane3:#E9E7DC; --lane4:#E5E9E0; --lane5:#ECE6DB;
+    --good:#2E6B47; --shrink:#C9922E; --cut:#C0473A; --bottle:#2F4A7A;
+    --dark:#2B5E45; --accent:#B4472F;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;line-height:1.5}
+  main{max-width:1320px;margin:0 auto;padding:32px 16px 56px}
+  .kicker{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:17px;color:var(--accent)}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(26px,4vw,36px);margin:4px 0 8px;text-wrap:balance}
+  h2{font-family:Georgia,"Times New Roman",serif;font-size:22px;margin:40px 0 8px}
+  .caption{max-width:86ch;color:var(--ink-soft);margin:0 0 18px}
+  .panel{background:var(--raised);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .hint{font-size:13px;color:var(--ink-faint);margin:0 0 8px}
+  .chart-wrap{overflow-x:auto;border-radius:10px}
+  #flow{display:block;width:100%;min-width:1100px;height:auto}
+  .legend{display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);
+    font-size:13.5px;color:var(--ink-soft);align-items:center}
+  .legend .item{display:inline-flex;align-items:center;gap:8px}
+  .dot{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;color:#fff;font-size:11px;font-weight:700}
+  .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+  .card{border-radius:12px;padding:14px 18px}
+  .card h3{margin:0 0 6px;font-size:17px}
+  .card ul{margin:0;padding-left:18px;font-size:14.5px}
+  .card li{margin:3px 0}
+  .cost{background:#F6E1DD}
+  .cost h3{color:var(--cut)}
+  .value{background:#E1EDE4}
+  .value h3{color:var(--good)}
+  .findings{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+  .finding{background:var(--raised);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .finding .tag{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+  .finding h4{margin:4px 0 6px;font-size:16px}
+  .finding p{margin:0;font-size:14px;color:var(--ink-soft)}
+  table{border-collapse:collapse;width:100%;font-size:14px;background:var(--raised)}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);background:#FBFAF6}
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+  .pill{display:inline-block;white-space:nowrap;font-size:11.5px;font-weight:700;border-radius:999px;padding:1px 9px;color:#fff}
+  ul.q{margin:0;padding-left:18px;color:var(--ink-soft)}
+  ul.q li{margin:3px 0}
+  .note{background:#FFF6E3;border:1px solid #F0D9A8;border-radius:10px;padding:10px 14px;font-size:13.5px;color:#6B4E12;margin-top:14px}
+  footer{margin-top:28px;font-size:12.5px;color:var(--ink-faint)}
+</style>
+</head>
+<body>
+<main>
+  <div class="kicker">Housing Made EZ · Process map · Finding a housemate</div>
+  <h1>How Harvard affiliates find a housemate in Boston today</h1>
+  <p class="caption">This map follows one person, an incoming international student, fellow or researcher, from deciding to share
+  a place to living with someone and, when a housemate leaves, starting the search again. The top lane is what the person experiences.
+  The lanes below show the work underneath: where they look, how they sort and check people, what the landlord and lease require,
+  and what happens once they live together. Each badge marks a kind of friction: some is a cost to cut, some is the reason the household
+  works and should stay. Dashed boxes are side channels that skip every check.</p>
+
+  <div class="panel">
+    <p class="hint">Read left to right, top to bottom. Hover a box for why it got its label.</p>
+    <div class="chart-wrap"><svg id="flow" viewBox="0 0 1620 900" role="img" aria-labelledby="flow-title">
+      <title id="flow-title">Swimlane process map of how Harvard affiliates find a housemate, with friction labels</title>
+    </svg></div>
+    <div class="legend">
+      <span class="item"><span class="dot" style="background:var(--good)">G</span>Good friction, keep it</span>
+      <span class="item"><span class="dot" style="background:var(--shrink)">A</span>Necessary, shrink it</span>
+      <span class="item"><span class="dot" style="background:var(--cut)">R</span>Low-value, delete it</span>
+      <span class="item"><span class="dot" style="background:var(--bottle)">B</span>Capacity bottleneck</span>
+      <span class="item"><svg width="44" height="14" aria-hidden="true"><line x1="2" y1="7" x2="42" y2="7" stroke="#C0473A" stroke-width="2" stroke-dasharray="6 5"/></svg>Side channel, bypasses checks</span>
+      <span class="item"><svg width="44" height="14" aria-hidden="true"><line x1="2" y1="7" x2="42" y2="7" stroke="#5B6FB0" stroke-width="2.2"/></svg>Loop back, the search restarts</span>
+    </div>
+  </div>
+
+  <h2>Two kinds of friction in the housemate search</h2>
+  <div class="two">
+    <div class="card cost"><h3>Friction that is a cost</h3><ul>
+      <li>Typing the same "looking for a housemate" intro into every group chat, then scrolling hundreds of messages for a match.</li>
+      <li>Waiting days for a reply across time zones, before you have even arrived.</li>
+      <li>Gathering the same credit, income and guarantor documents again for every landlord.</li>
+      <li>Paying a stranger who "holds the lease" before you have met them or the landlord.</li>
+    </ul></div>
+    <div class="card value"><h3>Friction that is high value</h3><ul>
+      <li>The long talk about money, cleanliness, guests and sleep. Nobody else can have it for you.</li>
+      <li>A friend or classmate vouching for someone: a smaller pool, but a trusted one.</li>
+      <li>Everyone signing the lease, so each "yes" is a real commitment with tenant rights behind it.</li>
+      <li>Writing down house rules together. Skip it and the household moves in faster but breaks down sooner.</li>
+    </ul></div>
+  </div>
+
+  <h2>What the map shows</h2>
+  <div class="findings" id="findings"></div>
+
+  <h2>Every friction point</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Step</th><th>Label</th><th>Kind</th><th>Why</th><th>What Housing Made EZ could do</th></tr></thead>
+    <tbody id="friction"></tbody>
+  </table></div>
+
+</main>
+
+<script>
+/* =====================================================================
+   DATA: edit here.
+   badge: G keep · A shrink · R delete · B bottleneck
+   col: 1-6, lane: 1-5 · span: number of columns · side: dashed side channel · dark: end state
+   ===================================================================== */
+var LANES = [
+  { title:"THE AFFILIATE",                      fill:"--lane1" },
+  { title:"WHERE THEY LOOK",                    fill:"--lane2" },
+  { title:"MATCHING & VETTING · ALL BY HAND",   fill:"--lane3" },
+  { title:"LANDLORD & LEASE",                   fill:"--lane4" },
+  { title:"LIVING TOGETHER & TURNOVER",         fill:"--lane5" }
+];
+
+var NODES = [
+  // The affiliate
+  { id:"a1", lane:1, col:1, title:"Decides to share", sub:"a place alone is over budget,\nor wants company" },
+  { id:"a2", lane:1, col:2, title:"Looks for housemates", sub:"often before arriving\nin the U.S." },
+  { id:"a3", lane:1, col:4, title:"Agrees on a match", sub:"who, budget, area,\nmove-in date" },
+  { id:"a4", lane:1, col:6, title:"Moves in together", sub:"and later passes the room\nand advice on (back to start)", dark:true },
+  // Where they look
+  { id:"b1", lane:2, col:1, title:"Class & country groups", sub:"HKS, school and home-country\nWhatsApp / Telegram chats", badge:["G"] },
+  { id:"b2", lane:2, col:2, title:"Harvard housing site", sub:"off-campus roommate\n& sublet posts · use unclear" },
+  { id:"b3", lane:2, col:3, title:"Open marketplaces", sub:"Facebook, Craigslist,\nroommate apps", badge:["R"], side:true },
+  { id:"b4", lane:2, col:5, title:"Referrals", sub:"a friend, classmate or\nalum vouches for someone", badge:["G"] },
+  // Matching & vetting
+  { id:"m1", lane:3, col:1, title:"Sort and reply by hand", sub:"same intro in every group;\nmatches lost in the scroll", badge:["R"] },
+  { id:"m2", lane:3, col:2, title:"Back-and-forth chats", sub:"across time zones;\ndays between replies", badge:["A"] },
+  { id:"m3", lane:3, col:3, title:"Check they're real", sub:"Harvard email, LinkedIn,\nvideo call · no shared check", badge:["A"] },
+  { id:"m4", lane:3, col:4, title:"Compatibility talk", sub:"money, cleanliness, guests,\nsleep, diet, faith", badge:["G"] },
+  // Landlord & lease
+  { id:"l0", lane:4, col:1, title:"Off-lease deal", sub:"pay the person who holds the\nlease; landlord never involved", badge:["R"], side:true },
+  { id:"l1", lane:4, col:3, title:"Find one unit for all", sub:"dates, budget, area must fit\neveryone · Sept 1 rush", badge:["B"] },
+  { id:"l2", lane:4, col:4, title:"Each person applies", sub:"credit check, income, guarantor\n· no U.S. credit history", badge:["A"] },
+  { id:"l3", lane:4, col:5, title:"Everyone signs the lease", sub:"each housemate liable\nfor the full rent", badge:["G"] },
+  { id:"l4", lane:4, col:6, title:"Money up front", sub:"first, last, security deposit,\noften wired before arrival", badge:["A"] },
+  // Living together & turnover
+  { id:"v1", lane:5, col:3, title:"House agreement", sub:"chores, bills, guests,\nquiet hours", badge:["G"] },
+  { id:"v2", lane:5, col:4, title:"Split rent & utilities", sub:"accounts in one name; others\npay back via U.S. bank apps", badge:["A"] },
+  { id:"v3", lane:5, col:5, title:"Someone leaves early", sub:"fellowship ends, internship,\ngraduation, plans change" },
+  { id:"v4", lane:5, col:6, title:"Find a replacement", sub:"landlord must approve; leaver\noften liable until then", badge:["A"] }
+];
+
+// [from, fromSide, to, toSide, options]
+var EDGES = [
+  ["a1","r","a2","l"], ["a2","r","a3","l"], ["a3","r","a4","l"],
+  ["a2","b","b2","t",{ label:"posts in every channel" }],
+  ["b1","b","m1","t"], ["b2","b","m1","t",{ toOff:40 }], ["b3","b","m1","t",{ side:true, toOff:80 }],
+  ["b4","b","m4","t",{ label:"vouched for: skips vetting", toOff:50 }],
+  ["m1","r","m2","l"], ["m2","r","m3","l"], ["m3","r","m4","l"],
+  ["m4","t","a3","b",{ fromOff:-30, toOff:-30, label:"match agreed" }],
+  ["m4","b","l1","t",{ fromOff:-30, label:"now find a place" }],
+  ["m1","b","l0","t",{ side:true, label:"pays before meeting" }],
+  ["l1","r","l2","l"], ["l2","r","l3","l"], ["l3","r","l4","l"],
+  ["l4","t","a4","b",{ label:"keys" }],
+  ["l4","b","v1","t",{ fromOff:-60 }],
+  ["l0","b","v1","t",{ side:true, toOff:-50, label:"no tenant rights", labelAt:[300,770] }],
+  ["v1","r","v2","l"], ["v2","r","v3","l"], ["v3","r","v4","l"],
+  ["m4","b","m1","b",{ loop:true, fromOff:40, toOff:-40, via:[[980,534],[120,534]], label:"no match: start over" }],
+  ["v4","b","b1","l",{ loop:true, via:[[1460,882],[40,882],[40,300]], label:"replacement posts go back into the same groups", labelAt:[760,882] }]
+];
+
+var DETAILS = {
+  b1:{ kind:"value", why:"Members share a school and context, and joining takes an admission or invitation. That filter is the trust.", fix:"Keep. Point newcomers to the right groups early, and post a standard housemate template there.", ev:"brief" },
+  b3:{ kind:"cost", why:"Anyone can post, and nothing checks who is behind a 'room available' ad. Rental scams are documented in Boston.", fix:"Steer first contact to Harvard-verified channels; if a student uses these sites, run the red-flag checklist first.", ev:"brief" },
+  b4:{ kind:"value", why:"Someone the student trusts vouches for the person, so the vetting is already partly done. The pool is smaller, which is the trade.", fix:"Keep. Prompt students to ask classmates and alumni before going to open sites.", ev:"hypothesis" },
+  m1:{ kind:"cost", why:"Retyping the same details into many chats and scrolling for matches. Nobody learns anything from it and nobody would miss it.", fix:"Delete: one shared, structured 'who's looking' list (dates, budget, area, school) instead of chat scroll.", ev:"hypothesis" },
+  m2:{ kind:"cost", why:"Talking is necessary, but before arrival the time zones turn each question into a day's wait.", fix:"Shrink: a short profile answered up front, so chats start from the questions that matter.", ev:"brief" },
+  m3:{ kind:"cost", why:"Checking that a person is real is necessary, but each student invents their own check.", fix:"Shrink: one standard check — Harvard email, video call, never pay before a viewing.", ev:"hypothesis" },
+  m4:{ kind:"value", why:"The hour-long talk about money and habits can't be delegated. It decides whether the household works.", fix:"Keep. Offer a question list so nothing important gets skipped, but don't replace the talk.", ev:"hypothesis" },
+  l0:{ kind:"cost", why:"Paying a stranger who 'holds the lease' skips the landlord, the lease and every protection. A common scam shape.", fix:"Delete: flag it as a red flag; require landlord approval in writing and a lease or sublease.", ev:"brief (scams, subleases)" },
+  l1:{ kind:"bottleneck", why:"The housemate and the unit must line up on dates, budget and area. Lose the unit and the match can break. Worst in the Sept 1 rush and for July arrivals.", fix:"Show both paths, 'housemate first' and 'unit first', with what to do when one falls through.", ev:"brief (Mason Fellows, July)" },
+  l2:{ kind:"cost", why:"Screening protects the landlord, but without U.S. credit, students gather proof of funds and guarantors again for every application.", fix:"Shrink: a ready application packet and a list of what landlords accept instead of credit.", ev:"brief" },
+  l3:{ kind:"value", why:"An ask that costs something, so the 'yes' means something. Every signer gets tenant rights.", fix:"Keep, but explain in plain language that each signer can owe the full rent.", ev:"hypothesis" },
+  l4:{ kind:"cost", why:"Deposits are necessary, but students often wire large sums before arriving, with little sense of what's allowed.", fix:"Shrink: explain what Massachusetts allows up front and how housemates split and document it.", ev:"brief" },
+  v1:{ kind:"value", why:"The housemates deliberate about chores, bills and guests. Skip it and the household moves in faster but argues sooner.", fix:"Keep. Offer a house-agreement template.", ev:"hypothesis" },
+  v2:{ kind:"cost", why:"One person carries the accounts and the risk; the others need a U.S. bank app to pay them back.", fix:"Shrink: link to the bank-account and utilities steps; suggest how to split and record bills.", ev:"brief (banking, utilities)" },
+  v4:{ kind:"cost", why:"Landlord approval is needed, but the leaver often stays liable until a replacement is found, and the whole search restarts for someone else.", fix:"Shrink: feed replacement posts into the same shared list as new arrivals.", ev:"brief (subleases)" }
+};
+
+var FINDINGS = [
+  { tag:"Cost", color:"--cut", title:"The waste sits in the middle lane",
+    text:"All matching happens by hand in chat. Re-posting and scrolling is the clearest pure cost on the map: nobody learns from it, and a shared, structured list would remove it." },
+  { tag:"Keep", color:"--good", title:"The conversations are the point",
+    text:"The compatibility talk, signing the lease together and the house agreement are slow on purpose. A tool should prepare people for them, not skip them." },
+  { tag:"Risk", color:"--cut", title:"Two side channels skip every check",
+    text:"Open marketplaces and off-lease deals bypass Harvard channels, the landlord and the lease. That is where students can lose a deposit." },
+  { tag:"Bottleneck", color:"--bottle", title:"Timing is the real constraint",
+    text:"A housemate and a unit must line up at once, often before arrival and in the September rush. July arrivals like Mason Fellows face a thinner pool." },
+  { tag:"Loop", color:"--loop", title:"It's a cycle, not a line",
+    text:"Every early departure restarts the search for someone else. Replacement posts are next year's supply, so one shared list helps both sides." }
+];
+/* ===================================================================== */
+
+(function(){
+  var NS = "http://www.w3.org/2000/svg";
+  var css = getComputedStyle(document.documentElement);
+  function tok(n){ return css.getPropertyValue(n).trim(); }
+  function el(tag, attrs, parent){
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function text(parent, str, attrs){ var t = el("text", attrs, parent); t.textContent = str; return t; }
+
+  var COLS = [0,160,420,680,940,1200,1460], W = 210, H = 86;
+  var LANE_TOP = [0,40,212,384,556,728], LANE_H = 160;
+  var BADGE = { G:"--good", A:"--shrink", R:"--cut", B:"--bottle" };
+  var BADGE_NAME = { G:"Good friction, keep it", A:"Necessary, shrink it", R:"Low-value, delete it", B:"Capacity bottleneck" };
+
+  var svg = document.getElementById("flow");
+  var defs = el("defs", {}, svg);
+  [["arr","--arrow"],["arr-side","--cut"],["arr-loop","--loop"]].forEach(function(m){
+    var mk = el("marker", { id:m[0], viewBox:"0 0 10 10", refX:"9", refY:"5", markerWidth:"9", markerHeight:"9", orient:"auto-start-reverse", markerUnits:"userSpaceOnUse" }, defs);
+    el("path", { d:"M0,0 L10,5 L0,10 z", fill:tok(m[1]) }, mk);
+  });
+
+  // lanes
+  var gLane = el("g", {}, svg);
+  LANES.forEach(function(L, i){
+    var y = LANE_TOP[i+1];
+    el("rect", { x:30, y:y, width:1560, height:LANE_H, rx:10, fill:tok(L.fill) }, gLane);
+  });
+
+  var byId = {};
+  NODES.forEach(function(n){ n.x = COLS[n.col]; n.y = LANE_TOP[n.lane] + 88; byId[n.id] = n; });
+
+  function port(n, side, off){
+    off = off || 0;
+    if (side === "l") return [n.x - W/2, n.y + off];
+    if (side === "r") return [n.x + W/2, n.y + off];
+    if (side === "t") return [n.x + off, n.y - H/2];
+    return [n.x + off, n.y + H/2];
+  }
+  var DIR = { l:[-1,0], r:[1,0], t:[0,-1], b:[0,1] };
+
+  var gE = el("g", {}, svg), gLab = el("g", {}, svg), gN = el("g", {}, svg), labels = [];
+
+  EDGES.forEach(function(e){
+    var a = byId[e[0]], b = byId[e[2]], o = e[4] || {};
+    var p0 = port(a, e[1], o.fromOff), p1 = port(b, e[3], o.toOff);
+    var color = o.side ? tok("--cut") : o.loop ? tok("--loop") : tok("--arrow");
+    var d, mid;
+    if (o.via){
+      var pts = [p0].concat(o.via).concat([p1]);
+      d = "M" + pts.map(function(p){ return p[0] + "," + p[1]; }).join(" L");
+      mid = o.labelAt || o.via[Math.floor((o.via.length-1)/2)];
+      if (!o.labelAt && o.via.length > 1) mid = [(o.via[0][0]+o.via[1][0])/2, (o.via[0][1]+o.via[1][1])/2];
+    } else {
+      var dist = Math.hypot(p1[0]-p0[0], p1[1]-p0[1]), k = Math.max(24, dist*0.35);
+      var d0 = DIR[e[1]], d1 = DIR[e[3]];
+      var c1 = [p0[0]+d0[0]*k, p0[1]+d0[1]*k], c2 = [p1[0]+d1[0]*k, p1[1]+d1[1]*k];
+      d = "M"+p0+" C"+c1+" "+c2+" "+p1;
+      mid = o.labelAt || [(p0[0]+3*c1[0]+3*c2[0]+p1[0])/8, (p0[1]+3*c1[1]+3*c2[1]+p1[1])/8];
+    }
+    el("path", { d:d, fill:"none", stroke:color, "stroke-width":o.loop ? 2.2 : 2, "stroke-dasharray":o.side ? "6 5" : "",
+      "stroke-linejoin":"round", "marker-end":"url(#"+(o.side ? "arr-side" : o.loop ? "arr-loop" : "arr")+")" }, gE);
+    if (o.label){
+      var g = el("g", { transform:"translate("+mid[0]+","+mid[1]+")" }, gLab);
+      text(g, o.label, { "text-anchor":"middle", y:4, "font-size":"11.5", "font-weight":"600", "font-style":"italic", fill:color });
+      labels.push(g);
+    }
+  });
+  // lane titles sit above the lines, on a plate in the lane's color
+  LANES.forEach(function(L, i){
+    var g = el("g", {}, gLab);
+    text(g, L.title, { x:46, y:LANE_TOP[i+1]+22, "font-size":"12.5", "font-weight":"700", "letter-spacing":"1.4", fill:"#5A5446" });
+    requestAnimationFrame(function(){
+      var bb = g.getBBox();
+      g.insertBefore(el("rect", { x:bb.x-6, y:bb.y-3, width:bb.width+12, height:bb.height+6, rx:4, fill:tok(L.fill) }), g.firstChild);
+    });
+  });
+  requestAnimationFrame(function(){
+    labels.forEach(function(g){
+      var bb = g.getBBox();
+      g.insertBefore(el("rect", { x:bb.x-5, y:bb.y-2, width:bb.width+10, height:bb.height+4, rx:4, fill:"#FFFFFF", "fill-opacity":0.92 }), g.firstChild);
+    });
+  });
+
+  NODES.forEach(function(n){
+    var g = el("g", {}, gN), x0 = n.x - W/2, y0 = n.y - H/2;
+    el("rect", { x:x0, y:y0, width:W, height:H, rx:9, fill:n.dark ? tok("--dark") : "#FFFFFF",
+      stroke:n.side ? tok("--cut") : n.dark ? tok("--dark") : "#3A4A44", "stroke-width":n.side ? 1.8 : 1.4,
+      "stroke-dasharray":n.side ? "6 4" : "" }, g);
+    var subs = (n.sub || "").split("\n");
+    var total = 18 + subs.length * 15, ty = n.y - total/2 + 13;
+    text(g, n.title, { x:n.x, y:ty, "text-anchor":"middle", "font-size":"14.5", "font-weight":"700", fill:n.dark ? "#FFFFFF" : tok("--ink") });
+    subs.forEach(function(s, i){
+      text(g, s, { x:n.x, y:ty + 19 + i*15, "text-anchor":"middle", "font-size":"11.5", fill:n.dark ? "#DDEBE3" : tok("--ink-soft") });
+    });
+    (n.badge || []).forEach(function(bd, i){
+      var cx = x0 + W - 4 - i*24, cy = y0 + 4;
+      el("circle", { cx:cx, cy:cy, r:10.5, fill:tok(BADGE[bd]), stroke:"#FFFFFF", "stroke-width":2 }, g);
+      text(g, bd, { x:cx, y:cy+4, "text-anchor":"middle", "font-size":"11", "font-weight":"700", fill:"#FFFFFF" });
+    });
+    var det = DETAILS[n.id];
+    el("title", {}, g).textContent = n.title + (n.badge ? " · " + n.badge.map(function(b){ return BADGE_NAME[b]; }).join(", ") : "") +
+      (det ? "\n" + det.why + "\nIdea: " + det.fix : "");
+  });
+
+  // findings
+  document.getElementById("findings").innerHTML = FINDINGS.map(function(f){
+    return '<div class="finding"><div class="tag" style="color:'+tok(f.color)+'">'+f.tag+'</div><h4>'+f.title+'</h4><p>'+f.text+'</p></div>';
+  }).join("");
+
+  // friction table, in map order
+  var KIND = { value:"Generates value", cost:"A cost", bottleneck:"Bottleneck" };
+  document.getElementById("friction").innerHTML = NODES.filter(function(n){ return n.badge; }).map(function(n){
+    var d = DETAILS[n.id];
+    var pills = n.badge.map(function(b){ return '<span class="pill" style="background:'+tok(BADGE[b])+'">'+b+' · '+BADGE_NAME[b].split(",")[0]+'</span>'; }).join(" ");
+    return '<tr><td><strong>'+n.title+'</strong>'+(n.side ? '<br><span style="color:'+tok("--cut")+';font-size:12.5px">side channel</span>' : '')+
+      '</td><td>'+pills+'</td><td>'+KIND[d.kind]+'</td><td>'+d.why+'<br><span style="color:'+tok("--ink-faint")+';font-size:12.5px">Source: '+d.ev+
+      '</span></td><td>'+d.fix+'</td></tr>';
+  }).join("");
+})();
+</script>
+</body>
+</html>
