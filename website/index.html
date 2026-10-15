@@ -226,6 +226,48 @@
   .dist-bar-fill{ height:100%; background: linear-gradient(90deg, var(--accent), var(--amber)); border-radius:999px; }
   .dist-row .val{ font-family:'IBM Plex Mono', monospace; color: var(--ink-soft); text-align:right; }
 
+
+  /* ---------- Agent verification tool ---------- */
+  .verify{ background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius-l); padding: 22px 24px; box-shadow: var(--shadow-1); margin-bottom:22px; }
+  .verify-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; margin-bottom:14px; }
+  .verify-head h3{ font-size:19px; margin:4px 0 4px; }
+  .verify-head p{ margin:0; font-size:14px; color:var(--ink-soft); max-width:62ch; }
+  .verify-fields{ display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-bottom:18px; }
+  @media (max-width:760px){ .verify-fields{ grid-template-columns:1fr; } }
+  .vsteps{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; counter-reset: vs; }
+  .vstep{ border:1px solid var(--line); border-radius: var(--radius-m); padding:14px 16px; display:grid; grid-template-columns: 30px 1fr; gap:4px 12px; background: var(--paper); }
+  .vstep::before{ counter-increment: vs; content: counter(vs); grid-column: 1; grid-row: 1 / span 4; width:26px; height:26px; border-radius:50%;
+    display:grid; place-items:center; background: var(--accent-soft); color: var(--accent-ink); font-weight:700; font-size:13px; }
+  .vstep[data-state="no"]{ border-color: color-mix(in srgb, var(--warn) 45%, transparent); background: var(--warn-soft); }
+  .vstep[data-state="yes"]{ border-color: color-mix(in srgb, var(--good) 40%, transparent); }
+  .vstep[data-state="yes"]::before{ content:"✓"; background: var(--good); color:#fff; }
+  .vstep[data-state="no"]::before{ content:"!"; background: var(--warn); color:#fff; }
+  .vstep > *{ grid-column: 2; min-width:0; }
+  .vstep h4{ margin:0; font-size:15px; font-family:'Work Sans', sans-serif; font-weight:600; }
+  .vstep p{ margin:0; font-size:13.5px; color: var(--ink-soft); }
+  .vstep .vlinks{ display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
+  .vstep .vlinks a{ font-size:13px; font-weight:600; color: var(--accent-ink); }
+  .vans{ display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+  .vans button{ font: 600 12.5px 'Work Sans', sans-serif; padding:6px 12px; border-radius:999px; border:1px solid var(--line);
+    background: var(--paper-raised); color: var(--ink-soft); cursor:pointer; }
+  .vans button[aria-pressed="true"][data-v="yes"]{ background: var(--good); border-color: var(--good); color:#fff; }
+  .vans button[aria-pressed="true"][data-v="no"]{ background: var(--warn); border-color: var(--warn); color:#fff; }
+  .vans button[aria-pressed="true"][data-v="skip"]{ background: var(--ink-faint); border-color: var(--ink-faint); color:#fff; }
+  .vflags{ display:grid; grid-template-columns: 1fr 1fr; gap:6px 18px; margin-top:6px; }
+  @media (max-width:640px){ .vflags{ grid-template-columns:1fr; } }
+  .vflags label{ display:flex; gap:8px; align-items:flex-start; font-size:13.5px; color: var(--ink-soft); cursor:pointer; }
+  .vflags input{ margin-top:3px; accent-color: var(--warn); }
+  .vresult{ margin-top:18px; border-radius: var(--radius-m); padding:16px 18px; border:1px solid var(--line); background: var(--paper); }
+  .vresult[data-level="stop"]{ background: var(--warn-soft); border-color: color-mix(in srgb, var(--warn) 45%, transparent); }
+  .vresult[data-level="ok"]{ background: var(--accent-soft); border-color: color-mix(in srgb, var(--good) 40%, transparent); }
+  .vresult .vlevel{ font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+  .vresult[data-level="stop"] .vlevel{ color: var(--warn); }
+  .vresult[data-level="ok"] .vlevel{ color: var(--good); }
+  .vresult[data-level="wait"] .vlevel{ color: var(--amber); }
+  .vresult h4{ margin:4px 0 6px; font-size:17px; }
+  .vresult ul{ margin:6px 0 0; padding-left:18px; font-size:13.5px; color: var(--ink-soft); }
+  .vresult-actions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+
   /* ---------- Roommate board ---------- */
   .rm-form{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .rm-form .full{ grid-column: 1 / -1; }
@@ -300,7 +342,81 @@
       </div>
       <div class="card">
         <h3>How to spot a fake listing</h3>
-        <p>Unusually low rent · spelling/grammar errors · no background or credit check · asks to pay the deposit in installments · broker isn't state-licensed · unit isn't registered with Inspectional Services.</p>
+        <p>Unusually low rent · spelling/grammar errors · no background or credit check · asks to pay the deposit in installments · broker isn't state-licensed · unit isn't registered with Inspectional Services. Use the agent check below before paying anyone.</p>
+      </div>
+    </div>
+
+
+    <!-- ===== Verify an agent or landlord ===== -->
+    <div class="verify" id="verify-agent">
+      <div class="verify-head">
+        <div>
+          <span class="tag tag-amber">Interactive check</span>
+          <h3>Verify the agent before you pay anything</h3>
+          <p>Scammers often copy a real agent's name and add their own phone number. Fill in what the listing gave you, work through the checks, and the tool will tell you whether it's safe to keep going. Nothing you type leaves this page.</p>
+        </div>
+        <button class="btn btn-ghost" type="button" id="v-reset">Start over</button>
+      </div>
+
+      <div class="verify-fields">
+        <div class="field"><label for="v-name">Agent's full name</label><input id="v-name" type="text" placeholder="e.g. Jane Doe" autocomplete="off"></div>
+        <div class="field"><label for="v-firm">Brokerage / company</label><input id="v-firm" type="text" placeholder="e.g. Example Realty" autocomplete="off"></div>
+        <div class="field"><label for="v-phone">Phone number in the listing</label><input id="v-phone" type="text" placeholder="e.g. 617-555-0100" autocomplete="off"></div>
+      </div>
+
+      <ol class="vsteps">
+        <li class="vstep" data-step="named">
+          <h4>Does the listing name a licensed brokerage, not just a phone number?</h4>
+          <p>Massachusetts requires real estate ads to name the broker. A listing or WhatsApp contact with only a phone number doesn't meet that rule.</p>
+          <div class="vans"><button type="button" data-v="yes">Yes, a brokerage is named</button><button type="button" data-v="no">No, just a number</button></div>
+        </li>
+        <li class="vstep" data-step="license">
+          <h4>Is the agent's license active in the state database?</h4>
+          <p>Search by license number, or by name with license type "Real Estate Salesperson" or "Broker." The name should match exactly and the status should be active.</p>
+          <div class="vlinks"><a href="https://www.mass.gov/how-to/check-an-occupational-board-license" target="_blank" rel="noopener">Open the Massachusetts license lookup ↗</a></div>
+          <div class="vans"><button type="button" data-v="yes">Found, active</button><button type="button" data-v="no">Not found or not active</button><button type="button" data-v="skip">Haven't checked</button></div>
+        </li>
+        <li class="vstep" data-step="phone">
+          <h4>Did the brokerage's own office confirm the agent and the listing?</h4>
+          <p>Find the brokerage's official website yourself (don't use links from the listing), call the office number shown there, and ask: "Does <span class="v-echo-name">this agent</span> work for you, and is this unit your listing?" Also check that <span class="v-echo-phone">the phone number you were given</span> matches the agent's page on that site.</p>
+          <div class="vans"><button type="button" data-v="yes">Yes, confirmed</button><button type="button" data-v="no">No, or the number doesn't match</button><button type="button" data-v="skip">Haven't called yet</button></div>
+        </li>
+        <li class="vstep" data-step="owner">
+          <h4>Does the owner on record match who the agent says owns it?</h4>
+          <p>Ask the agent who the landlord is, then look up the address.</p>
+          <div class="vlinks"><a href="http://www.cityofboston.gov/assessing/search/" target="_blank" rel="noopener">Boston property lookup ↗</a><a href="https://www.cambridgema.gov/iwantto/viewthepropertydatabase" target="_blank" rel="noopener">Cambridge property lookup ↗</a></div>
+          <div class="vans"><button type="button" data-v="yes">Matches</button><button type="button" data-v="no">Doesn't match</button><button type="button" data-v="skip">Haven't checked</button></div>
+        </li>
+        <li class="vstep" data-step="fees">
+          <h4>Are they asking you to pay a broker fee or application fee?</h4>
+          <p>Since August 1, 2025, whoever hires the broker pays the fee. If the landlord hired them, you can't be charged a broker fee, and landlords and their brokers can't charge application, background or credit-check fees.</p>
+          <div class="vlinks"><a href="https://www.cambridgema.gov/departments/officeofthehousingliaison/brokersfees" target="_blank" rel="noopener">Read the broker fee rule ↗</a></div>
+          <div class="vans"><button type="button" data-v="yes" data-good="no">No fees asked</button><button type="button" data-v="no">Yes, they want a fee</button></div>
+        </li>
+        <li class="vstep" data-step="flags" data-state="">
+          <h4>Tick any red flags you've seen</h4>
+          <div class="vflags">
+            <label><input type="checkbox" value="Wants money before you've seen the unit in person or on a live video call"> Wants money before a viewing</label>
+            <label><input type="checkbox" value="Asks for a wire transfer, gift cards, crypto, or Zelle/Venmo to a personal account"> Wire, gift cards, crypto or personal Zelle</label>
+            <label><input type="checkbox" value="Says they are out of the country or can't meet"> Out of the country or can't meet</label>
+            <label><input type="checkbox" value="Only reachable by WhatsApp or text"> Only reachable by WhatsApp or text</label>
+            <label><input type="checkbox" value="Rent is far below similar units nearby"> Rent far below similar units</label>
+            <label><input type="checkbox" value="The same unit appears elsewhere with a different contact"> Same unit listed with a different contact</label>
+            <label><input type="checkbox" value="Pressure to decide or pay immediately"> Pressure to pay right away</label>
+            <label><input type="checkbox" value="No lease offered before payment"> No lease before payment</label>
+          </div>
+        </li>
+      </ol>
+
+      <div class="vresult" id="v-result" data-level="wait" aria-live="polite">
+        <div class="vlevel" id="v-level">Not finished</div>
+        <h4 id="v-title">Work through the checks above</h4>
+        <p id="v-text" style="margin:0; font-size:14px; color:var(--ink-soft);">Answer each question. The result updates as you go.</p>
+        <ul id="v-list"></ul>
+        <div class="vresult-actions">
+          <button class="btn btn-ghost" type="button" id="v-copy">Copy summary</button>
+          <a class="btn btn-ghost" id="v-report" href="https://www.boston.gov/departments/consumer-affairs-and-licensing/apartment-scams" target="_blank" rel="noopener" hidden>Report a suspected scam ↗</a>
+        </div>
       </div>
     </div>
 
@@ -795,6 +911,109 @@
   } else {
     start();
   }
+})();
+</script>
+
+<script>
+(function(){
+  var root = document.getElementById("verify-agent");
+  if (!root) return;
+  var answers = {};
+  var STEP_TEXT = {
+    named:   { no:"The listing names no brokerage, only a phone number.", skip:"Brokerage name not confirmed." },
+    license: { no:"No active license found for this agent.", skip:"License not checked yet." },
+    phone:   { no:"The brokerage did not confirm the agent or listing, or the phone number doesn't match.", skip:"Brokerage office not called yet." },
+    owner:   { no:"The owner on record doesn't match.", skip:"Property owner not checked yet." },
+    fees:    { no:"They are asking you for a broker or application fee." }
+  };
+  function val(id){ var el = document.getElementById(id); return el ? el.value.trim() : ""; }
+  function echo(){
+    var n = val("v-name"), ph = val("v-phone");
+    root.querySelectorAll(".v-echo-name").forEach(function(e){ e.textContent = n || "this agent"; });
+    root.querySelectorAll(".v-echo-phone").forEach(function(e){ e.textContent = ph ? "the number you were given (" + ph + ")" : "the phone number you were given"; });
+  }
+  function flags(){ return Array.prototype.map.call(root.querySelectorAll(".vflags input:checked"), function(c){ return c.value; }); }
+  function update(){
+    echo();
+    var problems = [], pending = [];
+    ["named","license","phone","owner","fees"].forEach(function(k){
+      var a = answers[k];
+      if (a === "no") problems.push(STEP_TEXT[k].no);
+      else if (a === "skip" || !a) pending.push(STEP_TEXT[k].skip || "Fee question not answered yet.");
+    });
+    var fl = flags();
+    fl.forEach(function(f){ problems.push("Red flag: " + f + "."); });
+    var flagStep = root.querySelector('.vstep[data-step="flags"]');
+    flagStep.setAttribute("data-state", fl.length ? "no" : "");
+
+    var res = document.getElementById("v-result"), level = document.getElementById("v-level"),
+        title = document.getElementById("v-title"), text = document.getElementById("v-text"),
+        list = document.getElementById("v-list"), report = document.getElementById("v-report");
+    var items;
+    if (problems.length){
+      res.setAttribute("data-level", "stop");
+      level.textContent = "Stop";
+      title.textContent = "Don't send money";
+      text.textContent = "These are signs of a scam or an illegal fee. Don't pay, don't share documents, and report it if money was requested.";
+      items = problems; report.hidden = false;
+    } else if (pending.length){
+      res.setAttribute("data-level", "wait");
+      level.textContent = "Not finished";
+      title.textContent = "Keep checking before you pay";
+      text.textContent = "Nothing alarming yet, but these checks are still open:";
+      items = pending; report.hidden = true;
+    } else {
+      res.setAttribute("data-level", "ok");
+      level.textContent = "Checks passed";
+      title.textContent = "This agent checks out so far";
+      text.textContent = "Still see the unit (in person or by live video), get a written lease before paying, and never pay by wire transfer or gift card.";
+      items = []; report.hidden = true;
+    }
+    list.innerHTML = "";
+    items.forEach(function(t){ var li = document.createElement("li"); li.textContent = t; list.appendChild(li); });
+  }
+  root.querySelectorAll(".vstep[data-step] .vans").forEach(function(group){
+    var step = group.closest(".vstep"), key = step.getAttribute("data-step");
+    group.querySelectorAll("button").forEach(function(b){
+      b.setAttribute("aria-pressed", "false");
+      b.addEventListener("click", function(){
+        group.querySelectorAll("button").forEach(function(x){ x.setAttribute("aria-pressed", "false"); });
+        b.setAttribute("aria-pressed", "true");
+        answers[key] = b.getAttribute("data-v");
+        step.setAttribute("data-state", answers[key] === "skip" ? "" : answers[key]);
+        update();
+      });
+    });
+  });
+  root.querySelectorAll(".vflags input, .verify-fields input").forEach(function(i){ i.addEventListener("input", update); i.addEventListener("change", update); });
+  document.getElementById("v-reset").addEventListener("click", function(){
+    answers = {};
+    root.querySelectorAll(".vans button").forEach(function(b){ b.setAttribute("aria-pressed", "false"); });
+    root.querySelectorAll(".vstep").forEach(function(s){ s.setAttribute("data-state", ""); });
+    root.querySelectorAll(".vflags input").forEach(function(c){ c.checked = false; });
+    root.querySelectorAll(".verify-fields input").forEach(function(i){ i.value = ""; });
+    update();
+  });
+  document.getElementById("v-copy").addEventListener("click", function(){
+    var btn = this;
+    var lines = ["Housing Made EZ agent check",
+      "Agent: " + (val("v-name") || "(not given)"),
+      "Brokerage: " + (val("v-firm") || "(not given)"),
+      "Phone in listing: " + (val("v-phone") || "(not given)"),
+      "Result: " + document.getElementById("v-title").textContent];
+    Array.prototype.forEach.call(document.querySelectorAll("#v-list li"), function(li){ lines.push("- " + li.textContent); });
+    var text = lines.join("\n");
+    function done(msg){ var old = btn.textContent; btn.textContent = msg; setTimeout(function(){ btn.textContent = old; }, 1600); }
+    try {
+      navigator.clipboard.writeText(text).then(function(){ done("Copied"); }, function(){ fallback(); });
+    } catch(e){ fallback(); }
+    function fallback(){
+      var ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); done("Copied"); } catch(e){ done("Select and copy manually"); }
+      document.body.removeChild(ta);
+    }
+  });
+  update();
 })();
 </script>
 </body>
