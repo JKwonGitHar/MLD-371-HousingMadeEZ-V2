@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Find a roommate near Harvard Kennedy School.">
+<title>Roommates · Housing Made EZ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body data-page="roommates">
+<header class="topbar">
+  <div class="topbar-inner wrap">
+    <a class="brand" href="index.html"><span class="brand-dot"></span>Housing Made EZ</a>
+    <nav class="route" aria-label="Site pages">
+      <a href="index.html">Home</a>
+      <a href="scams.html">Avoid scams</a>
+      <a href="lease.html">Your lease</a>
+      <a href="banking.html">Banking</a>
+      <a href="where-to-live.html">Where to live</a>
+      <a href="roommates.html" aria-current="page">Roommates</a>
+      <a href="furniture.html">Furniture</a>
+      <a href="checklist.html">Checklist</a>
+      <a href="community.html">Community</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+  <section class="stop" id="roommates">
+    <div class="stop-kicker">Journey stage · Find options</div>
+    <h1>Find a roommate</h1>
+    <p class="sub">Post here if you're looking, or browse who else is. This board is shared live with everyone who has access to this page. Same safety rule as on the <a href="scams.html">Avoid scams</a> page: meet before you commit, and verify any apartment through the city database before paying anything.</p>
+
+    <div id="rm-unavailable" class="empty-state" hidden>The live board isn't available in this view. In the meantime, try <a href="https://www.spareroom.com/roommates/ma/middlesex_county/cambridge" target="_blank" rel="noopener">SpareRoom Cambridge</a>, <a href="https://www.spareroom.com/roommates/boston" target="_blank" rel="noopener">SpareRoom Boston</a>, or the <a href="https://www.facebook.com/groups/harvardhousing/" target="_blank" rel="noopener">Harvard Housing Facebook group</a>.</div>
+
+    <div id="rm-app" hidden>
+      <form class="card rm-form" id="rm-form" style="margin-bottom:22px;">
+        <div class="field"><label for="rm-name">Name</label><input id="rm-name" required maxlength="60" placeholder="Priya S."></div>
+        <div class="field"><label for="rm-contact">Contact (email preferred)</label><input id="rm-contact" required maxlength="80" placeholder="you@college.harvard.edu"></div>
+        <div class="field"><label for="rm-movein">Move-in month</label><input id="rm-movein" required maxlength="30" placeholder="August 2026"></div>
+        <div class="field"><label for="rm-budget">Budget / month</label><input id="rm-budget" required maxlength="30" placeholder="$1,200–1,500"></div>
+        <div class="field full"><label for="rm-area">Preferred area(s)</label><input id="rm-area" required maxlength="80" placeholder="Cambridge, near Porter or Central Sq"></div>
+        <div class="field full"><label for="rm-note">Note</label><textarea id="rm-note" maxlength="280" placeholder="A bit about you, your program, any preferences..."></textarea></div>
+        <div class="full" style="display:flex; justify-content:flex-end; gap:10px;">
+          <button type="submit" class="btn btn-primary">Post listing</button>
+        </div>
+      </form>
+      <div id="rm-list" style="display:flex; flex-direction:column; gap:12px;"></div>
+    </div>
+  </section>
+
+  <nav class="pager" aria-label="Previous and next page">
+    <a class="pager-prev" href="where-to-live.html"><span>Previous</span>Where to live</a>
+    <a class="pager-next" href="furniture.html"><span>Next</span>Furniture</a>
+  </nav>
+  <footer>
+    <p><strong>Housing Made EZ</strong> — John, Andrea, Eze, Elsa, Mustafa · built for International Student Groups.</p>
+    <p>Distances and rent ranges are approximate planning estimates, not guarantees — always verify directly with landlords, banks, and providers.</p>
+  </footer>
+</main>
+<script src="assets/site.js"></script>
+</body>
+</html>

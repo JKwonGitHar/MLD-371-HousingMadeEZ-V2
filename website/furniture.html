@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="The HKS furniture board: reserve furniture from leaving students before you arrive.">
+<title>Furniture board · Housing Made EZ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body data-page="furniture">
+<header class="topbar">
+  <div class="topbar-inner wrap">
+    <a class="brand" href="index.html"><span class="brand-dot"></span>Housing Made EZ</a>
+    <nav class="route" aria-label="Site pages">
+      <a href="index.html">Home</a>
+      <a href="scams.html">Avoid scams</a>
+      <a href="lease.html">Your lease</a>
+      <a href="banking.html">Banking</a>
+      <a href="where-to-live.html">Where to live</a>
+      <a href="roommates.html">Roommates</a>
+      <a href="furniture.html" aria-current="page">Furniture</a>
+      <a href="checklist.html">Checklist</a>
+      <a href="community.html">Community</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+  <section class="stop" id="furniture">
+    <div class="stop-kicker">Journey stage · Move in and set up</div>
+    <h1>Furnish your place: the HKS furniture board</h1>
+    <p class="sub">Graduating students leave in May and June; incoming students arrive in August to an empty room. This board closes that gap: sellers list before they leave, you reserve from abroad, and you pick up when you land.</p>
+
+    <div class="fb-how">
+      <div><span class="n">01 · Spring</span><b>Leaving students list</b><span>Photos, dimensions, condition and how pickup will work after they leave.</span></div>
+      <div><span class="n">02 · From abroad</span><b>You reserve for your arrival</b><span>Tell the seller your landing date. No payment until you've seen it.</span></div>
+      <div><span class="n">03 · August</span><b>Pick up or join a moving day</b><span>Collect it yourself, or share a van on a group moving day.</span></div>
+    </div>
+
+    <div class="fb-mode" id="fb-mode">
+      <span id="fb-mode-text">Prototype mode: these are sample listings. Anything you post or reserve is saved only in this browser.</span>
+      <button class="fb-linkbtn" type="button" id="fb-reset">Reset sample listings</button>
+    </div>
+
+    <div class="fb-tabs seg" role="tablist" aria-label="Furniture board">
+      <button type="button" role="tab" data-fbtab="browse" aria-pressed="true">Browse listings</button>
+      <button type="button" role="tab" data-fbtab="sell" aria-pressed="false">Sell something</button>
+      <button type="button" role="tab" data-fbtab="move" aria-pressed="false">Moving days</button>
+    </div>
+
+    <!-- Browse -->
+    <div id="fb-browse">
+      <div class="fb-toolbar">
+        <div class="field fb-search"><label for="fb-q">Search</label><input id="fb-q" type="search" placeholder="desk, queen bed, lamp…" autocomplete="off"></div>
+        <div class="field"><label for="fb-area">Area</label>
+          <select id="fb-area"><option value="">Anywhere</option></select></div>
+        <div class="field"><label for="fb-arrive">I arrive on</label><input id="fb-arrive" type="date"></div>
+        <div class="field"><label for="fb-sort">Sort</label>
+          <select id="fb-sort">
+            <option value="new">Newest</option>
+            <option value="price">Price: low to high</option>
+            <option value="soon">Available soonest</option>
+          </select></div>
+      </div>
+      <div class="fb-chips" id="fb-cats" role="group" aria-label="Category"></div>
+      <div style="display:flex; gap:18px; flex-wrap:wrap; margin-bottom:6px;">
+        <label class="fb-check"><input type="checkbox" id="fb-only-avail" checked> Hide reserved</label>
+        <label class="fb-check"><input type="checkbox" id="fb-only-bundle"> Bundles only</label>
+        <label class="fb-check"><input type="checkbox" id="fb-only-free"> Free only</label>
+      </div>
+      <p class="fb-count" id="fb-count" aria-live="polite"></p>
+      <div class="fb-grid" id="fb-grid"></div>
+    </div>
+
+    <!-- Sell -->
+    <div id="fb-sell" hidden>
+      <form class="card fb-form" id="fb-form" novalidate>
+        <div class="field c6"><label for="fs-title">What are you selling?</label><input id="fs-title" required maxlength="70" placeholder="e.g. Queen bed frame + mattress"></div>
+        <div class="field c2"><label for="fs-cat">Category</label><select id="fs-cat" required></select></div>
+        <div class="field c2"><label for="fs-price">Price (USD, 0 = free)</label><input id="fs-price" type="number" min="0" max="5000" step="5" required placeholder="60"></div>
+        <div class="field c2"><label for="fs-cond">Condition</label>
+          <select id="fs-cond"><option>Like new</option><option selected>Good</option><option>Fair</option></select></div>
+
+        <div class="field c3"><label>Dimensions in inches (W × D × H)</label>
+          <div class="fb-dims">
+            <input id="fs-w" type="number" min="1" max="200" placeholder="W" aria-label="Width in inches">
+            <input id="fs-d" type="number" min="1" max="200" placeholder="D" aria-label="Depth in inches">
+            <input id="fs-h" type="number" min="1" max="200" placeholder="H" aria-label="Height in inches">
+          </div>
+          <div class="fb-hint">Required for anything bigger than a lamp. Buyers need to check it fits through their door.</div>
+        </div>
+        <div class="field c3"><label for="fs-area">Where is it?</label><select id="fs-area" required></select>
+          <div class="fb-hint">Neighborhood only. Share the exact address after someone reserves.</div></div>
+
+        <div class="field c2"><label for="fs-from">Available from</label><input id="fs-from" type="date" required></div>
+        <div class="field c2"><label for="fs-until">Pick up by</label><input id="fs-until" type="date" required></div>
+        <div class="field c2"><label for="fs-handoff">If you've left before pickup</label>
+          <select id="fs-handoff">
+            <option value="here">I'll still be here</option>
+            <option value="friend">A friend will hand it over</option>
+            <option value="storage">It'll be in storage</option>
+            <option value="unit">It stays in the apartment</option>
+          </select></div>
+
+        <fieldset class="c3"><legend>Payment you accept</legend>
+          <div class="opts" id="fs-pay">
+            <label class="fb-check"><input type="checkbox" value="Cash at pickup" checked> Cash at pickup</label>
+            <label class="fb-check"><input type="checkbox" value="Venmo / Zelle"> Venmo / Zelle</label>
+            <label class="fb-check"><input type="checkbox" value="Pay after arrival"> Pay after buyer's bank account opens</label>
+          </div></fieldset>
+        <fieldset class="c3"><legend>Extras</legend>
+          <div class="opts">
+            <label class="fb-check"><input type="checkbox" id="fs-bundle"> This is a bundle of several items</label>
+            <label class="fb-check"><input type="checkbox" id="fs-stay"> Can stay in the unit for the next tenant</label>
+            <label class="fb-check"><input type="checkbox" id="fs-moveday"> Fine with a group moving day pickup</label>
+          </div></fieldset>
+
+        <div class="field c3"><label for="fs-pickup">Pickup notes</label><input id="fs-pickup" maxlength="100" placeholder="3rd floor walk-up, no elevator"></div>
+        <div class="field c3"><label for="fs-photo">Photo</label><input id="fs-photo" type="file" accept="image/*">
+          <img id="fs-photo-prev" class="fb-photo-preview" alt="Photo preview" hidden></div>
+        <div class="field c6"><label for="fs-note">Description</label><textarea id="fs-note" maxlength="300" placeholder="What's included, any wear, why you're selling…"></textarea></div>
+
+        <div class="field c3"><label for="fs-name">Your name</label><input id="fs-name" required maxlength="40" placeholder="Priya S."></div>
+        <div class="field c3"><label for="fs-email">Harvard email</label><input id="fs-email" type="email" required maxlength="80" placeholder="you@hks.harvard.edu">
+          <div class="fb-hint">Only Harvard addresses can list. In the live version this would be confirmed with HarvardKey.</div></div>
+
+        <div class="c6" style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+          <span class="fb-error" id="fs-error" role="alert"></span>
+          <button type="submit" class="btn btn-primary">Post listing</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Moving days -->
+    <div id="fb-move" hidden>
+      <p class="prose" style="margin:0; color:var(--ink-soft); font-size:14.5px;">One rented van and a few volunteers can move a dozen students' furniture in a morning, for a fraction of what separate movers cost. Pick a day when you reserve something; the counts below update as people sign up. <em>Dates shown are examples for the August 2027 arrival season.</em></p>
+      <div class="fb-movedays" id="fb-movedays"></div>
+    </div>
+
+    <div class="callout" style="background:var(--accent-soft); border:1px solid color-mix(in srgb, var(--accent) 25%, transparent); margin-top:20px;">
+      <div><strong>Buy safely, even from classmates.</strong>
+        <p>See it (in person or on a live video call) before you pay. Measure your doorway and stairs against the listed dimensions. Never wire money; cash at pickup or paying after your US account opens is fine.</p></div>
+    </div>
+
+    <dialog class="fb-dialog" id="fb-dialog" aria-labelledby="fr-title">
+      <form id="fr-form" method="dialog" novalidate>
+        <div>
+          <span class="tag tag-good">Reserve for your arrival</span>
+          <h3 id="fr-title" style="margin-top:8px;">Reserve this item</h3>
+          <p id="fr-item" style="margin:4px 0 0; font-size:14px; color:var(--ink-soft);"></p>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="fr-name">Your name</label><input id="fr-name" required maxlength="40"></div>
+          <div class="field"><label for="fr-email">Harvard email</label><input id="fr-email" type="email" required maxlength="80" placeholder="you@hks.harvard.edu"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="fr-arrive">You arrive in Boston</label><input id="fr-arrive" type="date" required></div>
+          <div class="field"><label for="fr-pickup">How will you collect it?</label>
+            <select id="fr-pickup"><option value="self">I'll pick it up myself</option></select></div>
+        </div>
+        <div class="field"><label for="fr-msg">Message to the seller (optional)</label><textarea id="fr-msg" maxlength="240" placeholder="Hi! I land on Aug 20 and would love this for my room in Allston."></textarea></div>
+        <p class="fb-hint" style="margin:0;">Reserving holds the item for you until your arrival date. It isn't a payment, and you pay only once you've seen it.</p>
+        <span class="fb-error" id="fr-error" role="alert"></span>
+        <div style="display:flex; justify-content:flex-end; gap:8px;">
+          <button type="button" class="btn btn-ghost" id="fr-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="fr-submit">Reserve</button>
+        </div>
+      </form>
+    </dialog>
+  </section>
+
+  <nav class="pager" aria-label="Previous and next page">
+    <a class="pager-prev" href="roommates.html"><span>Previous</span>Roommates</a>
+    <a class="pager-next" href="checklist.html"><span>Next</span>Checklist</a>
+  </nav>
+  <footer>
+    <p><strong>Housing Made EZ</strong> — John, Andrea, Eze, Elsa, Mustafa · built for International Student Groups.</p>
+    <p>Distances and rent ranges are approximate planning estimates, not guarantees — always verify directly with landlords, banks, and providers.</p>
+  </footer>
+</main>
+<script src="assets/site.js"></script>
+</body>
+</html>

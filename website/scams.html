@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="How international students can spot rental scams and verify an agent or landlord before paying.">
+<title>Avoid scams · Housing Made EZ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body data-page="scams">
+<header class="topbar">
+  <div class="topbar-inner wrap">
+    <a class="brand" href="index.html"><span class="brand-dot"></span>Housing Made EZ</a>
+    <nav class="route" aria-label="Site pages">
+      <a href="index.html">Home</a>
+      <a href="scams.html" aria-current="page">Avoid scams</a>
+      <a href="lease.html">Your lease</a>
+      <a href="banking.html">Banking</a>
+      <a href="where-to-live.html">Where to live</a>
+      <a href="roommates.html">Roommates</a>
+      <a href="furniture.html">Furniture</a>
+      <a href="checklist.html">Checklist</a>
+      <a href="community.html">Community</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+  <section class="stop" id="scams">
+    <div class="stop-kicker">Journey stage · Check and apply</div>
+    <h1>Don't get scammed before you even arrive</h1>
+    <p class="sub">Rental scams target people who can't tour an apartment in person — which is exactly the position most international students are in. These are the official Boston consumer-protection tips, plus the actual lookup tools.</p>
+
+    <div class="callout warn" style="margin-bottom:22px;">
+      <div>
+        <strong>Never wire money, and never pay before you've confirmed who you're paying.</strong>
+        <p>You can't reverse a wire transfer. Insist on seeing the unit (in person or live video with someone you trust) and confirm the landlord's identity before any payment changes hands.</p>
+      </div>
+    </div>
+
+    <div class="grid cols-2" style="margin-bottom:22px;">
+      <div class="card">
+        <h3>Verify who actually owns the unit</h3>
+        <p>Search the address in the city's property database before you send anyone money. Anyone can post a listing online — only the database tells you who really owns it.</p>
+        <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+          <a class="btn btn-primary" href="http://www.cityofboston.gov/assessing/search/" target="_blank" rel="noopener">Look up a Boston address</a>
+          <a class="btn btn-ghost" href="https://www.cambridgema.gov/iwantto/viewthepropertydatabase" target="_blank" rel="noopener">Look up a Cambridge address</a>
+        </div>
+      </div>
+      <div class="card">
+        <h3>How to spot a fake listing</h3>
+        <p>Unusually low rent · spelling/grammar errors · no background or credit check · asks to pay the deposit in installments · broker isn't state-licensed · unit isn't registered with Inspectional Services. Use the agent check below before paying anyone.</p>
+      </div>
+    </div>
+
+
+    <!-- ===== Verify an agent or landlord ===== -->
+    <div class="verify" id="verify-agent">
+      <div class="verify-head">
+        <div>
+          <span class="tag tag-amber">Interactive check</span>
+          <h3>Verify the agent before you pay anything</h3>
+          <p>Scammers often copy a real agent's name and add their own phone number. Fill in what the listing gave you, work through the checks, and the tool will tell you whether it's safe to keep going. Nothing you type leaves this page.</p>
+        </div>
+        <button class="btn btn-ghost" type="button" id="v-reset">Start over</button>
+      </div>
+
+      <div class="verify-fields">
+        <div class="field"><label for="v-name">Agent's full name</label><input id="v-name" type="text" placeholder="e.g. Jane Doe" autocomplete="off"></div>
+        <div class="field"><label for="v-firm">Brokerage / company</label><input id="v-firm" type="text" placeholder="e.g. Example Realty" autocomplete="off"></div>
+        <div class="field"><label for="v-phone">Phone number in the listing</label><input id="v-phone" type="text" placeholder="e.g. 617-555-0100" autocomplete="off"></div>
+      </div>
+
+      <ol class="vsteps">
+        <li class="vstep" data-step="named">
+          <h4>Does the listing name a licensed brokerage, not just a phone number?</h4>
+          <p>Massachusetts requires real estate ads to name the broker. A listing or WhatsApp contact with only a phone number doesn't meet that rule.</p>
+          <div class="vans"><button type="button" data-v="yes">Yes, a brokerage is named</button><button type="button" data-v="no">No, just a number</button></div>
+        </li>
+        <li class="vstep" data-step="license">
+          <h4>Is the agent's license active in the state database?</h4>
+          <p>Search by license number, or by name with license type "Real Estate Salesperson" or "Broker." The name should match exactly and the status should be active.</p>
+          <div class="vlinks"><a href="https://www.mass.gov/how-to/check-an-occupational-board-license" target="_blank" rel="noopener">Open the Massachusetts license lookup ↗</a></div>
+          <div class="vans"><button type="button" data-v="yes">Found, active</button><button type="button" data-v="no">Not found or not active</button><button type="button" data-v="skip">Haven't checked</button></div>
+        </li>
+        <li class="vstep" data-step="phone">
+          <h4>Did the brokerage's own office confirm the agent and the listing?</h4>
+          <p>Find the brokerage's official website yourself (don't use links from the listing), call the office number shown there, and ask: "Does <span class="v-echo-name">this agent</span> work for you, and is this unit your listing?" Also check that <span class="v-echo-phone">the phone number you were given</span> matches the agent's page on that site.</p>
+          <div class="vans"><button type="button" data-v="yes">Yes, confirmed</button><button type="button" data-v="no">No, or the number doesn't match</button><button type="button" data-v="skip">Haven't called yet</button></div>
+        </li>
+        <li class="vstep" data-step="owner">
+          <h4>Does the owner on record match who the agent says owns it?</h4>
+          <p>Ask the agent who the landlord is, then look up the address.</p>
+          <div class="vlinks"><a href="http://www.cityofboston.gov/assessing/search/" target="_blank" rel="noopener">Boston property lookup ↗</a><a href="https://www.cambridgema.gov/iwantto/viewthepropertydatabase" target="_blank" rel="noopener">Cambridge property lookup ↗</a></div>
+          <div class="vans"><button type="button" data-v="yes">Matches</button><button type="button" data-v="no">Doesn't match</button><button type="button" data-v="skip">Haven't checked</button></div>
+        </li>
+        <li class="vstep" data-step="fees">
+          <h4>Are they asking you to pay a broker fee or application fee?</h4>
+          <p>Since August 1, 2025, whoever hires the broker pays the fee. If the landlord hired them, you can't be charged a broker fee, and landlords and their brokers can't charge application, background or credit-check fees.</p>
+          <div class="vlinks"><a href="https://www.cambridgema.gov/departments/officeofthehousingliaison/brokersfees" target="_blank" rel="noopener">Read the broker fee rule ↗</a></div>
+          <div class="vans"><button type="button" data-v="yes" data-good="no">No fees asked</button><button type="button" data-v="no">Yes, they want a fee</button></div>
+        </li>
+        <li class="vstep" data-step="flags" data-state="">
+          <h4>Tick any red flags you've seen</h4>
+          <div class="vflags">
+            <label><input type="checkbox" value="Wants money before you've seen the unit in person or on a live video call"> Wants money before a viewing</label>
+            <label><input type="checkbox" value="Asks for a wire transfer, gift cards, crypto, or Zelle/Venmo to a personal account"> Wire, gift cards, crypto or personal Zelle</label>
+            <label><input type="checkbox" value="Says they are out of the country or can't meet"> Out of the country or can't meet</label>
+            <label><input type="checkbox" value="Only reachable by WhatsApp or text"> Only reachable by WhatsApp or text</label>
+            <label><input type="checkbox" value="Rent is far below similar units nearby"> Rent far below similar units</label>
+            <label><input type="checkbox" value="The same unit appears elsewhere with a different contact"> Same unit listed with a different contact</label>
+            <label><input type="checkbox" value="Pressure to decide or pay immediately"> Pressure to pay right away</label>
+            <label><input type="checkbox" value="No lease offered before payment"> No lease before payment</label>
+          </div>
+        </li>
+      </ol>
+
+      <div class="vresult" id="v-result" data-level="wait" aria-live="polite">
+        <div class="vlevel" id="v-level">Not finished</div>
+        <h4 id="v-title">Work through the checks above</h4>
+        <p id="v-text" style="margin:0; font-size:14px; color:var(--ink-soft);">Answer each question. The result updates as you go.</p>
+        <ul id="v-list"></ul>
+        <div class="vresult-actions">
+          <button class="btn btn-ghost" type="button" id="v-copy">Copy summary</button>
+          <a class="btn btn-ghost" id="v-report" href="https://www.boston.gov/departments/consumer-affairs-and-licensing/apartment-scams" target="_blank" rel="noopener" hidden>Report a suspected scam ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <h3 id="report" style="font-family:'Work Sans',sans-serif; font-size:14px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint); margin-bottom:10px;">If you've spotted one, report it</h3>
+    <ul class="linklist" style="margin-bottom:10px;">
+      <li><a href="https://www.boston.gov/departments/consumer-affairs-and-licensing/apartment-scams" target="_blank" rel="noopener"><span class="ll-text"><span>Boston.gov — Apartment Scams (source for this page)</span><small>Full tips, brochure, and reporting links</small></span><span class="go">↗</span></a></li>
+      <li><a href="https://police.boston.gov/" target="_blank" rel="noopener"><span class="ll-text"><span>Boston Police Department</span><small>File a local report</small></span><span class="go">↗</span></a></li>
+      <li><a href="https://reportfraud.ftc.gov/" target="_blank" rel="noopener"><span class="ll-text"><span>Federal Trade Commission — Report Fraud</span><small>Federal scam database</small></span><span class="go">↗</span></a></li>
+      <li><a href="https://www.ic3.gov/" target="_blank" rel="noopener"><span class="ll-text"><span>FBI Internet Crime Complaint Center (IC3)</span><small>For online / wire-transfer scams</small></span><span class="go">↗</span></a></li>
+    </ul>
+    <p style="font-size:13px; color:var(--ink-faint);">Questions? Boston Consumer Affairs — <span class="mono">617-635-3834</span></p>
+  </section>
+
+  <nav class="pager" aria-label="Previous and next page">
+    <a class="pager-prev" href="index.html"><span>Previous</span>Home</a>
+    <a class="pager-next" href="lease.html"><span>Next</span>Your lease</a>
+  </nav>
+  <footer>
+    <p><strong>Housing Made EZ</strong> — John, Andrea, Eze, Elsa, Mustafa · built for International Student Groups.</p>
+    <p>Distances and rent ranges are approximate planning estimates, not guarantees — always verify directly with landlords, banks, and providers.</p>
+  </footer>
+</main>
+<script src="assets/site.js"></script>
+</body>
+</html>

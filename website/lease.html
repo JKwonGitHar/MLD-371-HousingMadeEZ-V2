@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Plain-English Massachusetts lease terms, plus LeaseCheck, a prototype that reviews your lease.">
+<title>Your lease · Housing Made EZ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body data-page="lease">
+<header class="topbar">
+  <div class="topbar-inner wrap">
+    <a class="brand" href="index.html"><span class="brand-dot"></span>Housing Made EZ</a>
+    <nav class="route" aria-label="Site pages">
+      <a href="index.html">Home</a>
+      <a href="scams.html">Avoid scams</a>
+      <a href="lease.html" aria-current="page">Your lease</a>
+      <a href="banking.html">Banking</a>
+      <a href="where-to-live.html">Where to live</a>
+      <a href="roommates.html">Roommates</a>
+      <a href="furniture.html">Furniture</a>
+      <a href="checklist.html">Checklist</a>
+      <a href="community.html">Community</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+  <section class="stop" id="lease">
+    <div class="stop-kicker">Journey stage · Agreement</div>
+    <h1>Decipher your lease</h1>
+    <p class="sub">US leases use terms that don't translate directly if you've rented elsewhere. Here's the plain-English version of the ones that trip people up most, sourced from Massachusetts Legal Help and the Attorney General's tenant guide.</p>
+
+    <div class="grid cols-2">
+      <div class="card"><div class="term-name">Security deposit</div><p>Money the landlord holds and can only use for damage you cause, or unpaid rent if you move out owing money. It is not automatically forfeited.</p></div>
+      <div class="card"><div class="term-name">Lease duration</div><p>The fixed period (usually 12 months) during which the landlord can't raise your rent and can only evict you for non-payment or violating the lease.</p></div>
+      <div class="card"><div class="term-name">Tenant at will</div><p>Renting with no written lease, or a lease that has expired. Fewer protections than a fixed-term lease — avoid this if you can.</p></div>
+      <div class="card"><div class="term-name">Self-extending lease</div><p>Automatically continues on the same terms unless you or the landlord give written notice to end it. Know your notice deadline.</p></div>
+      <div class="card"><div class="term-name">Option to renew</div><p>The lease simply ends on its date. You must give written notice if you want to <em>stay</em> — no notice needed if you're leaving.</p></div>
+      <div class="card"><div class="term-name">Repairs</div><p>Landlords are legally required to make repairs, except damage you caused. A clause that tries to shift this onto you is not enforceable.</p></div>
+      <div class="card"><div class="term-name">Utilities</div><p>Check whether electricity, gas, heat, and water are separately metered and who pays for each — this varies a lot between buildings.</p></div>
+      <div class="card"><div class="term-name">Subletting</div><p>Whether you're allowed to rent your space to someone else (e.g. over the summer). Usually requires written landlord approval — read this clause before you sign.</p></div>
+    </div>
+
+    <ul class="linklist" style="margin-top:18px;">
+      <li><a href="https://www.masslegalhelp.org/housing-apartments-shelter/tenants-rights/understanding-your-lease-tenant" target="_blank" rel="noopener"><span class="ll-text"><span>Mass Legal Help — Understanding Your Lease</span><small>Full plain-language breakdown</small></span><span class="go">↗</span></a></li>
+      <li><a href="https://www.mass.gov/guides/the-attorney-generals-guide-to-landlord-and-tenant-rights" target="_blank" rel="noopener"><span class="ll-text"><span>MA Attorney General's Guide to Landlord & Tenant Rights</span><small>The official state guide, PDF</small></span><span class="go">↗</span></a></li>
+    </ul>
+
+    <!-- ===== LeaseCheck prototype (from 99-Indiv work/LeaseCheckPrototype) ===== -->
+    <div class="embed collapsed" id="leasecheck" style="--ch: 1250px;">
+      <div class="embed-head">
+        <div>
+          <span class="tag tag-amber">Prototype</span>
+          <h3>LeaseCheck Boston: a second pair of eyes on your lease</h3>
+          <p>Tell it where you are in the process, hand over your lease, and it flags illegal fees, missing required parts and scam warning signs in plain language. The sample lease below is fictional, so you can see what a risky lease looks like.</p>
+        </div>
+        <div class="embed-actions">
+          <button class="btn btn-ghost" type="button" data-expand="leasecheck" data-more="Show the whole tool" data-less="Show less">Show the whole tool</button>
+          <a class="btn btn-ghost" href="lease-check.html" target="_blank" rel="noopener">Open full screen ↗</a>
+        </div>
+      </div>
+      <div class="embed-frame" style="--h: 900px;">
+        <iframe src="lease-check.html" title="LeaseCheck Boston prototype" loading="lazy" data-autofit></iframe>
+      </div>
+      <div class="embed-foot">Prototype, not legal advice. Live lease checking needs the Claude app; the worked example runs anywhere.</div>
+    </div>
+  </section>
+
+  <nav class="pager" aria-label="Previous and next page">
+    <a class="pager-prev" href="scams.html"><span>Previous</span>Avoid scams</a>
+    <a class="pager-next" href="banking.html"><span>Next</span>Banking</a>
+  </nav>
+  <footer>
+    <p><strong>Housing Made EZ</strong> — John, Andrea, Eze, Elsa, Mustafa · built for International Student Groups.</p>
+    <p>Distances and rent ranges are approximate planning estimates, not guarantees — always verify directly with landlords, banks, and providers.</p>
+  </footer>
+</main>
+<script src="assets/site.js"></script>
+</body>
+</html>

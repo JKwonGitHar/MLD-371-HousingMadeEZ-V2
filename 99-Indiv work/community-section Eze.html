@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Housing Made EZ | Community section (prototype)</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== Community section: styles (colors are tokens in :root) ===== */
+:root{
+  --ink:#14213D; --muted:#44506A; --paper:#F6F8FB; --white:#fff; --line:#D9DEE8;
+  --harvard:#2F5DA8; --harvard-tint:#E8EEF8;
+  --safe:#167A5E; --safe-tint:#E3F3EC;
+  --unsafe:#C8452D; --unsafe-tint:#FBE9E4;
+  --sublet:#6A4C9C; --broker:#0C7285; --roommate:#A8620A; --temp:#4F5F7A;
+  --hub:#E0A526; --hub-tint:#FFF4D6;
+  --body:"Figtree","Carlito","Helvetica Neue",Arial,sans-serif;
+  --display:"Bricolage Grotesque","Figtree","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6}
+a{color:var(--harvard)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:4px}
+.btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none;border:2px solid var(--ink)}
+.btn.primary{background:var(--ink);color:#fff}
+.btn.primary:hover{background:#0c1530}
+.btn.secondary{color:var(--ink);background:transparent}
+.btn.secondary:hover{background:var(--white)}
+h2{font-family:var(--display);font-weight:800;font-size:clamp(28px,3.6vw,38px);line-height:1.12;letter-spacing:-.02em;margin:0 0 14px;max-width:20em}
+.intro{color:var(--muted);max-width:42em;margin:0 0 36px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 18px}
+.chip{font:inherit;font-weight:700;font-size:15px;padding:9px 16px;border-radius:999px;border:2px solid var(--ink);background:var(--white);color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:#fff}
+.chip.c-harvard{border-color:var(--harvard)}
+.chip.c-harvard[aria-pressed="true"]{background:var(--harvard)}
+.chip.c-safe{border-color:var(--safe)}
+.chip.c-safe[aria-pressed="true"]{background:var(--safe)}
+.chip.c-unsafe{border-color:var(--unsafe)}
+.chip.c-unsafe[aria-pressed="true"]{background:var(--unsafe)}
+.chip.c-sublet{border-color:var(--sublet)}
+.chip.c-sublet[aria-pressed="true"]{background:var(--sublet)}
+.chip.c-broker{border-color:var(--broker)}
+.chip.c-broker[aria-pressed="true"]{background:var(--broker)}
+.chip.c-roommate{border-color:var(--roommate)}
+.chip.c-roommate[aria-pressed="true"]{background:var(--roommate)}
+.chip.c-temp{border-color:var(--temp)}
+.chip.c-temp[aria-pressed="true"]{background:var(--temp)}
+.empty{color:var(--muted);margin:0}
+.proto-tag{display:inline-block;vertical-align:middle;margin-left:10px;font-family:var(--body);font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:var(--hub-tint);border:2px solid var(--hub);border-radius:999px;padding:3px 12px}
+.proto-banner{background:var(--hub-tint);border:2px solid var(--hub);border-radius:12px;padding:14px 18px;margin:0 0 28px;max-width:52em}
+.badge{display:inline-block;font-size:12px;font-weight:800;border-radius:6px;padding:1px 8px;vertical-align:middle}
+.badge.ex{background:var(--white);border:1.5px solid var(--ink)}
+.badge.me{background:var(--ink);color:#fff;border:1.5px solid var(--ink)}
+.community{display:grid;grid-template-columns:1.6fr 1fr;gap:40px;align-items:start}
+.c-side{position:sticky;top:16px}
+.c-filters{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between}
+.c-filters .controls{margin:0}
+.c-type{font-weight:700;font-size:15px}
+.c-type select,.composer select,.composer input,.composer textarea,.reply-form input{font:inherit;font-size:16px;padding:8px 10px;border:2px solid var(--line);border-radius:8px;background:var(--white);color:var(--ink)}
+.c-count{color:var(--muted);font-size:14.5px;margin:14px 0 10px}
+.c-feed{display:flex;flex-direction:column;gap:14px}
+.post{background:var(--white);border:1px solid var(--line);border-top:5px solid var(--c);border-radius:12px;padding:16px 18px}
+.post-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13.5px;margin-bottom:8px}
+.ptag{font-weight:800;color:var(--c)}
+.ptype{color:var(--muted);font-weight:700}
+.pwho{color:var(--muted);margin-left:auto}
+.post p.body{margin:0 0 12px;font-size:16.5px}
+.post-actions{display:flex;gap:10px;flex-wrap:wrap}
+.pbtn{font:inherit;font-size:14.5px;font-weight:700;background:var(--paper);color:var(--ink);border:1.5px solid var(--line);border-radius:8px;padding:5px 12px;cursor:pointer}
+.pbtn:hover{border-color:var(--ink)}
+.pbtn[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.replies{margin:12px 0 0;padding:0 0 0 14px;border-left:3px solid var(--line);list-style:none}
+.replies li{margin:0 0 8px;font-size:15.5px}
+.replies .rwho{font-weight:700;color:var(--muted);font-size:13.5px;display:block}
+.reply-form{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.reply-form input{flex:1;min-width:180px}
+.reply-form[hidden]{display:none}
+.composer,.safety{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:20px}
+.composer h3,.safety h3{font-family:var(--display);font-size:20px;margin:0 0 12px}
+.field{margin-bottom:14px}
+.field label{display:block;font-weight:700;font-size:14.5px;margin-bottom:4px}
+.field select,.field input,.field textarea{width:100%}
+.c-meta{font-size:13.5px;color:var(--muted);margin-top:4px}
+.c-error{background:var(--unsafe-tint);color:#8F2A18;border-radius:8px;padding:8px 12px;font-size:14.5px;margin:0 0 12px}
+.c-post{width:100%;text-align:center;cursor:pointer;font:inherit;font-weight:700}
+.c-reset{display:block;margin:12px auto 0;background:none;border:0;color:var(--muted);text-decoration:underline;font:inherit;font-size:14px;cursor:pointer}
+.safety{margin-top:18px;background:var(--hub-tint);border-color:var(--hub)}
+.safety ul{margin:0;padding-left:20px;font-size:15px}
+.safety li{margin-bottom:6px}
+.t-general{--c:var(--ink)}
+.t-harvard{--c:var(--harvard)}
+.t-sublet{--c:var(--sublet)}
+.t-broker{--c:var(--broker)}
+.t-safe{--c:var(--safe)}
+.t-roommate{--c:var(--roommate)}
+.t-temp{--c:var(--temp)}
+.t-unsafe{--c:var(--unsafe)}
+@media (max-width:860px){.community{grid-template-columns:1fr;gap:28px}
+  .c-side{order:-1;position:static}}
+.key-tag{background:var(--white);border-color:var(--ink)}
+.gate{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;background:var(--white);border:2px solid var(--ink);border-radius:16px;padding:32px}
+.gate[hidden]{display:none}
+.gate h3{font-family:var(--display);font-size:26px;margin:10px 0 8px}
+.gate p{margin:0 0 16px;max-width:34em}
+.gate .btn{cursor:pointer;font:inherit;font-weight:700}
+.gate-note{font-size:14.5px;color:var(--muted);margin:16px 0 0!important}
+.gate-skeleton{display:flex;flex-direction:column;gap:12px;opacity:.7}
+.sk{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;grid-template-columns:28px 1fr;grid-template-rows:auto auto;gap:8px 12px}
+.sk i{grid-row:1/3;width:28px;height:28px;border-radius:50%;background:var(--line)}
+.sk b{display:block;height:10px;border-radius:5px;background:var(--line)}
+.sk b.s{width:60%}
+.signed-bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;background:var(--safe-tint);border:1px solid var(--safe);border-radius:10px;padding:10px 16px;margin:0 0 24px;font-size:15px}
+dialog#keyDialog{border:2px solid var(--ink);border-radius:16px;padding:26px;max-width:460px;width:calc(100% - 32px);color:var(--ink);font-family:var(--body)}
+dialog#keyDialog::backdrop{background:rgba(20,33,61,.55)}
+dialog#keyDialog h3{font-family:var(--display);font-size:22px;margin:0 0 10px}
+dialog#keyDialog p{margin:0 0 12px}
+.dlg-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+.dlg-actions .btn{cursor:pointer;font:inherit;font-weight:700}
+@media (max-width:860px){.gate{grid-template-columns:1fr;padding:22px;gap:24px}}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+section{padding:48px 0}
+</style>
+</head>
+<body>
+<main>
+<!-- ===== Community section: HTML ===== -->
+<section id="community">
+  <div class="wrap">
+    <h2>Community <span class="proto-tag">Prototype</span> <span class="proto-tag key-tag">Harvard Key required</span></h2>
+    <p class="intro">A preview of how students could ask questions, share tips and warn each other, all organized by the same seven housing pathways as the process map.</p>
+    <div class="proto-banner" role="note">
+      <strong>This is a prototype.</strong> Posts marked <span class="badge ex">Example</span> were written by our team to show how it could work. Anything you post here stays only in your own browser, and nobody else can see it.
+    </div>
+<div id="cGate" class="gate">
+      <div class="gate-copy">
+        <svg class="lock" width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="9" y="19" width="26" height="19" rx="4" fill="#14213D"/><path d="M14 19v-5a8 8 0 0 1 16 0v5" stroke="#14213D" stroke-width="4" stroke-linecap="round"/><circle cx="22" cy="28" r="3" fill="#FFF4D6"/></svg>
+        <h3>Harvard students only</h3>
+        <p>Sign in with your Harvard Key to enter the community. That keeps conversations within the Harvard community and helps keep scammers and fake accounts out.</p>
+        <button class="btn primary" id="keySignIn" type="button">Sign in with Harvard Key</button>
+        <p class="gate-note"><strong>Prototype:</strong> this button only simulates signing in. No Harvard Key password is requested or stored on this page. A real version would use Harvard's own sign-in, which we would set up together with Harvard.</p>
+      </div>
+      <div class="gate-skeleton" aria-hidden="true">
+        <div class="sk"><i></i><b></b><b class="s"></b></div>
+        <div class="sk"><i></i><b></b><b class="s"></b></div>
+        <div class="sk"><i></i><b></b><b class="s"></b></div>
+      </div>
+    </div>
+    <div id="cMembers" hidden>
+    <div class="signed-bar" id="signedBar" tabindex="-1">
+      <span><strong>Signed in with Harvard Key</strong> (simulated) as <em>demo student</em></span>
+      <button class="pbtn" type="button" id="keySignOut">Sign out</button>
+    </div>
+    <div class="community">
+      <div class="c-main">
+        <div class="c-filters">
+          <div class="controls" role="group" aria-label="Filter posts by pathway" id="cPathChips"></div>
+          <label class="c-type">Show <select id="cTypeFilter" aria-label="Filter posts by type">
+            <option value="all">all types</option><option value="question">questions</option><option value="tip">tips</option>
+            <option value="story">stories</option><option value="scam">scam warnings</option>
+          </select></label>
+        </div>
+        <p class="c-count" id="cCount" aria-live="polite"></p>
+        <div id="cFeed" class="c-feed"></div>
+      </div>
+      <aside class="c-side">
+        <div class="composer">
+          <h3>Share with other students</h3>
+          <div class="field"><label for="cPath">Pathway</label><select id="cPath"></select></div>
+          <div class="field"><label for="cType">This is a</label>
+            <select id="cType"><option value="question">Question</option><option value="tip">Tip</option><option value="story">Story</option><option value="scam">Scam warning</option></select></div>
+          <div class="field"><label for="cText">Your post</label>
+            <textarea id="cText" rows="5" maxlength="400" placeholder="What happened, or what do you want to know?"></textarea>
+            <div class="c-meta"><span id="cLeft">400 characters left</span></div></div>
+          <div class="field"><label for="cName">Posting as (optional)</label><input id="cName" maxlength="24" placeholder="Anonymous student"></div>
+          <p class="c-error" id="cError" role="alert" hidden></p>
+          <button class="btn primary c-post" type="button" id="cPost">Post to the prototype</button>
+          <button class="c-reset" type="button" id="cReset">Clear my posts and likes</button>
+        </div>
+        <div class="safety">
+          <h3>Keep it safe</h3>
+          <ul>
+            <li>Never post passport, visa or ID numbers, bank or card details, or your address.</li>
+            <li>Do not share emails or phone numbers in public posts.</li>
+            <li>If you were scammed, contact your bank, then report it. See the Massachusetts renter basics on the main site.</li>
+            <li>Posts here are experiences, not legal advice.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Simulated Harvard Key sign-in pop-up (prototype only) ===== -->
+<dialog id="keyDialog" aria-labelledby="keyTitle">
+  <h3 id="keyTitle">Simulated Harvard Key sign-in</h3>
+  <p>This is a stand-in screen for the prototype. The real Harvard Key sign-in would be run by Harvard, not by this site.</p>
+  <p><strong>Do not enter your real Harvard Key password anywhere on this page.</strong></p>
+  <div class="dlg-actions"><button class="btn primary" type="button" id="keyContinue">Continue as demo student</button><button class="btn secondary" type="button" id="keyCancel">Cancel</button></div>
+</dialog>
+</main>
+
+<!-- ===== Community section: behavior (feed, likes, replies, safety check, simulated gate) ===== -->
+<script>
+(function(){
+  // ---- simulated Harvard Key gate (prototype only: no real authentication) ----
+  const SKEY = "hmez-key-demo";
+  let signedIn = false;
+  try { signedIn = sessionStorage.getItem(SKEY) === "1"; } catch(e) {}
+  const gid = id => document.getElementById(id);
+  function applyAuth(focusBar){
+    gid("cGate").hidden = signedIn; gid("cMembers").hidden = !signedIn;
+    if (signedIn && focusBar) gid("signedBar").focus();
+  }
+  const dlg = gid("keyDialog");
+  const closeDlg = () => { if (dlg.close) dlg.close(); else dlg.removeAttribute("open"); };
+  gid("keySignIn").addEventListener("click", () => { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", ""); });
+  gid("keyCancel").addEventListener("click", closeDlg);
+  gid("keyContinue").addEventListener("click", () => {
+    signedIn = true; try { sessionStorage.setItem(SKEY, "1"); } catch(e) {}
+    closeDlg(); applyAuth(true);
+  });
+  gid("keySignOut").addEventListener("click", () => {
+    signedIn = false; try { sessionStorage.removeItem(SKEY); } catch(e) {}
+    applyAuth(false); gid("keySignIn").focus();
+  });
+  applyAuth(false);
+  // ---- community feed ----
+  const PATHS = {
+    general:["General question","t-general"], harvard:["Harvard housing","t-harvard"], sublet:["Sublets","t-sublet"],
+    broker:["Broker or agent","t-broker"], safe:["Private landlord","t-safe"], roommate:["Roommates","t-roommate"],
+    temp:["Temporary housing","t-temp"], unsafe:["Scams and unsafe landlords","t-unsafe"]
+  };
+  const TYPES = {question:"Question", tip:"Tip", story:"Story", scam:"Scam warning"};
+  const EXAMPLES = [
+    {id:"ex1", path:"harvard", type:"question", likes:6, text:"I land in late August. How early should I start looking at university housing, and what should I have ready first?",
+     replies:[{name:"Example student", text:"Start before you travel and check the official housing pages for deadlines. I wish I had made a backup plan too."}]},
+    {id:"ex2", path:"unsafe", type:"scam", likes:21, text:"A studio near campus was listed for about half the usual rent. The \"owner\" said they were overseas and would mail the keys after a gift card deposit. We walked away and reported the listing.",
+     replies:[]},
+    {id:"ex3", path:"broker", type:"question", likes:9, text:"A broker told us we owe a fee. How do we find out who actually hired them, and what should we ask for in writing?",
+     replies:[{name:"Example student", text:"Ask directly who hired them and get the answer in writing before you pay anything."}]},
+    {id:"ex4", path:"safe", type:"tip", likes:14, text:"Ask for a live video tour and have the landlord show you the unit and explain the lease while the camera is on. If they refuse, treat that as a red flag.", replies:[]},
+    {id:"ex5", path:"roommate", type:"tip", likes:11, text:"Before signing a joint lease, write down who pays what and what happens if someone moves out. It is awkward to talk about, and much worse to skip.", replies:[]},
+    {id:"ex6", path:"temp", type:"story", likes:8, text:"I booked a hotel for my first week through a platform with a clear refund policy. It gave me time to tour places in person instead of paying a stranger sight unseen.", replies:[]},
+    {id:"ex7", path:"sublet", type:"question", likes:5, text:"The tenant says it is fine to sublet because the landlord \"won't mind.\" Is that enough?",
+     replies:[{name:"Example student", text:"I would ask for written permission from the landlord before paying."}]},
+    {id:"ex8", path:"general", type:"question", likes:12, text:"Does anyone know what documents a bank usually asks for if you do not have a Social Security number yet?", replies:[]}
+  ];
+  const KEY = "hmez-community-v1";
+  let state = {mine:[], liked:{}, replies:{}};
+  try { const raw = localStorage.getItem(KEY); if (raw) state = Object.assign(state, JSON.parse(raw)); } catch(e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {} };
+
+  let pathFilter = "all", typeFilter = "all";
+  const $ = id => document.getElementById(id);
+  const mk = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
+
+  // personal-details check (prototype of simple moderation)
+  function problem(text){
+    if (!text.trim()) return "Please write something first.";
+    if (/[^\s@]+@[^\s@]+\.[^\s@]+/.test(text)) return "Please remove the email address. Do not share contact details in public posts.";
+    if (/(\+?\d[\d\s().-]{7,}\d)/.test(text)) return "That looks like a phone, ID or card number. Please remove it before posting.";
+    return "";
+  }
+  function rel(ts){
+    const m = Math.floor((Date.now() - ts) / 60000);
+    if (m < 1) return "just now"; if (m < 60) return m + " min ago";
+    const h = Math.floor(m / 60); if (h < 24) return h + " hr ago";
+    return new Date(ts).toLocaleDateString();
+  }
+
+  // chips + selects
+  const chipBox = $("cPathChips");
+  const addChip = (key, label) => {
+    const b = mk("button", "chip" + (key !== "all" && key !== "general" ? " c-" + key : ""), label);
+    b.type = "button"; b.dataset.key = key; b.setAttribute("aria-pressed", String(key === "all"));
+    b.addEventListener("click", () => { pathFilter = key; chipBox.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", String(c === b))); render(); });
+    chipBox.append(b);
+  };
+  addChip("all", "All");
+  Object.entries(PATHS).forEach(([k, v]) => { addChip(k, v[0]); const o = mk("option", "", v[0]); o.value = k; $("cPath").append(o); });
+  $("cTypeFilter").addEventListener("change", e => { typeFilter = e.target.value; render(); });
+
+  function replyList(id, base){
+    const list = (base || []).concat(state.replies[id] || []);
+    const ul = mk("ul", "replies"); if (!list.length) ul.hidden = true;
+    list.forEach(r => { const li = mk("li"); li.append(mk("span", "rwho", r.name || "Anonymous student"), mk("span", "", r.text)); ul.append(li); });
+    return ul;
+  }
+
+  function postEl(p, mine){
+    const art = mk("article", "post " + PATHS[p.path][1]);
+    const head = mk("div", "post-head");
+    head.append(mk("span", "ptag", PATHS[p.path][0]), mk("span", "ptype", TYPES[p.type]));
+    const who = mk("span", "pwho");
+    if (mine){ who.append(mk("span", "badge me", "You"), document.createTextNode(" " + (p.name || "Anonymous student") + ", " + rel(p.ts))); }
+    else { who.append(mk("span", "badge ex", "Example")); }
+    head.append(who);
+    art.append(head, mk("p", "body", p.text));
+
+    const actions = mk("div", "post-actions");
+    const like = mk("button", "pbtn"); like.type = "button";
+    const paint = () => { const on = !!state.liked[p.id]; like.setAttribute("aria-pressed", String(on)); like.textContent = "Helpful \u00b7 " + ((p.likes || 0) + (on ? 1 : 0)); };
+    paint();
+    like.addEventListener("click", () => { state.liked[p.id] = !state.liked[p.id]; if (!state.liked[p.id]) delete state.liked[p.id]; save(); paint(); });
+    const rb = mk("button", "pbtn", "Reply"); rb.type = "button"; rb.setAttribute("aria-expanded", "false");
+    actions.append(like, rb);
+    if (mine){
+      const del = mk("button", "pbtn", "Delete"); del.type = "button";
+      del.addEventListener("click", () => { state.mine = state.mine.filter(x => x.id !== p.id); delete state.replies[p.id]; delete state.liked[p.id]; save(); render(); });
+      actions.append(del);
+    }
+    art.append(actions);
+
+    const ul = replyList(p.id, p.replies); art.append(ul);
+    const form = mk("div", "reply-form"); form.hidden = true;
+    const inp = mk("input"); inp.maxLength = 240; inp.placeholder = "Write a reply"; inp.setAttribute("aria-label", "Write a reply");
+    const send = mk("button", "pbtn", "Send"); send.type = "button";
+    const err = mk("p", "c-error"); err.hidden = true; err.setAttribute("role", "alert"); err.style.flexBasis = "100%"; err.style.margin = "0";
+    send.addEventListener("click", () => {
+      const msg = problem(inp.value);
+      if (msg){ err.textContent = msg; err.hidden = false; return; }
+      err.hidden = true;
+      (state.replies[p.id] = state.replies[p.id] || []).push({name:"You", text:inp.value.trim()});
+      save(); inp.value = "";
+      const fresh = replyList(p.id, p.replies); ul.replaceWith(fresh); art.replaceChild(fresh, art.querySelector(".replies"));
+    });
+    form.append(inp, send, err); art.append(form);
+    rb.addEventListener("click", () => { form.hidden = !form.hidden; rb.setAttribute("aria-expanded", String(!form.hidden)); if (!form.hidden) inp.focus(); });
+    return art;
+  }
+
+  function render(){
+    const feed = $("cFeed"); feed.innerHTML = "";
+    const all = state.mine.map(p => ({p, mine:true})).concat(EXAMPLES.map(p => ({p, mine:false})));
+    const shown = all.filter(x => (pathFilter === "all" || x.p.path === pathFilter) && (typeFilter === "all" || x.p.type === typeFilter));
+    shown.forEach(x => feed.append(postEl(x.p, x.mine)));
+    if (!shown.length) feed.append(mk("p", "empty", "No posts here yet. Be the first to share something using the form."));
+    $("cCount").textContent = "Showing " + shown.length + (shown.length === 1 ? " post" : " posts");
+  }
+
+  $("cText").addEventListener("input", e => { $("cLeft").textContent = (400 - e.target.value.length) + " characters left"; });
+  $("cPost").addEventListener("click", () => {
+    const text = $("cText").value, msg = problem(text), err = $("cError");
+    if (msg){ err.textContent = msg; err.hidden = false; return; }
+    err.hidden = true;
+    state.mine.unshift({id:"me" + Date.now(), path:$("cPath").value, type:$("cType").value, text:text.trim(), name:$("cName").value.trim(), ts:Date.now(), likes:0});
+    save(); $("cText").value = ""; $("cLeft").textContent = "400 characters left";
+    pathFilter = "all"; typeFilter = "all"; $("cTypeFilter").value = "all";
+    chipBox.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", String(c.dataset.key === "all")));
+    render();
+  });
+  $("cReset").addEventListener("click", () => { state = {mine:[], liked:{}, replies:{}}; save(); render(); });
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A prototype community where Harvard students ask questions, share tips and warn each other.">
+<title>Community · Housing Made EZ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body data-page="community">
+<header class="topbar">
+  <div class="topbar-inner wrap">
+    <a class="brand" href="index.html"><span class="brand-dot"></span>Housing Made EZ</a>
+    <nav class="route" aria-label="Site pages">
+      <a href="index.html">Home</a>
+      <a href="scams.html">Avoid scams</a>
+      <a href="lease.html">Your lease</a>
+      <a href="banking.html">Banking</a>
+      <a href="where-to-live.html">Where to live</a>
+      <a href="roommates.html">Roommates</a>
+      <a href="furniture.html">Furniture</a>
+      <a href="checklist.html">Checklist</a>
+      <a href="community.html" aria-current="page">Community</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+  <section class="stop" id="community">
+    <div class="stop-kicker">Journey stage · Recovery and a voice</div>
+    <h1>Community: ask, share, warn</h1>
+    <p class="sub">A preview of how students could ask questions, share tips and warn each other, organized by the same seven pathways as the <a href="index.html#journey">housing journey map</a>.</p>
+    <p style="margin:-14px 0 22px; display:flex; gap:8px; flex-wrap:wrap;"><span class="tag tag-amber">Prototype</span><span class="tag tag-ink">Harvard Key required</span><span class="tag tag-ink">By Eze Chukwu</span></p>
+    <div class="cm">
+<div class="proto-banner" role="note">
+      <strong>This is a prototype.</strong> Posts marked <span class="badge ex">Example</span> were written by our team to show how it could work. Anything you post here stays only in your own browser, and nobody else can see it.
+    </div>
+<div id="cGate" class="gate">
+      <div class="gate-copy">
+        <svg class="lock" width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="9" y="19" width="26" height="19" rx="4" fill="#1F3A34"/><path d="M14 19v-5a8 8 0 0 1 16 0v5" stroke="#1F3A34" stroke-width="4" stroke-linecap="round"/><circle cx="22" cy="28" r="3" fill="#FFF4D6"/></svg>
+        <h3>Harvard students only</h3>
+        <p>Sign in with your Harvard Key to enter the community. That keeps conversations within the Harvard community and helps keep scammers and fake accounts out.</p>
+        <button class="btn primary" id="keySignIn" type="button">Sign in with Harvard Key</button>
+        <p class="gate-note"><strong>Prototype:</strong> this button only simulates signing in. No Harvard Key password is requested or stored on this page. A real version would use Harvard's own sign-in, which we would set up together with Harvard.</p>
+      </div>
+      <div class="gate-skeleton" aria-hidden="true">
+        <div class="sk"><i></i><b></b><b class="s"></b></div>
+        <div class="sk"><i></i><b></b><b class="s"></b></div>
+        <div class="sk"><i></i><b></b><b class="s"></b></div>
+      </div>
+    </div>
+    <div id="cMembers" hidden>
+    <div class="signed-bar" id="signedBar" tabindex="-1">
+      <span><strong>Signed in with Harvard Key</strong> (simulated) as <em>demo student</em></span>
+      <button class="pbtn" type="button" id="keySignOut">Sign out</button>
+    </div>
+    <div class="community">
+      <div class="c-main">
+        <div class="c-filters">
+          <div class="controls" role="group" aria-label="Filter posts by pathway" id="cPathChips"></div>
+          <label class="c-type">Show <select id="cTypeFilter" aria-label="Filter posts by type">
+            <option value="all">all types</option><option value="question">questions</option><option value="tip">tips</option>
+            <option value="story">stories</option><option value="scam">scam warnings</option>
+          </select></label>
+        </div>
+        <p class="c-count" id="cCount" aria-live="polite"></p>
+        <div id="cFeed" class="c-feed"></div>
+      </div>
+      <aside class="c-side">
+        <div class="composer">
+          <h3>Share with other students</h3>
+          <div class="field"><label for="cPath">Pathway</label><select id="cPath"></select></div>
+          <div class="field"><label for="cType">This is a</label>
+            <select id="cType"><option value="question">Question</option><option value="tip">Tip</option><option value="story">Story</option><option value="scam">Scam warning</option></select></div>
+          <div class="field"><label for="cText">Your post</label>
+            <textarea id="cText" rows="5" maxlength="400" placeholder="What happened, or what do you want to know?"></textarea>
+            <div class="c-meta"><span id="cLeft">400 characters left</span></div></div>
+          <div class="field"><label for="cName">Posting as (optional)</label><input id="cName" maxlength="24" placeholder="Anonymous student"></div>
+          <p class="c-error" id="cError" role="alert" hidden></p>
+          <button class="btn primary c-post" type="button" id="cPost">Post to the prototype</button>
+          <button class="c-reset" type="button" id="cReset">Clear my posts and likes</button>
+        </div>
+        <div class="safety">
+          <h3>Keep it safe</h3>
+          <ul>
+            <li>Never post passport, visa or ID numbers, bank or card details, or your address.</li>
+            <li>Do not share emails or phone numbers in public posts.</li>
+            <li>If you were scammed, contact your bank, then report it. See the <a href="lease.html">Massachusetts lease basics</a> and <a href="scams.html#report">how to report a scam</a>.</li>
+            <li>Posts here are experiences, not legal advice.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    </div>
+
+<!-- ===== Simulated Harvard Key sign-in pop-up (prototype only) ===== -->
+<dialog id="keyDialog" aria-labelledby="keyTitle">
+  <h3 id="keyTitle">Simulated Harvard Key sign-in</h3>
+  <p>This is a stand-in screen for the prototype. The real Harvard Key sign-in would be run by Harvard, not by this site.</p>
+  <p><strong>Do not enter your real Harvard Key password anywhere on this page.</strong></p>
+  <div class="dlg-actions"><button class="btn primary" type="button" id="keyContinue">Continue as demo student</button><button class="btn secondary" type="button" id="keyCancel">Cancel</button></div>
+</dialog>
+    </div>
+  </section>
+
+  <nav class="pager" aria-label="Previous and next page">
+    <a class="pager-prev" href="checklist.html"><span>Previous</span>Checklist</a>
+    <span></span>
+  </nav>
+  <footer>
+    <p><strong>Housing Made EZ</strong> — John, Andrea, Eze, Elsa, Mustafa · built for International Student Groups.</p>
+    <p>Distances and rent ranges are approximate planning estimates, not guarantees — always verify directly with landlords, banks, and providers.</p>
+  </footer>
+</main>
+<script src="assets/site.js"></script>
+</body>
+</html>
