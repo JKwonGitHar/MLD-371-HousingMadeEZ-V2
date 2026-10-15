@@ -286,6 +286,52 @@
   .rm-meta b{ color: var(--ink); font-family:'IBM Plex Mono', monospace; font-weight:500; }
   .empty-state{ color: var(--ink-faint); font-size:14px; padding: 18px; text-align:center; border:1px dashed var(--line); border-radius: var(--radius-m); }
 
+  /* ---------- Polish ---------- */
+  html{ scroll-behavior: smooth; scroll-padding-top: 70px; }
+  .route a.active{ background: var(--accent-soft); color: var(--accent-ink); border-color: transparent; }
+  .card{ transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease; }
+  .grid .card:hover{ border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); box-shadow: var(--shadow-2); }
+  .linklist a{ align-items:center; }
+  .linklist a > .ll-text{ display:flex; flex-direction:column; min-width:0; }
+  .stop.in-view::before{ background: var(--accent); }
+  .stop::before{ transition: background .25s ease; }
+
+  /* Journey strip in hero */
+  .journey{ display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-top: 32px; }
+  @media (max-width: 760px){ .journey{ grid-template-columns: repeat(2, 1fr); } }
+  .journey a{
+    display:flex; flex-direction:column; gap:2px; text-decoration:none; color: var(--ink);
+    background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius-m);
+    padding: 12px 14px; box-shadow: var(--shadow-1); transition: border-color .15s, transform .15s;
+  }
+  .journey a:hover{ border-color: var(--accent); transform: translateY(-1px); }
+  .journey .n{ font: 600 11.5px 'IBM Plex Mono', monospace; color: var(--accent-ink); }
+  .journey .t{ font-weight:600; font-size:14.5px; line-height:1.3; }
+  .journey .d{ font-size:12.5px; color: var(--ink-faint); }
+  .journey .new{ align-self:flex-start; margin-top:4px; }
+
+  /* ---------- Embedded team tools ---------- */
+  .embed{
+    margin-top: 26px; background: var(--paper-raised); border:1px solid var(--line);
+    border-radius: var(--radius-l); box-shadow: var(--shadow-2); overflow:hidden;
+  }
+  .embed-head{
+    display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap;
+    padding: 18px 22px 16px; border-bottom:1px solid var(--line);
+    background: linear-gradient(180deg, var(--accent-soft), var(--paper-raised));
+  }
+  .embed-head h3{ font-size:19px; margin:6px 0 4px; }
+  .embed-head p{ margin:0; font-size:14px; color: var(--ink-soft); max-width: 64ch; }
+  .embed-actions{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .embed-frame{ position:relative; background: #fff; }
+  .embed-frame iframe{ display:block; width:100%; border:0; height: var(--h, 760px); }
+  .embed-foot{ padding: 10px 22px; font-size:12.5px; color: var(--ink-faint); border-top:1px solid var(--line); background: var(--paper); }
+  .embed.collapsed .embed-frame{ max-height: var(--ch, 520px); overflow:hidden; }
+  .embed.collapsed .embed-frame::after{
+    content:""; position:absolute; inset:auto 0 0 0; height: 140px;
+    background: linear-gradient(transparent, var(--paper-raised)); pointer-events:none;
+  }
+
   footer{ padding: 40px 0 60px; border-top: 1px solid var(--line); margin-top: 20px; }
   footer p{ font-size:13px; color: var(--ink-faint); margin:0 0 6px; }
 </style>
@@ -297,6 +343,7 @@
     <nav class="route">
       <a href="#scams">Scams</a>
       <a href="#lease">Lease</a>
+      <a href="#leasecheck">LeaseCheck</a>
       <a href="#banking">Banking</a>
       <a href="#checklist">Checklist</a>
       <a href="#rent">Rent map</a>
@@ -316,6 +363,12 @@
       <div><strong>International Student Groups</strong>Partner organization</div>
       <div><strong>Harvard Kennedy School</strong>Distances below are measured from here</div>
     </div>
+    <nav class="journey" aria-label="Jump to a step">
+      <a href="#scams"><span class="n">01</span><span class="t">Avoid scams</span><span class="d">Verify the agent and owner</span></a>
+      <a href="#lease"><span class="n">02</span><span class="t">Decipher your lease</span><span class="d">Check a lease with LeaseCheck</span></a>
+      <a href="#banking"><span class="n">03</span><span class="t">Open a bank account</span><span class="d">No SSN needed with HFCU</span></a>
+      <a href="#checklist"><span class="n">04</span><span class="t">Move in</span><span class="d">Checklist, rent, roommates</span></a>
+    </nav>
   </section>
 
   <!-- ================= SCAMS ================= -->
@@ -422,10 +475,10 @@
 
     <h3 style="font-family:'Work Sans',sans-serif; font-size:14px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint); margin-bottom:10px;">If you've spotted one, report it</h3>
     <ul class="linklist" style="margin-bottom:10px;">
-      <li><a href="https://www.boston.gov/departments/consumer-affairs-and-licensing/apartment-scams" target="_blank" rel="noopener">Boston.gov — Apartment Scams (source for this page)<small>Full tips, brochure, and reporting links</small><span class="go">↗</span></a></li>
-      <li><a href="https://police.boston.gov/" target="_blank" rel="noopener">Boston Police Department<small>File a local report</small><span class="go">↗</span></a></li>
-      <li><a href="https://reportfraud.ftc.gov/" target="_blank" rel="noopener">Federal Trade Commission — Report Fraud<small>Federal scam database</small><span class="go">↗</span></a></li>
-      <li><a href="https://www.ic3.gov/" target="_blank" rel="noopener">FBI Internet Crime Complaint Center (IC3)<small>For online / wire-transfer scams</small><span class="go">↗</span></a></li>
+      <li><a href="https://www.boston.gov/departments/consumer-affairs-and-licensing/apartment-scams" target="_blank" rel="noopener"><span class="ll-text"><span>Boston.gov — Apartment Scams (source for this page)</span><small>Full tips, brochure, and reporting links</small></span><span class="go">↗</span></a></li>
+      <li><a href="https://police.boston.gov/" target="_blank" rel="noopener"><span class="ll-text"><span>Boston Police Department</span><small>File a local report</small></span><span class="go">↗</span></a></li>
+      <li><a href="https://reportfraud.ftc.gov/" target="_blank" rel="noopener"><span class="ll-text"><span>Federal Trade Commission — Report Fraud</span><small>Federal scam database</small></span><span class="go">↗</span></a></li>
+      <li><a href="https://www.ic3.gov/" target="_blank" rel="noopener"><span class="ll-text"><span>FBI Internet Crime Complaint Center (IC3)</span><small>For online / wire-transfer scams</small></span><span class="go">↗</span></a></li>
     </ul>
     <p style="font-size:13px; color:var(--ink-faint);">Questions? Boston Consumer Affairs — <span class="mono">617-635-3834</span></p>
   </section>
@@ -448,9 +501,28 @@
     </div>
 
     <ul class="linklist" style="margin-top:18px;">
-      <li><a href="https://www.masslegalhelp.org/housing-apartments-shelter/tenants-rights/understanding-your-lease-tenant" target="_blank" rel="noopener">Mass Legal Help — Understanding Your Lease<small>Full plain-language breakdown</small><span class="go">↗</span></a></li>
-      <li><a href="https://www.mass.gov/guides/the-attorney-generals-guide-to-landlord-and-tenant-rights" target="_blank" rel="noopener">MA Attorney General's Guide to Landlord & Tenant Rights<small>The official state guide, PDF</small><span class="go">↗</span></a></li>
+      <li><a href="https://www.masslegalhelp.org/housing-apartments-shelter/tenants-rights/understanding-your-lease-tenant" target="_blank" rel="noopener"><span class="ll-text"><span>Mass Legal Help — Understanding Your Lease</span><small>Full plain-language breakdown</small></span><span class="go">↗</span></a></li>
+      <li><a href="https://www.mass.gov/guides/the-attorney-generals-guide-to-landlord-and-tenant-rights" target="_blank" rel="noopener"><span class="ll-text"><span>MA Attorney General's Guide to Landlord & Tenant Rights</span><small>The official state guide, PDF</small></span><span class="go">↗</span></a></li>
     </ul>
+
+    <!-- ===== LeaseCheck prototype (from 99-Indiv work/LeaseCheckPrototype) ===== -->
+    <div class="embed collapsed" id="leasecheck" style="--ch: 1250px;">
+      <div class="embed-head">
+        <div>
+          <span class="tag tag-amber">Prototype</span>
+          <h3>LeaseCheck Boston: a second pair of eyes on your lease</h3>
+          <p>Tell it where you are in the process, hand over your lease, and it flags illegal fees, missing required parts and scam warning signs in plain language. The sample lease below is fictional, so you can see what a risky lease looks like.</p>
+        </div>
+        <div class="embed-actions">
+          <button class="btn btn-ghost" type="button" data-expand="leasecheck" data-more="Show the whole tool" data-less="Show less">Show the whole tool</button>
+          <a class="btn btn-ghost" href="lease-check.html" target="_blank" rel="noopener">Open full screen ↗</a>
+        </div>
+      </div>
+      <div class="embed-frame" style="--h: 900px;">
+        <iframe src="lease-check.html" title="LeaseCheck Boston prototype" loading="lazy" data-autofit></iframe>
+      </div>
+      <div class="embed-foot">Prototype, not legal advice. Live lease checking needs the Claude app; the worked example runs anywhere.</div>
+    </div>
   </section>
 
   <!-- ================= BANKING ================= -->
@@ -579,8 +651,8 @@
     </div>
 
     <ul class="linklist">
-      <li><a href="https://www.mass.gov/guides/find-a-licensed-family-group-or-school-age-child-care-program" target="_blank" rel="noopener">Mass.gov — Find a Licensed Child Care Program<small>Official state search tool, verify any provider here</small><span class="go">↗</span></a></li>
-      <li><a href="https://winnie.com/boston/daycares" target="_blank" rel="noopener">Winnie — Boston Daycares<small>Reviews, waitlist status, pricing by center</small><span class="go">↗</span></a></li>
+      <li><a href="https://www.mass.gov/guides/find-a-licensed-family-group-or-school-age-child-care-program" target="_blank" rel="noopener"><span class="ll-text"><span>Mass.gov — Find a Licensed Child Care Program</span><small>Official state search tool, verify any provider here</small></span><span class="go">↗</span></a></li>
+      <li><a href="https://winnie.com/boston/daycares" target="_blank" rel="noopener"><span class="ll-text"><span>Winnie — Boston Daycares</span><small>Reviews, waitlist status, pricing by center</small></span><span class="go">↗</span></a></li>
     </ul>
   </section>
 
@@ -1014,6 +1086,62 @@
     }
   });
   update();
+})();
+</script>
+<script>
+/* Section highlighting, expandable embeds, auto-sizing iframes */
+(function(){
+  var links = {};
+  document.querySelectorAll('.route a').forEach(function(a){ links[a.getAttribute('href').slice(1)] = a; });
+  var stops = document.querySelectorAll('.stop');
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in-view');
+        Object.values(links).forEach(function(a){ a.classList.remove('active'); });
+        var a = links[e.target.id];
+        if (a){ a.classList.add('active'); try { a.scrollIntoView({block:'nearest', inline:'center'}); } catch(_){} }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    stops.forEach(function(s){ io.observe(s); });
+  }
+
+  document.querySelectorAll('[data-expand]').forEach(function(btn){
+    var box = document.getElementById(btn.getAttribute('data-expand'));
+    btn.addEventListener('click', function(){
+      var collapsed = box.classList.toggle('collapsed');
+      btn.textContent = collapsed ? btn.dataset.more : btn.dataset.less;
+      if (collapsed) box.scrollIntoView({block:'start'});
+    });
+  });
+  ['leasecheck'].forEach(function(id){
+    document.querySelectorAll('a[href="#'+id+'"]').forEach(function(a){
+      a.addEventListener('click', function(){
+        var box = document.getElementById(id), b = box.querySelector('[data-expand]');
+        if (box.classList.contains('collapsed')){ box.classList.remove('collapsed'); b.textContent = b.dataset.less; }
+      });
+    });
+  });
+
+  // Fit each iframe to its content when the browser allows it (same-origin, e.g. GitHub Pages).
+  // Otherwise the fixed height from CSS stays and the frame scrolls on its own.
+  document.querySelectorAll('iframe[data-autofit]').forEach(function(f){
+    function fit(){
+      try {
+        var d = f.contentDocument; if (!d || !d.documentElement) return;
+        var h = Math.max(d.documentElement.scrollHeight, d.body ? d.body.scrollHeight : 0);
+        if (h > 200) f.style.height = (h + 4) + 'px';
+      } catch(_){}
+    }
+    f.addEventListener('load', function(){
+      fit();
+      try {
+        if ('ResizeObserver' in window) new ResizeObserver(fit).observe(f.contentDocument.body);
+      } catch(_){}
+      setTimeout(fit, 800);
+    });
+  });
 })();
 </script>
 </body>
