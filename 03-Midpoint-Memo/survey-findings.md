@@ -69,15 +69,15 @@ Our work since the background brief already lines up with the top three findings
 
 | Survey finding | What we built (repo location, author) | Coverage |
 | --- | --- | --- |
-| Finding furniture, 55% | Furniture process map ([`03-Midpoint-Memo/process-map.html`](process-map.html), John); furniture board prototype ([website](../website/index.html) Stop 7, John) | Strong |
-| Finding roommates, 45% | Housemate search process map and Housemate Navigator prototype ([`housemate-process-map.html`](housemate-process-map.html), [`housemate-navigator-prototype.html`](housemate-navigator-prototype.html), Elsa); roommate board (website Stop 6) | Strong |
-| Understanding the lease, 32% | LeaseCheck Boston prototype (`99-Indiv work`, Andrea; embedded on the website); lease glossary (website Stop 2); Mustafa's lease experience case | Strong |
-| Landlord and property management, 27% | Agent verification checklist (website Stop 1); Mustafa's case shows repair, deposit and billing disputes after move-in | Partial: nothing for problems after move-in |
-| Location and safety, 23% | Rent and distance comparison (website Stop 5) | Partial: no safety information |
+| Finding furniture, 55% | Furniture process map ([`03-Midpoint-Memo/process-map.html`](process-map.html), John); furniture board prototype ([Furniture page](../website/furniture.html), John) | Strong |
+| Finding roommates, 45% | Housemate search process map and Housemate Navigator prototype ([`housemate-process-map.html`](housemate-process-map.html), [`housemate-navigator-prototype-Elsa.html`](../99-Indiv%20work/housemate-navigator-prototype-Elsa.html), Elsa; embedded on the [Roommates page](../website/roommates.html#navigator)); roommate board ([Roommates page](../website/roommates.html)) | Strong |
+| Understanding the lease, 32% | LeaseCheck Boston prototype (`99-Indiv work`, Andrea; embedded on the website); lease glossary ([Your lease page](../website/lease.html)); Mustafa's lease experience case | Strong |
+| Landlord and property management, 27% | Agent verification checklist ([Avoid scams page](../website/scams.html)); Mustafa's case shows repair, deposit and billing disputes after move-in | Partial: nothing for problems after move-in |
+| Location and safety, 23% | Rent and distance comparison ([Where to live page](../website/where-to-live.html)) | Partial: no safety information |
 | Utility costs, 18% | Utilities card in the lease glossary; Mustafa's case ($600 gas bill, $500 water charge with no bill shown) | Gap |
-| Cost and value, 6 unprompted | Rent comparison, Cambridge vs. Allston (website Stop 5) | Partial |
-| Banking from abroad, 1 mention | Lease and bank process map (`99-Indiv work`, Andrea); banking section (website Stop 3) | Strong for a small need |
-| Scams, 5% | Scam section and agent checklist (website Stop 1); relationship map flags landlord scam risk (Andrea) | Strong for a small need |
+| Cost and value, 6 unprompted | Rent comparison, Cambridge vs. Allston ([Where to live page](../website/where-to-live.html)) | Partial |
+| Banking from abroad, 1 mention | Lease and bank process map (`99-Indiv work`, Andrea); banking section ([Banking page](../website/banking.html)) | Strong for a small need |
+| Scams, 5% | Scam section and agent checklist ([Avoid scams page](../website/scams.html)); relationship map flags landlord scam risk (Andrea) | Strong for a small need |
 
 The stakeholder and relationship maps from the background brief still hold: students sit at the center of the network, and no group holds landlords accountable. That gap matches the after-move-in problems students described.
 

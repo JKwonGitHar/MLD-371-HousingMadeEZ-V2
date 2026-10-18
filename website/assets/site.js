@@ -436,17 +436,20 @@
       if (collapsed) box.scrollIntoView({block:'start'});
     });
   });
-  // Arriving on lease.html#leasecheck opens the whole tool.
-  if (location.hash === '#leasecheck'){
-    var box = document.getElementById('leasecheck');
-    var b = box && box.querySelector('[data-expand]');
-    if (box && b){ box.classList.remove('collapsed'); b.textContent = b.dataset.less; }
+  // Arriving on a link to an embedded tool (lease.html#leasecheck, roommates.html#navigator) opens the whole tool.
+  if (location.hash.length > 1){
+    var box = document.getElementById(location.hash.slice(1));
+    var b = box && box.classList.contains('embed') && box.querySelector('[data-expand]');
+    if (b){ box.classList.remove('collapsed'); b.textContent = b.dataset.less; }
   }
   document.querySelectorAll('iframe[data-autofit]').forEach(function(f){
     function fit(){
       try {
         var d = f.contentDocument; if (!d || !d.documentElement) return;
-        var h = Math.max(d.documentElement.scrollHeight, d.body ? d.body.scrollHeight : 0);
+        // Measure the content itself (not the frame), so the frame can shrink as well as grow.
+        var b = d.body, cs = d.defaultView.getComputedStyle(b);
+        var h = Math.ceil(b.getBoundingClientRect().height + parseFloat(cs.marginTop || 0) + parseFloat(cs.marginBottom || 0));
+        if (h < 200) h = d.documentElement.scrollHeight;
         if (h > 200) f.style.height = (h + 4) + 'px';
       } catch(_){}
     }
