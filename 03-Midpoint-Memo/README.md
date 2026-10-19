@@ -9,7 +9,7 @@ The Housing Made EZ website lives in the [`website`](../website/index.html) fold
 | Page | What's on it |
 | --- | --- |
 | [Home](../website/index.html) | Step cards for each stage of the move, and Eze's housing journey map |
-| [Avoid scams](../website/scams.html) | Scam warning signs, the agent verification check, where to report |
+| [Avoid scams](../website/scams.html) | Scam warning signs, the agent verification check, where to report (Mustafa) |
 | [Your lease](../website/lease.html) | Plain-English lease terms and LeaseCheck (Andrea) |
 | [Banking](../website/banking.html) | Opening a US account before you land |
 | [Where to live](../website/where-to-live.html) | Rent in Cambridge vs. Allston, distance from HKS, childcare costs |
