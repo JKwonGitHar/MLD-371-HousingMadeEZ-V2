@@ -1,5 +1,75 @@
 /* Housing Made EZ: shared script for every page. Each block checks that its section is on the page. */
 
+/* ===== One-time Harvard email sign-in =====
+   The first visit shows a sign-in screen. A Harvard address (ending in harvard.edu) is saved in this
+   browser, every page opens from then on, and the forms reuse it. This checks the address's ending only;
+   it does not confirm the inbox exists. A determined visitor could get around it, so it is a light gate,
+   not security. */
+(function(){
+  var KEY = "hme-harvard-email";
+  var RE = /^[^\s@]+@([a-z0-9-]+\.)*harvard\.edu$/i;
+  function getEmail(){ try { return localStorage.getItem(KEY) || sessionStorage.getItem(KEY); } catch(e){ return null; } }
+  function setEmail(v){ try { localStorage.setItem(KEY, v); } catch(e){ try { sessionStorage.setItem(KEY, v); } catch(_){} } }
+  function clearEmail(){ try { localStorage.removeItem(KEY); sessionStorage.removeItem(KEY); } catch(e){} }
+
+  function prefill(email){
+    ["fs-email", "fr-email", "rm-contact"].forEach(function(id){
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.defaultValue = email; el.value = email;      // defaultValue survives form.reset()
+      el.readOnly = true; el.classList.add("from-signin");
+      el.title = "From your sign-in. Sign out at the bottom of the page to use another address.";
+    });
+    var hint = document.getElementById("fs-email") && document.getElementById("fs-email").parentNode.querySelector(".fb-hint");
+    if (hint) hint.textContent = "From your sign-in. Sign out at the bottom of the page to use another address.";
+    var foot = document.querySelector("main footer");
+    if (foot && !document.getElementById("signed-in")){
+      var p = document.createElement("p"); p.className = "signed-in"; p.id = "signed-in";
+      p.appendChild(document.createTextNode("Signed in as " + email + " · "));
+      var out = document.createElement("button"); out.type = "button"; out.textContent = "Sign out";
+      out.addEventListener("click", function(){ clearEmail(); location.reload(); });
+      p.appendChild(out); foot.insertBefore(p, foot.firstChild);
+    }
+  }
+
+  var saved = getEmail();
+  if (saved){ document.documentElement.classList.remove("gated"); prefill(saved); return; }
+
+  var gate = document.createElement("div");
+  gate.id = "gate";
+  gate.innerHTML =
+    '<div class="gate-card" role="dialog" aria-labelledby="gate-title">' +
+      '<div class="brand"><span class="brand-dot"></span>Housing Made EZ</div>' +
+      '<h1 id="gate-title">Welcome! Sign in with your Harvard email</h1>' +
+      '<p>This site is for the Harvard community. You only need to do this once on this device.</p>' +
+      '<form novalidate>' +
+        '<div class="field"><label for="gate-email">Harvard email</label>' +
+        '<input id="gate-email" type="email" autocomplete="email" required maxlength="80" placeholder="you@hks.harvard.edu"></div>' +
+        '<p class="gate-error" id="gate-error" role="alert"></p>' +
+        '<button class="btn btn-primary" type="submit">Enter the site</button>' +
+      '</form>' +
+      '<p class="gate-note">We only check that the address ends in harvard.edu. It stays in this browser and isn’t sent anywhere.</p>' +
+    '</div>';
+  document.body.insertBefore(gate, document.body.firstChild);
+  var input = document.getElementById("gate-email");
+  input.addEventListener("input", function(){ document.getElementById("gate-error").textContent = ""; });
+  gate.querySelector("form").addEventListener("submit", function(e){
+    e.preventDefault();
+    var email = input.value.trim();
+    if (!RE.test(email)){
+      document.getElementById("gate-error").textContent = "Use your Harvard email address (ending in harvard.edu).";
+      input.focus(); return;
+    }
+    setEmail(email);
+    gate.remove();
+    document.documentElement.classList.remove("gated");
+    prefill(email);
+    window.scrollTo(0, 0);
+  });
+  try { input.focus(); } catch(_){}
+})();
+
+
 (function(){
   "use strict";
 
@@ -255,6 +325,14 @@
     var form = document.getElementById("rm-form");
     form.addEventListener("submit", function(e){
       e.preventDefault();
+      // Only Harvard addresses can post (checks the domain; it does not confirm the inbox exists).
+      var rmErr = document.getElementById("rm-error");
+      var contact = document.getElementById("rm-contact").value.trim();
+      if (!/^[^\s@]+@([a-z0-9-]+\.)*harvard\.edu$/i.test(contact)){
+        if (rmErr) rmErr.textContent = "Use your Harvard email address (ending in harvard.edu).";
+        return;
+      }
+      if (rmErr) rmErr.textContent = "";
       var btn = form.querySelector("button[type=submit]");
       btn.disabled = true; btn.textContent = "Posting…";
       var data = {

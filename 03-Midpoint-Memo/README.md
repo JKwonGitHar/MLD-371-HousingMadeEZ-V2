@@ -14,7 +14,6 @@ The Housing Made EZ website lives in the [`website`](../website/index.html) fold
 | [Where to live](../website/where-to-live.html) | Rent in Cambridge vs. Allston, distance from HKS |
 | [Roommates](../website/roommates.html) | Housemate Navigator (Elsa) and the roommate board |
 | [Furniture](../website/furniture.html) | The HKS furniture board (John) |
-| [Community](../website/community.html) | Community prototype with simulated Harvard Key sign-in (Eze) |
 
 ## In this folder
 

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>/* Opened on its own (not inside the site)? Send signed-out visitors to the sign-in page. */(function(){try{var k="hme-harvard-email";if(window.top===window.self&&!(localStorage.getItem(k)||sessionStorage.getItem(k)))location.replace("index.html")}catch(e){}})();</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Housing Made EZ prototype: a guided way for Harvard affiliates to find a housemate safely.">
@@ -439,7 +440,7 @@ function renderStart(m){
     body = '<h2>Last step: about you</h2><p class="help">Only your first name, school and answers are shown to others. Your email stays private until you both agree to an intro.</p>'+
       '<div class="card"><div class="formgrid">'+
       '<label class="f">First name or initials<input type="text" id="yn" maxlength="40" value="'+esc(I.name || "")+'" placeholder="e.g. Amara K."></label>'+
-      '<label class="f">Harvard email<input type="email" id="ye" value="'+esc(I.email || "")+'" placeholder="you@hks.harvard.edu"></label>'+
+      '<label class="f">Harvard email<input type="email" id="ye" value="'+esc(I.email || (function(){try{return localStorage.getItem("hme-harvard-email")||sessionStorage.getItem("hme-harvard-email")||""}catch(e){return ""}})())+'" placeholder="you@hks.harvard.edu"></label>'+
       '<label class="f">School or role<select id="ys">'+SCHOOLS.map(s => '<option'+(I.school === s ? " selected" : "")+'>'+esc(s)+'</option>').join("")+'</select></label>'+
       '<label class="f" style="grid-column:1/-1">A line about you <span class="hint">· no phone numbers or addresses</span><textarea id="yt" maxlength="200" placeholder="Program, languages, what a good home feels like to you…">'+esc(I.note || "")+'</textarea></label>'+
       '</div><p class="err" id="err"></p><div class="nav-row" style="margin-top:8px"><span class="hint">In the real tool we\'d email you a code to confirm the address.</span><button class="btn btn-primary" id="next">See my plan →</button></div></div>';
@@ -476,7 +477,7 @@ function renderStart(m){
       const name = $("yn").value.trim(), email = $("ye").value.trim().toLowerCase(), note = $("yt").value.trim();
       let err = "";
       if (!name) err = "Add a first name or initials.";
-      else if (!/@([a-z0-9-]+\.)*harvard\.edu$/.test(email)) err = "Use your Harvard email (ending in harvard.edu). It's how others know you're real.";
+      else if (!/^[^\s@]+@([a-z0-9-]+\.)*harvard\.edu$/.test(email)) err = "Use your Harvard email (ending in harvard.edu). It's how others know you're real.";
       else if (/\d{3}[\s.-]?\d{3}[\s.-]?\d{4}|\+\d{6,}/.test(note)) err = "Please remove the phone number. Contact details are shared only when both people agree.";
       if (err){ $("err").textContent = err; return; }
       Object.assign(I, { name, email, school:$("ys").value, note });

@@ -565,3 +565,20 @@ main.wrap{
   box-shadow: 0 0 0 6px rgba(255,255,255,.55), 0 18px 40px rgba(0,0,0,.25);
 }
 @media (max-width: 640px){ main.wrap{ margin: 14px auto 24px; padding: 4px 16px 2px; border-radius: 16px; } }
+
+/* ===== One-time Harvard email sign-in ===== */
+html.gated .topbar, html.gated main{ display:none; }
+#gate{ min-height:100vh; display:grid; place-items:center; padding:24px 0; }
+.gate-card{ background: var(--paper); border-radius:22px; width:100%; max-width:460px; padding:30px 28px 24px;
+  box-shadow: 0 0 0 6px rgba(255,255,255,.55), 0 18px 40px rgba(0,0,0,.25); }
+.gate-card .brand{ margin-bottom:18px; }
+.gate-card h1{ font-family:'Fraunces', Georgia, serif; font-size:28px; line-height:1.15; font-weight:600; margin:0 0 8px; }
+.gate-card p{ color: var(--ink-soft); font-size:15px; margin:0 0 18px; }
+.gate-card form{ display:flex; flex-direction:column; gap:12px; }
+.gate-card .btn{ justify-content:center; }
+.gate-error{ color: var(--warn); font-size:13.5px; font-weight:600; margin:0; }
+.gate-error:empty{ display:none; }
+.gate-note{ font-size:12.5px !important; color: var(--ink-faint) !important; margin:14px 0 0 !important; }
+.signed-in{ font-size:13px; color: var(--ink-faint); margin:0 0 6px; }
+.signed-in button{ background:none; border:0; padding:0; font:inherit; color: var(--accent-ink); text-decoration:underline; cursor:pointer; }
+input.from-signin{ background: var(--paper) !important; color: var(--ink-soft) !important; }
