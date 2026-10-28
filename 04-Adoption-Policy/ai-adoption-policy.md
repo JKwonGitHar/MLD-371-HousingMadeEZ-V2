@@ -1,13 +1,13 @@
 # AI adoption Constitution for Harvard Kennedy School International Student Groups
 
-*MLD-371 · Studio 8 · October 22, 2026.*
+**Organization:** Harvard Kennedy School International Student Groups<br>
+**Name of Team members:** Eze Chukwu, Elsa Nisa, Andrea Pavlick, John Kwon, Mustafa Naqvi
 
-## 0. Header
+> This constitution outlines the capabilities, risks, disclosure standards, judgment, and decision-making process guiding the AI features integrated into our platform, Housing Made Easy. As a collective dedicated to helping international students transition smoothly to academic life, we collect, store, and process personal data using AI models to optimize user support across all platform modules. Throughout this workflow, we implement clear data hand-off and safeguarding mechanics to ensure sensitive information remains protected. Our overarching goal is to pair rigorous data privacy and security with an intuitive, user-friendly experience.
+>
+> This constitution will be reviewed and verified every new school year to ensure it remains current and aligned with applicable policies.
 
-- Organization: Harvard Kennedy School International Student Groups
-- Name of Team members: Eze Chukwu, Elsa Nisa, Andrea Pavlick, John Kwon, Mustafa Naqvi
-- This constitution outlines the capabilities, risks, disclosure standards, judgment, and decision-making process guiding the AI features integrated into our platform, Housing Made Easy. As a collective dedicated to helping international students transition smoothly to academic life, we collect, store, and process personal data using AI models to optimize user support across all platform modules. Throughout this workflow, we implement clear data hand-off and safeguarding mechanics to ensure sensitive information remains protected. Our overarching goal is to pair rigorous data privacy and security with an intuitive, user-friendly experience.
-- This constitution will be reviewed and verified every new school year to ensure it remains current and aligned with applicable policies.
+---
 
 ## I. Capability
 
@@ -99,3 +99,12 @@ To safeguard user autonomy, maintain compliance, and foster trust, critical oper
 **2. How does this policy change who has power inside the organization and in its relationships: with members, with funders, with other entities with which it works?**
 
 Housing Made EZ empowers international students as they navigate the complicated Boston housing market. It shifts power over information to international students.
+
+<br>
+<br>
+
+---
+
+<sub><b>AI disclosure</b></sub>
+
+<sub>Each member of our group was assigned to one of the issues: the lease checker, the furniture finder, the housemate finder, and scams. We developed and drafted the AI policy based on our assigned issue. We used AI to integrate the drafts from each section into a single AI policy, as we view this as a single website policy. We then used AI to turn it from a Word document (.docx) into this Markdown (.md) file.</sub>
