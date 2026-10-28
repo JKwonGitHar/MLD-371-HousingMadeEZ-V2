@@ -19,7 +19,7 @@ Our core organizational mission is to provide information to international stude
 
 - **Lease Checker:** Assess uploaded student leases for completeness, unusual clauses, scam warnings, and compliance with Massachusetts tenant laws; generate visual summaries with recommended next steps; and offer an interactive chatbot to answer student questions.
 - **Scam Awareness (Non-AI):** Provide checklists and direct links to available scam prevention and reporting resources.
-- **Housemate Finder**: Automatically pre-fill profile forms and provide translation tools for non-native English speakers.
+- **Housemate Finder:** Automatically pre-fill profile forms and provide translation tools for non-native English speakers.
 - **Furniture Finder:** Match available furniture between outgoing and incoming students, with reservation tracking and visual measurement tools.
 
 **2. What is the evidence, if any, that the tool is better at each task than the current process? How should efficacy/accuracy be tested?**
@@ -31,47 +31,40 @@ Our core organizational mission is to provide information to international stude
 
 **3. What is explicitly off the table in terms of AI use on the platform, and why? (e.g. ILA prohibited automation around clerical work)**
 
-- **Legal & Binding Agreements**: AI cannot provide legal advice, enter into legally binding agreements or automatic contracts, or make commitments on behalf of students.
+- **Legal & Binding Agreements:** AI cannot provide legal advice, enter into legally binding agreements or automatic contracts, or make commitments on behalf of students.
 - **Payments & Transactions:** AI is strictly prohibited from completing or executing any payment transactions.
 - **Communications & Personal Interactions:** AI cannot respond back or contact individuals on a user's behalf, agree to introductions, or make social or personal commitments that require genuine human interaction and decision-making.
 - **Discriminatory Filtering:** Matching and filtering based on protected or sensitive personal traits, such as race, nationality, religion, or gender, is prohibited; matching must rely solely on lifestyle preferences explicitly shared by users.
 
 **4. Where does the organization’s data live, who owns it, and what may the tool read, write, or send?**
 
-**Lease Checker Module**
+- **Lease Checker Module:** Uploaded lease documents are read and processed by AI to provide the analysis and allow the user to ask questions about the lease; personal data and/or lease documents are not stored in a central database.
+- **Furniture Finder Module:** Listings and inventory data are hosted in a centralized document (e.g., Google Sheets) owned and managed by designated incoming student administrators with full access rights.
 
-- Uploaded lease documents are read and processed by AI to provide the analysis and allow the user to ask questions about the lease; personal data and/or lease documents are not stored in a central database.
-
-**Furniture Finder Module**
-
-- Listings and inventory data are hosted in a centralized document (e.g., Google Sheets) owned and managed by designated incoming student administrators with full access rights.
-
-**Housemate Finder Module**
-
-- Student profile information resides locally within the user's browser; text transmitted to AI model APIs for translation or matching is not retained, while operational platform data is stored securely in designated cloud storage.
+- **Housemate Finder Module:** Student profile information resides locally within the user's browser; text transmitted to AI model APIs for translation or matching is not retained, while operational platform data is stored securely in designated cloud storage.
 
 ## II. Risk and disclosure
 
 **1. For each permitted use: what is the worst plausible failure and how would your org know it happened?**
 
-**Worst Plausible Failures:** Critical platform failures include failing to identify housing scam clauses or unlawful lease terms, providing inaccurate summaries or unverified advice relied upon by students, inadvertently exposing user-posted content or centralized databases containing sensitive personally identifiable information (PII), translation and communication errors causing financial or interpersonal disputes, misrepresenting item availability or dimensions, and hosting security vulnerabilities that compromise organizational data. These issues would be detected through security monitoring, audit logs, student feedback, and support tickets.
+- **Worst Plausible Failures:** Critical platform failures include failing to identify housing scam clauses or unlawful lease terms, providing inaccurate summaries or unverified advice relied upon by students, inadvertently exposing user-posted content or centralized databases containing sensitive personally identifiable information (PII), translation and communication errors causing financial or interpersonal disputes, misrepresenting item availability or dimensions, and hosting security vulnerabilities that compromise organizational data. These issues would be detected through security monitoring, audit logs, student feedback, and support tickets.
 
 **2. Under what conditions, and to what extent, should AI use be disclosed? (WGA model: disclosure is mandatory, and workers can refuse to use AI)**
 
-**Disclosure Standards:** Mandatory disclosure notices are displayed across the platform before users upload documents or interact with features. Users are clearly informed whenever automated analysis, AI-assisted translation, profile pre-filling, or smart matching tools are utilized, ensuring content can be reviewed and approved prior to submission.
+- **Disclosure Standards:** Mandatory disclosure notices are displayed across the platform before users upload documents or interact with features. Users are clearly informed whenever automated analysis, AI-assisted translation, profile pre-filling, or smart matching tools are utilized, ensuring content can be reviewed and approved prior to submission.
 
 **3. What are the risks to the people inside the organization, e.g. deskilling, surveillance, workload shifted rather than reduced, jobs reorganized out of existence, etc.? (Nurse’s union demand was a pause until these questions were satisfactorily answered)**
 
-**Organizational & Internal Risks:** Key internal risks include legal and reputational exposure if automated outputs are mistaken for formal legal or financial advice, along with long-term maintenance, technical debt, and system continuity challenges arising from annual student leadership rotations.
+- **Organizational & Internal Risks:** Key internal risks include legal and reputational exposure if automated outputs are mistaken for formal legal or financial advice, along with long-term maintenance, technical debt, and system continuity challenges arising from annual student leadership rotations.
 
 **4. Privacy and consent: whose data is in the system, are they aware of it, and can they request to delete/remove it?**
 
-**Privacy & Data Ownership:** Uploaded documents (such as lease files) are read and processed with AI but are not retained in central databases. When operated within the Harvard University sandbox, uploaded information is not used to train public models. Platform profile, listing, and operational data are stored securely in local browser storage and managed cloud storage, and users retain complete control to update, edit, or permanently request deletion of their data at any time.
+- **Privacy & Data Ownership:** Uploaded documents (such as lease files) are read and processed with AI but are not retained in central databases. When operated within the Harvard University sandbox, uploaded information is not used to train public models. Platform profile, listing, and operational data are stored securely in local browser storage and managed cloud storage, and users retain complete control to update, edit, or permanently request deletion of their data at any time.
 
 | Risk Type | Direct Risks | Indirect Risks |
 |---|---|---|
-| Intentional | Bad actors uploading fake listings, predatory lease clauses, or scam attempts directly through platform tools.<br>Bad actors creating fake profiles/emails to harvest PII and target international students. | Users exploiting matched housing or housemate profiles to bypass platform safety guidelines or organize off-platform scams. |
-| Unintentional | LLM hallucination or translation errors misinterpreting key lease terms, dimensional measurements, or legal notices.<br>LLM is hacked and scams international student.<br>AI translation or profile pre-filling errors miscommunicating lifestyle habits, financial splits, or cleanliness standards, leading to immediate living friction. | Student over-reliance on AI checks leading to skipped independent human verification and subsequent lease disputes.<br>Spread of bedbugs, allergens or other unpleasantness when moving furniture<br>Cultural misunderstandings exacerbated by housemate matches. |
+| **Intentional** | <ul><li>Bad actors uploading fake listings, predatory lease clauses, or scam attempts directly through platform tools.</li><li>Bad actors creating fake profiles/emails to harvest PII and target international students.</li></ul> | Users exploiting matched housing or housemate profiles to bypass platform safety guidelines or organize off-platform scams. |
+| **Unintentional** | <ul><li>LLM hallucination or translation errors misinterpreting key lease terms, dimensional measurements, or legal notices.</li><li>LLM is hacked and scams international student.</li><li>AI translation or profile pre-filling errors miscommunicating lifestyle habits, financial splits, or cleanliness standards, leading to immediate living friction.</li></ul> | <ul><li>Student over-reliance on AI checks leading to skipped independent human verification and subsequent lease disputes.</li><li>Spread of bedbugs, allergens or other unpleasantness when moving furniture</li><li>Cultural misunderstandings exacerbated by housemate matches.</li></ul> |
 
 ## III. Judgment
 
@@ -94,17 +87,17 @@ To safeguard user autonomy, maintain compliance, and foster trust, critical oper
 
 **1. Who needs to approve this policy, and who should be consulted? Staff, members, the people the organization serves, the board?**
 
-- Approval Authorities: Formal approval is required from the student leadership team managing Housing Made Easy.
+- **Approval Authorities:** Formal approval is required from the student leadership team managing Housing Made Easy.
 
 **2. How does this policy change who has power inside the organization and in its relationships: with members, with funders, with other entities with which it works?**
 
-Housing Made EZ empowers international students as they navigate the complicated Boston housing market. It shifts power over information to international students.
+- Housing Made EZ empowers international students as they navigate the complicated Boston housing market. It shifts power over information to international students.
 
 <br>
 <br>
 
 ---
 
-<sub><b>AI disclosure</b></sub>
+<sub><b>AI Use Disclosure</b></sub>
 
 <sub>Each member of our group was assigned to one of the issues: the lease checker, the furniture finder, the housemate finder, and scams. We developed and drafted the AI policy based on our assigned issue. We used AI to integrate the drafts from each section into a single AI policy, as we view this as a single website policy. We then used AI to turn it from a Word document (.docx) into this Markdown (.md) file.</sub>
