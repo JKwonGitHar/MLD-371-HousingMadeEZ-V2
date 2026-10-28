@@ -76,7 +76,7 @@ Our work since the background brief already lines up with the top three findings
 | Location and safety, 23% | Rent and distance comparison ([Where to live page](../website/where-to-live.html)) | Partial: no safety information |
 | Utility costs, 18% | Utilities card in the lease glossary; Mustafa's case ($600 gas bill, $500 water charge with no bill shown) | Gap |
 | Cost and value, 6 unprompted | Rent comparison, Cambridge vs. Allston ([Where to live page](../website/where-to-live.html)) | Partial |
-| Banking from abroad, 1 mention | Lease and bank process map (`99-Indiv work`, Andrea); banking section ([Banking page](../website/banking.html)) | Strong for a small need |
+| Banking from abroad, 1 mention | Lease and bank process map (`99-Indiv work`, Andrea); banking section (removed from the website in October) | Strong for a small need |
 | Scams, 5% | Scam section and agent checklist ([Avoid scams page](../website/scams.html)); relationship map flags landlord scam risk (Andrea) | Strong for a small need |
 
 The stakeholder and relationship maps from the background brief still hold: students sit at the center of the network, and no group holds landlords accountable. That gap matches the after-move-in problems students described.

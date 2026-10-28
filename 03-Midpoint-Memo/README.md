@@ -11,11 +11,9 @@ The Housing Made EZ website lives in the [`website`](../website/index.html) fold
 | [Home](../website/index.html) | Step cards for each stage of the move, and Eze's housing journey map |
 | [Avoid scams](../website/scams.html) | Scam warning signs, the agent verification check, where to report |
 | [Your lease](../website/lease.html) | Plain-English lease terms and LeaseCheck (Andrea) |
-| [Banking](../website/banking.html) | Opening a US account before you land |
-| [Where to live](../website/where-to-live.html) | Rent in Cambridge vs. Allston, distance from HKS, childcare costs |
+| [Where to live](../website/where-to-live.html) | Rent in Cambridge vs. Allston, distance from HKS |
 | [Roommates](../website/roommates.html) | Housemate Navigator (Elsa) and the roommate board |
 | [Furniture](../website/furniture.html) | The HKS furniture board (John) |
-| [Checklist](../website/checklist.html) | Move-in checklist |
 | [Community](../website/community.html) | Community prototype with simulated Harvard Key sign-in (Eze) |
 
 ## In this folder
