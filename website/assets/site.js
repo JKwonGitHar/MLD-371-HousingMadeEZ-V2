@@ -689,7 +689,7 @@
     var list = state.listings.filter(function(l){
       if (state.cat && l.cat !== state.cat) return false;
       if (area && l.area !== area) return false;
-      if (onlyAvail && l.reservation) return false;
+      if (onlyAvail && (l.reservation || l.held)) return false;
       if (onlyBundle && !l.bundle) return false;
       if (onlyFree && +l.price !== 0) return false;
       if (arrive){
@@ -718,6 +718,7 @@
   }
 
   function card(l){
+    if (l.live) return liveCard(l);
     var free = +l.price === 0;
     var res = l.reservation;
     var photo = l.photo && /^data:image\//.test(l.photo)
@@ -762,6 +763,129 @@
       "</div></article>";
   }
 
+  /* ---------- live mode: listings from the team's Google Sheet ---------- */
+  var CFG = window.HME_FURNITURE || {};
+  var SIGNIN_KEY = "hme-harvard-email";
+  function signedInEmail(){ try { return localStorage.getItem(SIGNIN_KEY) || sessionStorage.getItem(SIGNIN_KEY) || ""; } catch(e){ return ""; } }
+  function requestUrl(id){
+    var t = String(CFG.requestTemplate || ""), email = signedInEmail();
+    if (!t) return "";
+    var put = function(str, key, val){ val = encodeURIComponent(val); return str.split(encodeURIComponent(key)).join(val).split(key).join(val); };
+    return put(put(t, "XLISTINGIDX", id), "xemailx@harvard.edu", email);
+  }
+  function liveCard(l){
+    var free = +l.price === 0;
+    var held = l.status !== "Available";
+    var tags = '<span class="tag tag-ink">' + esc(l.cond || "Good") + "</span>";
+    if (l.bundle) tags += '<span class="tag tag-good">Bundle</span>';
+    if (l.stay) tags += '<span class="tag tag-amber">Can stay in unit</span>';
+    if (l.moveday) tags += '<span class="tag tag-ink">Moving-day OK</span>';
+    var d = dims(l);
+    var facts =
+      "<dt>Where</dt><dd>" + esc(l.area) + "</dd>" +
+      "<dt>Available</dt><dd>" + fmtDay(l.from) + " – " + fmtDay(l.until) + "</dd>" +
+      (d ? "<dt>Size</dt><dd>" + esc(d) + "</dd>" : "") +
+      (l.handoffText ? "<dt>Handoff</dt><dd>" + esc(l.handoffText) + "</dd>" : "") +
+      "<dt>Payment</dt><dd>" + esc((l.pay || []).join(" · ") || "Ask seller") + "</dd>" +
+      (l.pickup ? "<dt>Pickup</dt><dd>" + esc(l.pickup) + "</dd>" : "") +
+      (l.photoLink ? '<dt>Photo</dt><dd><a href="' + esc(l.photoLink) + '" target="_blank" rel="noopener">View photo ↗</a></dd>' : "");
+    var url = requestUrl(l.id);
+    var actions = held
+      ? '<span class="fb-reserved-note">' + (l.status === "Reserved" ? "Reserved by another student" : "On hold while the seller decides") + "</span>"
+      : (url ? '<a class="btn btn-primary" href="' + esc(url) + '" target="_blank" rel="noopener">Request this item ↗</a>' : "");
+    return '<article class="fb-card' + (held ? " is-reserved" : "") + '">' +
+      '<div class="fb-photo" data-cat="' + esc(l.cat) + '">' + (ICONS[l.cat] || ICONS.other) +
+        '<span class="fb-price' + (free ? " free" : "") + '">' + (free ? "Free" : "$" + esc(l.price)) + "</span>" +
+        '<span class="fb-status">' + (held ? '<span class="tag tag-amber">' + (l.status === "Reserved" ? "Reserved" : "On hold") + "</span>" : "") + "</span>" +
+      "</div>" +
+      '<div class="fb-body">' +
+        "<h3>" + esc(l.title) + "</h3>" +
+        '<div class="fb-tags">' + tags + "</div>" +
+        '<dl class="fb-facts">' + facts + "</dl>" +
+        (l.note ? '<p class="fb-note">' + esc(l.note) + "</p>" : "") +
+        '<div class="fb-actions">' + actions + "</div>" +
+        '<div class="fb-seller"><span>Listing ' + esc(l.id) + '</span><span class="fb-verified">✓ Harvard seller</span></div>' +
+      "</div></article>";
+  }
+  // CSV from Google Sheets "Publish to web" (handles quotes, commas and line breaks inside cells).
+  function parseCSV(text){
+    var rows = [], row = [], cell = "", q = false;
+    for (var i = 0; i < text.length; i++){
+      var ch = text[i];
+      if (q){
+        if (ch === '"'){ if (text[i+1] === '"'){ cell += '"'; i++; } else q = false; }
+        else cell += ch;
+      } else if (ch === '"') q = true;
+      else if (ch === ","){ row.push(cell); cell = ""; }
+      else if (ch === "\n" || ch === "\r"){
+        if (ch === "\r" && text[i+1] === "\n") i++;
+        row.push(cell); rows.push(row); row = []; cell = "";
+      } else cell += ch;
+    }
+    if (cell !== "" || row.length){ row.push(cell); rows.push(row); }
+    return rows.filter(function(r){ return r.some(function(c){ return c !== ""; }); });
+  }
+  function isoDay(v){
+    v = String(v || "").trim();
+    var m = v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+    if (m) return m[1] + "-" + ("0" + m[2]).slice(-2) + "-" + ("0" + m[3]).slice(-2);
+    m = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);            // US sheet locale: month/day/year
+    if (m) return m[3] + "-" + ("0" + m[1]).slice(-2) + "-" + ("0" + m[2]).slice(-2);
+    var d = new Date(v);
+    return isNaN(d) ? "" : d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+  }
+  function catId(label){ for (var i = 0; i < CATS.length; i++) if (CATS[i].label === label) return CATS[i].id; return "other"; }
+  function liveRows(text){
+    var rows = parseCSV(text);
+    if (rows.length < 1) return [];
+    var h = rows[0].map(function(x){ return x.trim(); });
+    var col = function(r, name){ var i = h.indexOf(name); return i < 0 ? "" : String(r[i] || "").trim(); };
+    return rows.slice(1).map(function(r){
+      var n = function(name){ var x = parseFloat(col(r, name).replace(/[^0-9.]/g, "")); return isNaN(x) ? null : x; };
+      var handoff = col(r, "Handoff if seller has left");
+      var photo = col(r, "Photo link");
+      var posted = isoDay(col(r, "Posted"));
+      return {
+        live: true, id: col(r, "Listing ID"), title: col(r, "Item").replace(/^'/, ""), cat: catId(col(r, "Category")),
+        price: n("Price ($)") || 0, cond: col(r, "Condition"), w: n("Width (in)"), d: n("Depth (in)"), h: n("Height (in)"),
+        area: col(r, "Area"), from: isoDay(col(r, "Available from")), until: isoDay(col(r, "Pick up by")),
+        handoffText: handoff, stay: /stays in the apartment/i.test(handoff),
+        pay: col(r, "Payment accepted").split(/,\s*/).filter(String),
+        bundle: col(r, "Bundle?") === "Yes", moveday: col(r, "Moving day OK?") === "Yes",
+        pickup: col(r, "Pickup notes"), note: col(r, "Description").replace(/^'/, ""),
+        photoLink: /^https:\/\//i.test(photo) ? photo : "", status: col(r, "Status") || "Available",
+        held: (col(r, "Status") || "Available") !== "Available",
+        postedAt: posted ? parseDay(posted).getTime() : 0
+      };
+    }).filter(function(l){ return l.id && l.title; });
+  }
+  function goLive(){
+    state.mode = "live";
+    $("fb-mode").classList.add("live");
+    $("fb-mode-text").textContent = "Loading listings…";
+    $("fb-reset").hidden = true;
+    // Sell tab: the team's Google Form instead of the prototype form.
+    $("fb-form").hidden = true;
+    var sellBox = document.createElement("div");
+    sellBox.className = "card fb-live-sell";
+    sellBox.innerHTML = '<h3 style="margin-bottom:6px;">Post an item</h3>' +
+      '<p style="margin:0 0 12px;">Fill in the form below with your Harvard email. You\'ll get an email with links to confirm a buyer or take the listing down.</p>' +
+      (CFG.sellFormUrl ? '<a class="btn btn-primary" href="' + esc(CFG.sellFormUrl) + '" target="_blank" rel="noopener">Open the sell form ↗</a>' +
+        '<iframe class="fb-form-embed" title="Sell an item" loading="lazy" src="' + esc(CFG.sellFormUrl + (CFG.sellFormUrl.indexOf("?") < 0 ? "?" : "&") + "embedded=true") + '"></iframe>' : "");
+    $("fb-sell").appendChild(sellBox);
+    var bust = (CFG.csvUrl.indexOf("?") < 0 ? "?" : "&") + "t=" + Date.now();
+    fetch(CFG.csvUrl + bust).then(function(r){ if (!r.ok) throw new Error(r.status); return r.text(); }).then(function(text){
+      state.listings = liveRows(text);
+      $("fb-mode-text").textContent = "Live board: listings come from the team's Google Sheet. New posts can take a few minutes to appear.";
+      render();
+    }).catch(function(){
+      state.mode = "local";
+      $("fb-mode").classList.remove("live");
+      $("fb-mode-text").textContent = "Couldn't load the live listings right now, so these are sample listings.";
+      state.listings = loadLocal(); render();
+    });
+  }
+
   function render(){
     var list = filtered();
     var total = state.listings.length;
@@ -780,6 +904,14 @@
 
   function renderMoveDays(){
     var wrap = $("fb-movedays");
+    if (state.mode === "live"){
+      wrap.innerHTML = MOVE_DAYS.map(function(day){
+        return '<div class="fb-day"><b>' + esc(day.label) + "</b>" +
+          '<p class="fb-note" style="margin-top:4px;">' + esc(day.note) + "</p>" +
+          '<p class="fb-hint" style="margin:6px 0 0;">Choose this day on the request form.</p></div>';
+      }).join("");
+      return;
+    }
     wrap.innerHTML = MOVE_DAYS.map(function(day){
       var items = state.listings.filter(function(l){ return l.reservation && l.reservation.pickup === day.id; });
       return '<div class="fb-day"><b>' + esc(day.label) + "</b>" +
@@ -910,13 +1042,13 @@
 
   /* ---------- boot ---------- */
   buildControls();
-  state.listings = loadLocal();
-  render();
+  if (CFG.csvUrl){ state.listings = []; goLive(); render(); }
+  else { state.listings = loadLocal(); render(); }
 
   // Upgrade to the shared board when the page runs with the `db` capability.
   if (window.claude && typeof window.claude.use === "function"){
     window.claude.use("db").then(function(db){
-      if (!db) return;
+      if (!db || state.mode === "live") return;
       var col = db.collection("furniture_listings");
       col.orderBy("postedAt", "desc").limit(100).onSnapshot(function(snap){
         dbCol = col; state.mode = "db";
