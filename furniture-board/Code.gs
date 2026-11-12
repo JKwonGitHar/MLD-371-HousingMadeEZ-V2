@@ -94,6 +94,9 @@ function onOpen() {
     .addItem('Run setup (first time, or to repair)', 'setup')
     .addItem('Run the daily check now', 'dailyCheck')
     .addItem('Show form links', 'showLinks')
+    .addSeparator()
+    .addItem('Add 7 sample listings (for testing)', 'addSampleListings')
+    .addItem('Remove sample listings', 'removeSampleListings')
     .addToUi();
 }
 
@@ -102,6 +105,87 @@ function showLinks() {
   SpreadsheetApp.getUi().alert('Form links',
     'Sell: ' + s[SETTING.SELL_LINK] + '\n\nRequest: ' + s[SETTING.REQUEST_LINK] + '\n\nUpdate: ' + s[SETTING.UPDATE_LINK],
     SpreadsheetApp.getUi().ButtonSet.OK);
+}
+
+/* ============================== Sample listings for testing ============================== */
+
+var SAMPLE_SELLER = 'Sample seller';
+var SAMPLE_NOTE = 'Sample listing for testing. ';
+var SAMPLE_LISTINGS = [
+  ['Queen bed frame + mattress', 'Beds & mattresses', 180, 'Like new', 63, 84, 14, 'Cambridge – Central / Kendall', [2027, 5, 1], [2027, 7, 31],
+    'A friend will hand it over', 'Cash at pickup, Pay after the buyer\'s US bank account opens', 'Yes', 'Yes', '2nd floor, wide staircase', 'Mattress is two years old and always had a protector. Frame comes apart with an Allen key (included).'],
+  ['Desk + desk chair', 'Desks & chairs', 60, 'Good', 47, 24, 30, 'Allston / Brighton', [2027, 4, 28], [2027, 7, 25],
+    "It'll be in storage", 'Cash at pickup, Venmo / Zelle', 'Yes', 'Yes', 'Storage unit near Packard\'s Corner', 'Small scratch on the left corner. Chair has adjustable lumbar support.'],
+  ['3-seat sofa, grey', 'Sofas & seating', 150, 'Good', 84, 35, 33, 'Somerville', [2027, 5, 10], [2027, 7, 31],
+    "I'll still be in town", 'Cash at pickup', 'No', 'Yes', '3rd floor walk-up, no elevator', 'Comfortable, from a pet-free and smoke-free home. Cushion covers are machine washable.'],
+  ['5-shelf bookcase', 'Storage', 25, 'Good', 31, 11, 71, 'Cambridge – Harvard Sq', [2027, 4, 25], [2027, 7, 20],
+    'A friend will hand it over', 'Cash at pickup, Venmo / Zelle', 'No', 'Yes', 'Ground floor', 'Sturdy and easy to carry with two people.'],
+  ['Kitchen starter kit for two', 'Kitchen', 0, 'Good', '', '', '', 'Harvard University Housing', [2027, 4, 30], [2027, 7, 31],
+    'A friend will hand it over', 'Cash at pickup', 'Yes', 'No', 'Fits in one box', 'Two pans, a pot, a cutting board, knives, and plates, bowls and mugs for two. Free to a new student.'],
+  ['6-drawer dresser', 'Storage', 70, 'Fair', 55, 19, 31, 'Cambridge – Porter / North', [2027, 5, 1], [2027, 7, 31],
+    "I'll still be in town", 'Cash at pickup, Pay after the buyer\'s US bank account opens', 'No', 'Yes', 'Elevator building', 'One drawer handle is loose; it tightens with a screwdriver.'],
+  ['Floor lamp + 5x8 rug', 'Lamps & other', 30, 'Like new', 60, 96, '', 'Allston / Brighton', [2027, 5, 5], [2027, 7, 31],
+    "I'll still be in town", 'Venmo / Zelle, Cash at pickup', 'Yes', 'Yes', 'Rug is rolled and tied', 'Warm-light floor lamp and a neutral rug, sold together.']
+];
+
+/** Menu: adds 7 sample listings (no emails are sent). Requests for them go to the email you enter. */
+function addSampleListings() {
+  var ui = SpreadsheetApp.getUi();
+  var r = ui.prompt('Add 7 sample listings',
+    'Enter your Harvard email. You will be the "seller" of the samples, so request emails for them come to you.',
+    ui.ButtonSet.OK_CANCEL);
+  if (r.getSelectedButton() !== ui.Button.OK) return;
+  var email = r.getResponseText().trim().toLowerCase();
+  if (!HARVARD_RE.test(email)) { ui.alert('Please use a Harvard email address (ending in harvard.edu).'); return; }
+  var n = addSampleListings_(email);
+  ui.alert('Added ' + n + ' sample listings',
+    'They are on the Listings tab and will appear on the website within about 5 minutes.\n\n' +
+    'When you are done testing, use Furniture board > Remove sample listings.', ui.ButtonSet.OK);
+}
+
+function addSampleListings_(email) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    var t = table_(TAB.LISTINGS), s = settings_();
+    SAMPLE_LISTINGS.forEach(function (x) {
+      var id = nextId_(t, 'Listing ID', 'F-');
+      t.append({
+        'Listing ID': id, 'Posted': new Date(), 'Item': x[0], 'Category': x[1], 'Price ($)': x[2], 'Condition': x[3],
+        'Width (in)': x[4], 'Depth (in)': x[5], 'Height (in)': x[6], 'Area': x[7],
+        'Available from': new Date(x[8][0], x[8][1], x[8][2]), 'Pick up by': new Date(x[9][0], x[9][1], x[9][2]),
+        'Handoff if seller has left': x[10], 'Payment accepted': x[11], 'Bundle?': x[12], 'Moving day OK?': x[13],
+        'Pickup notes': x[14], 'Description': SAMPLE_NOTE + x[15], 'Photo link': '',
+        'Status': LISTING_STATUS.AVAILABLE, 'Request link': requestLink_(s, id),
+        'Seller name': SAMPLE_SELLER, 'Seller Harvard email': email, 'Seller code': newCode_(),
+        'Active request': '', 'Reminder sent': '', 'Updated': new Date()
+      });
+      log_('Sample listing added', id, '', '');
+    });
+    return SAMPLE_LISTINGS.length;
+  } finally { lock.releaseLock(); }
+}
+
+/** Menu: removes every sample listing and any requests made for them. */
+function removeSampleListings() {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  var removed = 0;
+  try {
+    var ss = SpreadsheetApp.getActive();
+    var ids = {};
+    var ls = ss.getSheetByName(TAB.LISTINGS), lt = table_(TAB.LISTINGS);
+    var rows = lt.rows();
+    for (var i = rows.length - 1; i >= 0; i--) {
+      if (rows[i].get('Seller name') === SAMPLE_SELLER) { ids[rows[i].get('Listing ID')] = true; ls.deleteRow(i + 2); removed++; }
+    }
+    var rs = ss.getSheetByName(TAB.REQUESTS), reqs = table_(TAB.REQUESTS).rows();
+    for (var j = reqs.length - 1; j >= 0; j--) {
+      if (ids[reqs[j].get('Listing ID')]) rs.deleteRow(j + 2);
+    }
+    log_('Sample listings removed', '', '', removed + ' listings');
+  } finally { lock.releaseLock(); }
+  try { SpreadsheetApp.getUi().alert('Removed ' + removed + ' sample listings and any requests for them.'); } catch (e) {}
 }
 
 /* ============================== Setup ============================== */

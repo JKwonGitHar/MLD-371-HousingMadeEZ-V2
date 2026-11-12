@@ -23,6 +23,7 @@ class Sheet {
   }
   appendRow(row) { const r = this.getLastRow() + 1; row.forEach((x, j) => this.put(r, j + 1, x)); }
   setFrozenRows() {} setColumnWidth() {}
+  deleteRow(r) { this.data.splice(r - 1, 1); }
   getFormUrl() { return this.formUrl; }
 }
 class Spreadsheet {
@@ -215,6 +216,23 @@ ok(rowsOf('Listings')[2].Status === 'Expired', 'listing expires after pick-up-by
 const patLinks = linksIn(mails.find(m => m.to === 'pat@college.harvard.edu').htmlBody);
 submit('Update responses', answersFromLink(patLinks.find(u => answersFromLink(u)[Q.ACTION] === A.WITHDRAW)));
 ok(rowsOf('Listings')[1].Status === 'Withdrawn', 'seller withdraws a listing');
+
+// ---------- 4b. sample listings ----------
+console.log('Sample listings');
+const beforeL = rowsOf('Listings').length; let mm = mails.length;
+ctx.addSampleListings_('john@hks.harvard.edu');
+let SL = rowsOf('Listings').filter(r => r['Seller name'] === 'Sample seller');
+ok(SL.length === 7 && rowsOf('Listings').length === beforeL + 7, 'seven sample listings added');
+ok(mails.length === mm, 'adding samples sends no email');
+ok(SL.every(r => r.Status === 'Available' && /^F-\d{3}$/.test(r['Listing ID']) && r['Request link'].includes(r['Listing ID']) && !/XLISTINGIDX|xemailx/.test(r['Request link'])), 'samples are Available with working request links');
+ok(SL.every(r => r['Pick up by'] > r['Available from'] && r.Description.startsWith('Sample listing for testing.')), 'sample dates are in order and marked as samples');
+ok(new Set(rowsOf('Listings').map(r => r['Listing ID'])).size === rowsOf('Listings').length, 'listing IDs stay unique');
+mm = mails.length;
+submit('Request responses', reqAns(SL[0]['Listing ID'], 'gil@hks.harvard.edu', { [Q.ARRIVAL]: new Date(2027, 6, 20) }));
+ok(mails.slice(mm).some(m => m.to === 'john@hks.harvard.edu' && /wants your/.test(m.subject)), 'requesting a sample emails the tester as the seller');
+ctx.removeSampleListings();
+ok(rowsOf('Listings').length === beforeL && !rowsOf('Listings').some(r => r['Seller name'] === 'Sample seller'), 'remove deletes every sample listing and nothing else');
+ok(!rowsOf('Requests').some(r => SL.some(x => x['Listing ID'] === r['Listing ID'])), 'requests for samples are removed too');
 
 // ---------- 5. privacy ----------
 console.log('Privacy');
