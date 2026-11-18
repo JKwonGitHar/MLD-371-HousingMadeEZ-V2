@@ -352,6 +352,9 @@
   .fb-card.is-reserved{ opacity:.82; }
   .fb-photo{ position:relative; aspect-ratio: 4 / 3; background: var(--accent-soft); display:grid; place-items:center; overflow:hidden; }
   .fb-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .fb-photo-link{ position:absolute; inset:0; display:block; }
+  .fb-photo-link img{ position:absolute; inset:0; }
+  .fb-photo-count{ position:absolute; left:10px; top:10px; background: rgba(0,0,0,.6); color:#fff; font-size:12px; font-weight:600; padding:2px 8px; border-radius:999px; }
   .fb-photo svg{ width:42%; height:auto; color: var(--accent-ink); opacity:.7; }
   .fb-photo[data-cat="seating"]{ background:#FFF3DC; } .fb-photo[data-cat="seating"] svg{ color: var(--amber); }
   .fb-photo[data-cat="storage"]{ background:#E3EDF7; } .fb-photo[data-cat="storage"] svg{ color:#2F5F8F; }

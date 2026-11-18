@@ -6,6 +6,8 @@
  *   2. Extensions > Apps Script, delete the sample code, paste this file, Save.
  *   3. Choose the function "setup" and click Run. Approve the permissions.
  *   4. Back in the sheet, open the "Settings" tab for the three form links.
+ *   5. Optional photos: in the Sell form, add a "File upload" question titled "Photos (optional)"
+ *      (Google doesn't let scripts add upload questions). See README.md for the steps.
  *
  * What it does after that:
  *   - Sell form      -> new row on Listings, confirmation email to the seller with "manage" links.
@@ -15,6 +17,9 @@
  *   - Confirmation   -> buyer and seller get one email introducing them to each other.
  *   - Daily check    -> releases requests the seller never answered, reminds sellers before their
  *                       pick-up-by date, expires old listings, and asks "did the handoff happen?".
+ *
+ * Photos: uploads land in the form owner's Google Drive. The script renames each one to the listing ID,
+ * makes it viewable by link so the website can show it, and makes it private again when the listing ends.
  *
  * Privacy: names and emails stay on Listings and Requests. The Public tab (the only tab meant to be
  * published for the website) has no names, emails or codes. Share the spreadsheet with the team only.
@@ -33,7 +38,7 @@ var LISTING_COLS = ['Listing ID', 'Posted', 'Item', 'Category', 'Price ($)', 'Co
   'Handoff if seller has left', 'Payment accepted', 'Bundle?', 'Moving day OK?', 'Pickup notes',
   'Description', 'Photo link', 'Status', 'Request link',
   // Private columns: everything from here on is left out of the Public tab.
-  'Seller name', 'Seller Harvard email', 'Seller code', 'Active request', 'Reminder sent', 'Updated'];
+  'Seller name', 'Seller Harvard email', 'Seller code', 'Active request', 'Reminder sent', 'Updated', 'Photo preview'];
 var PUBLIC_LAST_COL = 'U'; // column of "Request link", the last public column
 
 var REQUEST_COLS = ['Request ID', 'Received', 'Listing ID', 'Item', 'Buyer name', 'Buyer Harvard email',
@@ -60,7 +65,7 @@ var Q = {
   CONDITION: 'Condition', WIDTH: 'Width (inches)', DEPTH: 'Depth (inches)', HEIGHT: 'Height (inches)',
   AREA: 'Where is it?', FROM: 'Available from', UNTIL: 'Must be picked up by', HANDOFF: "If you've left before pickup",
   PAYMENT: 'Payment you accept', BUNDLE: 'Is this a bundle of several items?', MOVEDAY: 'OK with a group moving day pickup?',
-  PICKUP_NOTES: 'Pickup notes', DESCRIPTION: 'Description', PHOTO: 'Photo link (optional)',
+  PICKUP_NOTES: 'Pickup notes', DESCRIPTION: 'Description', PHOTO: 'Photo link (optional)', UPLOAD: 'Photos (optional)',
   NAME: 'Your name', EMAIL: 'Your Harvard email',
   LISTING_ID: 'Listing ID', ARRIVAL: 'When do you arrive in Boston?', PICKUP: 'How will you collect it?',
   MESSAGE: 'Message to the seller (optional)',
@@ -196,6 +201,7 @@ function setup() {
   if (blank && blank.getLastRow() === 0 && !ss.getSheetByName(TAB.HOW)) blank.setName(TAB.HOW);
   ensureTab_(ss, TAB.HOW, null);
   ensureTab_(ss, TAB.LISTINGS, LISTING_COLS);
+  addMissingHeaders_(TAB.LISTINGS, LISTING_COLS);
   ensureTab_(ss, TAB.REQUESTS, REQUEST_COLS);
   ensureTab_(ss, TAB.PUBLIC, null);
   ensureTab_(ss, TAB.DASH, null);
@@ -253,6 +259,18 @@ function ensureTab_(ss, name, headers) {
     sh.setFrozenRows(1);
   }
   return sh;
+}
+
+/** Adds any header in `headers` that an older version of the tab doesn't have yet, at the end. */
+function addMissingHeaders_(tabName, headers) {
+  var sh = SpreadsheetApp.getActive().getSheetByName(tabName);
+  if (!sh || sh.getLastRow() === 0) return;
+  var have = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0].map(function (h) { return String(h).trim(); });
+  headers.forEach(function (h) {
+    if (have.indexOf(h) >= 0) return;
+    sh.getRange(1, have.length + 1).setValue(h).setFontWeight('bold').setBackground('#0E8F68').setFontColor('#FFFFFF');
+    have.push(h);
+  });
 }
 
 function writeDefaultSettings_(ss) {
@@ -460,10 +478,14 @@ function onFormSubmit(e) {
 function handleSell_(a) {
   var email = clean_(a[Q.EMAIL]).toLowerCase();
   if (!HARVARD_RE.test(email)) { log_('Sell rejected: not a Harvard email', '', '', ''); return; }
+  addMissingHeaders_(TAB.LISTINGS, LISTING_COLS);
   var t = table_(TAB.LISTINGS);
   var id = nextId_(t, 'Listing ID', 'F-');
   var code = newCode_();
   var s = settings_();
+  var photos = sharePhotos_(a[Q.UPLOAD], id);
+  var typed = safeLink_(a[Q.PHOTO]);
+  if (typed) photos.push(typed);
   var row = {
     'Listing ID': id, 'Posted': new Date(), 'Item': clean_(a[Q.ITEM]), 'Category': clean_(a[Q.CATEGORY]),
     'Price ($)': num_(a[Q.PRICE]), 'Condition': clean_(a[Q.CONDITION]),
@@ -471,13 +493,14 @@ function handleSell_(a) {
     'Area': clean_(a[Q.AREA]), 'Available from': date_(a[Q.FROM]), 'Pick up by': date_(a[Q.UNTIL]),
     'Handoff if seller has left': clean_(a[Q.HANDOFF]), 'Payment accepted': clean_(a[Q.PAYMENT]),
     'Bundle?': clean_(a[Q.BUNDLE]), 'Moving day OK?': clean_(a[Q.MOVEDAY]), 'Pickup notes': clean_(a[Q.PICKUP_NOTES]),
-    'Description': clean_(a[Q.DESCRIPTION]), 'Photo link': safeLink_(a[Q.PHOTO]),
+    'Description': clean_(a[Q.DESCRIPTION]), 'Photo link': photos.join(' '),
     'Status': LISTING_STATUS.AVAILABLE, 'Request link': requestLink_(s, id),
     'Seller name': clean_(a[Q.NAME]), 'Seller Harvard email': email, 'Seller code': code,
-    'Active request': '', 'Reminder sent': '', 'Updated': new Date()
+    'Active request': '', 'Reminder sent': '', 'Updated': new Date(), 'Photo preview': previewFormula_(photos[0])
   };
   t.append(row);
-  log_('Listing posted', id, '', '');
+  if (photos.length) { var lsh = SpreadsheetApp.getActive().getSheetByName(TAB.LISTINGS); lsh.setRowHeight(lsh.getLastRow(), 90); }
+  log_('Listing posted', id, '', photos.length ? photos.length + ' photo(s)' : '');
   mail_(email, 'Your listing is live: ' + row['Item'] + ' (' + id + ')',
     p_('Hi ' + firstName_(row['Seller name']) + ',') +
     p_('Your item is on the furniture board. When someone requests it, we\'ll email you to confirm or decline.') +
@@ -597,6 +620,7 @@ function handleUpdate_(a) {
     if (!isSeller) return deny('Only the seller can change this listing.');
     var status = action === ACTION.SOLD ? LISTING_STATUS.SOLD : LISTING_STATUS.WITHDRAWN;
     listing.set({ 'Status': status, 'Active request': '', 'Updated': now });
+    hidePhotos_(listing);
     log_('Listing ' + status.toLowerCase(), listingId, req ? req.get('Request ID') : '', '');
     if (req && [REQUEST_STATUS.PENDING, REQUEST_STATUS.CONFIRMED].indexOf(req.get('Status')) >= 0) {
       req.set({ 'Status': REQUEST_STATUS.CANCELLED, 'Updated': now });
@@ -625,6 +649,7 @@ function handleUpdate_(a) {
     if (action === ACTION.DONE) {
       req.set({ 'Status': REQUEST_STATUS.COMPLETED, 'Updated': now });
       listing.set({ 'Status': LISTING_STATUS.COMPLETED, 'Active request': '', 'Updated': now });
+      hidePhotos_(listing);
       log_('Handoff completed', listingId, req.get('Request ID'), isSeller ? 'reported by seller' : 'reported by buyer');
       mail_([sellerEmail, buyerEmail], 'Handoff recorded: ' + item, p_('Thanks for using the furniture board. We\'ve marked "' +
         esc_(item) + '" as handed over.'));
@@ -632,6 +657,7 @@ function handleUpdate_(a) {
       var stillTime = listing.get('Pick up by') && startOfDay_(now) <= startOfDay_(listing.get('Pick up by'));
       req.set({ 'Status': REQUEST_STATUS.NOT_COMPLETED, 'Updated': now });
       listing.set({ 'Status': stillTime ? LISTING_STATUS.AVAILABLE : LISTING_STATUS.EXPIRED, 'Active request': '', 'Updated': now });
+      if (!stillTime) hidePhotos_(listing);
       log_('Handoff did not happen', listingId, req.get('Request ID'), isSeller ? 'reported by seller' : 'reported by buyer');
       mail_([sellerEmail, buyerEmail], 'Handoff not completed: ' + item,
         p_('We\'ve closed this match. ' + (stillTime ? '"' + esc_(item) + '" is back on the board until ' + fmt_(listing.get('Pick up by')) + '.'
@@ -684,6 +710,7 @@ function dailyCheck() {
       if ((status === LISTING_STATUS.AVAILABLE || status === LISTING_STATUS.REQUESTED) && daysLeft < 0) {
         var req = listing.get('Active request') ? rt.find('Request ID', listing.get('Active request')) : null;
         listing.set({ 'Status': LISTING_STATUS.EXPIRED, 'Active request': '', 'Updated': new Date() });
+        hidePhotos_(listing);
         if (req && req.get('Status') === REQUEST_STATUS.PENDING) req.set({ 'Status': REQUEST_STATUS.RELEASED, 'Updated': new Date() });
         log_('Listing expired', id, req ? req.get('Request ID') : '', '');
         mail_(sellerEmail, 'Listing ended: ' + listing.get('Item'),
@@ -830,6 +857,51 @@ function actionLink_(s, action, listingId, email, code) {
   return fill_(s[actionTemplateKey_(action)], v);
 }
 function requestLink_(s, listingId) { var v = {}; v[PH.LISTING] = listingId; v[PH.EMAIL] = ''; return fill_(s[SETTING.REQUEST_TEMPLATE], v); }
+
+/* ============================== Photo helpers ============================== */
+
+/** Google Drive file IDs in a form answer (upload answers are Drive links separated by commas). */
+function driveIds_(v) {
+  var out = [], re = /(?:[?&]id=|\/d\/)([A-Za-z0-9_-]{20,})/g, m;
+  while ((m = re.exec(String(v || '')))) if (out.indexOf(m[1]) < 0) out.push(m[1]);
+  return out;
+}
+
+/** Renames uploaded photos to the listing ID and makes them viewable by link. Returns their links (max 3). */
+function sharePhotos_(answer, listingId) {
+  var links = [];
+  driveIds_(answer).slice(0, 3).forEach(function (fid, i) {
+    try {
+      var f = DriveApp.getFileById(fid);
+      var ext = (String(f.getName()).match(/\.[A-Za-z0-9]{2,5}$/) || [''])[0].toLowerCase();
+      f.setName(listingId + '-' + (i + 1) + ext); // uploads are named after the sender; this removes the name
+      f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      links.push('https://drive.google.com/file/d/' + fid + '/view');
+    } catch (e) {
+      log_('Photo could not be shared', listingId, '', String(e.message || e).slice(0, 120));
+    }
+  });
+  return links;
+}
+
+/** Makes a listing's uploaded photos private again once it is off the board. */
+function hidePhotos_(listing) {
+  driveIds_(listing.get('Photo link')).forEach(function (fid) {
+    try { DriveApp.getFileById(fid).setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE); }
+    catch (e) { log_('Photo could not be made private', listing.get('Listing ID'), '', String(e.message || e).slice(0, 120)); }
+  });
+}
+
+/** An image URL for a photo link: Drive links become a thumbnail, other https links are used as they are. */
+function photoUrl_(link, width) {
+  var ids = driveIds_(link);
+  if (ids.length) return 'https://drive.google.com/thumbnail?id=' + ids[0] + '&sz=w' + (width || 400);
+  return safeLink_(link);
+}
+function previewFormula_(link) {
+  var url = link ? photoUrl_(link, 400) : '';
+  return url ? '=IMAGE("' + url.replace(/"/g, '%22') + '")' : '';
+}
 
 /* ============================== Email helpers ============================== */
 

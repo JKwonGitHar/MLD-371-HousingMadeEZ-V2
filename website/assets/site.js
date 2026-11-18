@@ -773,8 +773,17 @@
     var put = function(str, key, val){ val = encodeURIComponent(val); return str.split(encodeURIComponent(key)).join(val).split(key).join(val); };
     return put(put(t, "XLISTINGIDX", id), "xemailx@harvard.edu", email);
   }
+  // Photo links from the sheet: Drive uploads become thumbnails; other https links are tried as images.
+  function driveId(link){ var m = String(link).match(/(?:[?&]id=|\/d\/)([A-Za-z0-9_-]{20,})/); return m ? m[1] : ""; }
+  function photoSrc(link){ var id = driveId(link); return id ? "https://drive.google.com/thumbnail?id=" + id + "&sz=w800" : link; }
   function liveCard(l){
     var free = +l.price === 0;
+    var photos = l.photoLinks || [];
+    var img = photos.length
+      ? '<a class="fb-photo-link" href="' + esc(photos[0]) + '" target="_blank" rel="noopener" aria-label="Open photo of ' + esc(l.title) + '">' +
+          '<img class="fb-live-img" alt="Photo of ' + esc(l.title) + '" loading="lazy" referrerpolicy="no-referrer" src="' + esc(photoSrc(photos[0])) + '"></a>' +
+        (photos.length > 1 ? '<span class="fb-photo-count">1 of ' + photos.length + "</span>" : "")
+      : "";
     var held = l.status !== "Available";
     var tags = '<span class="tag tag-ink">' + esc(l.cond || "Good") + "</span>";
     if (l.bundle) tags += '<span class="tag tag-good">Bundle</span>';
@@ -788,13 +797,15 @@
       (l.handoffText ? "<dt>Handoff</dt><dd>" + esc(l.handoffText) + "</dd>" : "") +
       "<dt>Payment</dt><dd>" + esc((l.pay || []).join(" · ") || "Ask seller") + "</dd>" +
       (l.pickup ? "<dt>Pickup</dt><dd>" + esc(l.pickup) + "</dd>" : "") +
-      (l.photoLink ? '<dt>Photo</dt><dd><a href="' + esc(l.photoLink) + '" target="_blank" rel="noopener">View photo ↗</a></dd>' : "");
+      (photos.length ? "<dt>" + (photos.length > 1 ? "Photos" : "Photo") + "</dt><dd>" + photos.map(function(p, i){
+        return '<a href="' + esc(p) + '" target="_blank" rel="noopener">' + (photos.length > 1 ? "Photo " + (i + 1) : "View full size") + " ↗</a>";
+      }).join(" · ") + "</dd>" : "");
     var url = requestUrl(l.id);
     var actions = held
       ? '<span class="fb-reserved-note">' + (l.status === "Reserved" ? "Reserved by another student" : "On hold while the seller decides") + "</span>"
       : (url ? '<a class="btn btn-primary" href="' + esc(url) + '" target="_blank" rel="noopener">Request this item ↗</a>' : "");
     return '<article class="fb-card' + (held ? " is-reserved" : "") + '">' +
-      '<div class="fb-photo" data-cat="' + esc(l.cat) + '">' + (ICONS[l.cat] || ICONS.other) +
+      '<div class="fb-photo" data-cat="' + esc(l.cat) + '">' + (ICONS[l.cat] || ICONS.other) + img +
         '<span class="fb-price' + (free ? " free" : "") + '">' + (free ? "Free" : "$" + esc(l.price)) + "</span>" +
         '<span class="fb-status">' + (held ? '<span class="tag tag-amber">' + (l.status === "Reserved" ? "Reserved" : "On hold") + "</span>" : "") + "</span>" +
       "</div>" +
@@ -853,7 +864,7 @@
         pay: col(r, "Payment accepted").split(/,\s*/).filter(String),
         bundle: col(r, "Bundle?") === "Yes", moveday: col(r, "Moving day OK?") === "Yes",
         pickup: col(r, "Pickup notes"), note: col(r, "Description").replace(/^'/, ""),
-        photoLink: /^https:\/\//i.test(photo) ? photo : "", status: col(r, "Status") || "Available",
+        photoLinks: photo.split(/\s+/).filter(function(p){ return /^https:\/\/\S+$/i.test(p); }).slice(0, 3), status: col(r, "Status") || "Available",
         held: (col(r, "Status") || "Available") !== "Available",
         postedAt: posted ? parseDay(posted).getTime() : 0
       };
@@ -995,6 +1006,14 @@
 
   /* ---------- reserve dialog ---------- */
   var dlg = $("fb-dialog"), current = null;
+  // A photo that can't load (private, deleted, or not an image) falls back to the category icon.
+  $("fb-grid").addEventListener("error", function(e){
+    var im = e.target;
+    if (!im.classList || !im.classList.contains("fb-live-img")) return;
+    var id = driveId(im.closest("a") ? im.closest("a").getAttribute("href") : "");
+    if (id && !im.dataset.retry){ im.dataset.retry = "1"; im.src = "https://lh3.googleusercontent.com/d/" + id + "=w800"; return; }
+    var a = im.closest(".fb-photo-link"); (a || im).remove();
+  }, true);
   $("fb-grid").addEventListener("click", function(e){
     var b = e.target.closest("[data-reserve]");
     if (!b) return;

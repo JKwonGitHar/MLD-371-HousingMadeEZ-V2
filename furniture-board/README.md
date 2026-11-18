@@ -38,6 +38,29 @@ New posts take a few minutes to appear, because Google refreshes published sheet
 
 If you ran setup before the request form could prefill the email, paste the newest `Code.gs` and run **setup** again. It keeps your data and forms and only refreshes the links on the Settings tab.
 
+## Add photos (optional, about 5 minutes)
+
+Google doesn't let scripts create upload questions, so this one is added by hand.
+
+1. **Update the script.** In the sheet, open **Extensions → Apps Script**, replace the code with the newest `Code.gs`, and click **Save**.
+2. **Approve Google Drive access.** Choose the function **setup** and click **Run**. Google asks you to approve again, this time including Google Drive. Setup keeps your data and adds a **Photo preview** column at the end of Listings.
+3. **Add the upload question.** Open the **Sell** form (link on the Settings tab), then click **Edit**, which is the pencil icon.
+   1. Click the **Photo link (optional)** question, then **+** in the side toolbar to add a question below it.
+   2. Change the question type to **File upload** and click **Continue**.
+   3. Title it exactly: `Photos (optional)`
+   4. Turn on **Allow only specific file types → Image**, set **Maximum number of files** to **3**, and **Maximum file size** to **10 MB**.
+   5. In the question's ⋮ menu, choose **Description** and paste: *Up to 3 photos of the item. Don't include people, mail, or anything that shows your address.*
+   6. Leave the question optional.
+4. **Test it.** Post an item with a photo. Within about 5 minutes you should see a thumbnail in the **Photo preview** column and the photo on the website card.
+
+What the script does with each upload:
+
+- **Rename:** Google names uploads after the person who sent them, so the script renames each photo to the listing ID (for example `F-009-1.jpg`).
+- **Share:** it makes the photo viewable by link and saves the link in **Photo link**, which the website reads.
+- **Hide:** when a listing is sold, withdrawn, completed or expired, it makes the photos private again.
+
+Uploads are stored in a folder in the Google Drive of the account that owns the form, and they count toward that account's storage. With upload questions, sellers must sign in to Google to post. The text **Photo link** question still works for anyone who would rather paste a link. If a Harvard Google account owns the sheet and Harvard blocks "anyone with the link" sharing, photos will stay private and the website will show the category icon instead.
+
 ## How it works
 
 | Step | What happens | Who is emailed |
@@ -65,6 +88,7 @@ You can change these timings on the Settings tab. The **Dashboard** tab counts l
 - **Manage links:** the links in emails contain a private code, so only the seller can change a listing and only the buyer can cancel their request. Don't forward those emails.
 - **Harvard check:** the forms only accept Harvard addresses, by checking the ending. If the sheet belongs to a Harvard Google Workspace account, set *Require Harvard Google sign-in* to **Yes** on the Settings tab before running setup; Google then confirms each person's address.
 - **Log tab:** records what happened by ID only, with no names or emails.
+- **Photos:** uploaded photos are public by link while the listing is on the board, and private again once it ends. Sellers are asked not to include people or anything that shows their address.
 
 ## Limits and fixes
 
@@ -74,4 +98,4 @@ You can change these timings on the Settings tab. The **Dashboard** tab counts l
 
 ## Testing
 
-`test/harness.js` runs the whole flow against simulated Google services: setup, posting, requests, confirm, decline, cancel, handoff, reminders, expiry, and attempts to act without the right code. Run it with `node test/harness.js`; it doesn't touch Google.
+`test/harness.js` runs the whole flow against simulated Google services: setup, posting, photo uploads, requests, confirm, decline, cancel, handoff, reminders, expiry, and attempts to act without the right code. Run it with `node test/harness.js`; it doesn't touch Google.

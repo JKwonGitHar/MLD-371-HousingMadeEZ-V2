@@ -22,7 +22,7 @@ class Sheet {
     return new Range(this, a, b, c || 1, d || 1);
   }
   appendRow(row) { const r = this.getLastRow() + 1; row.forEach((x, j) => this.put(r, j + 1, x)); }
-  setFrozenRows() {} setColumnWidth() {}
+  setFrozenRows() {} setColumnWidth() {} setRowHeight() {}
   deleteRow(r) { this.data.splice(r - 1, 1); }
   getFormUrl() { return this.formUrl; }
 }
@@ -61,7 +61,11 @@ function makeForm(title) {
   };
   forms[id] = f; return f;
 }
-const mails = []; let uuid = 0;
+const mails = []; let uuid = 0; let mm = 0;
+// Drive files uploaded through the Sell form (only the ones the test creates exist).
+const driveFiles = {};
+function upload(id, name) { driveFiles[id] = { name, access: 'PRIVATE', getName() { return this.name; }, setName(n) { this.name = n; return this; },
+  setSharing(a, p) { this.access = a; this.perm = p; return this; } }; return 'https://drive.google.com/open?id=' + id; }
 const props = {};
 const ctx = {
   console, Date, Math, JSON, String, Number, Object, Array, Error, isNaN, parseInt, parseFloat, encodeURIComponent, decodeURIComponent, RegExp,
@@ -74,6 +78,8 @@ const ctx = {
     newTrigger(fn) { const self = this; const t = { getHandlerFunction: () => fn }; const chain = { forSpreadsheet() { return chain; }, onFormSubmit() { return chain; }, timeBased() { return chain; }, everyDays() { return chain; }, atHour() { return chain; }, create() { self.triggers.push(t); return t; } }; return chain; } },
   PropertiesService: { getDocumentProperties: () => ({ getProperty: k => props[k] || null, setProperty: (k, v) => { props[k] = v; } }) },
   MailApp: { sendEmail: m => mails.push(m) },
+  DriveApp: { getFileById: id => { if (!driveFiles[id]) throw new Error('No item with the given ID could be found'); return driveFiles[id]; },
+    Access: { ANYONE_WITH_LINK: 'ANYONE_WITH_LINK', PRIVATE: 'PRIVATE' }, Permission: { VIEW: 'VIEW', NONE: 'NONE' } },
   LockService: { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) },
   Utilities: { getUuid: () => ('abcdef12-3456-7890-abcd-' + String(++uuid).padStart(12, '0')), formatDate: d => d.toISOString().slice(0, 10) },
   Session: { getScriptTimeZone: () => 'America/New_York' }
@@ -217,9 +223,34 @@ const patLinks = linksIn(mails.find(m => m.to === 'pat@college.harvard.edu').htm
 submit('Update responses', answersFromLink(patLinks.find(u => answersFromLink(u)[Q.ACTION] === A.WITHDRAW)));
 ok(rowsOf('Listings')[1].Status === 'Withdrawn', 'seller withdraws a listing');
 
+// ---------- 4a. photos ----------
+console.log('Photos');
+tab('Sell responses').data[0].push(Q.UPLOAD);   // the team adds the "Photos (optional)" upload question by hand
+const idA = 'A'.repeat(33), idB = 'B'.repeat(33), idGone = 'C'.repeat(33);
+const up = [upload(idA, 'IMG_2041 - Rita Roe.jpeg'), upload(idB, 'sofa side - Rita Roe.PNG'), 'https://drive.google.com/open?id=' + idGone].join(', ');
+mm = mails.length;
+submit('Sell responses', Object.assign({}, sell, { [Q.ITEM]: 'Sofa', [Q.EMAIL]: 'rita@hks.harvard.edu', [Q.NAME]: 'Rita Roe', [Q.PHOTO]: '', [Q.UPLOAD]: up }));
+let P = rowsOf('Listings').find(r => r.Item === 'Sofa');
+ok(P['Photo link'] === 'https://drive.google.com/file/d/' + idA + '/view https://drive.google.com/file/d/' + idB + '/view', 'uploaded photos saved as Drive links in Photo link');
+ok(driveFiles[idA].name === P['Listing ID'] + '-1.jpeg' && driveFiles[idB].name === P['Listing ID'] + '-2.png', "photos renamed to the listing ID (sender's name removed)");
+ok(driveFiles[idA].access === 'ANYONE_WITH_LINK' && driveFiles[idB].perm === 'VIEW', 'photos viewable by link');
+ok(P['Photo preview'] === '=IMAGE("https://drive.google.com/thumbnail?id=' + idA + '&sz=w400")', 'sheet shows a thumbnail of the first photo');
+ok(rowsOf('Log').some(r => r.Event === 'Photo could not be shared' && r['Listing ID'] === P['Listing ID']) && mails.length > mm, 'a missing photo is logged and the listing still goes live');
+ok(!/Rita/.test(JSON.stringify(tab('Log').data)), 'log has no seller names');
+const ritaLinks = linksIn(mails.find(m => m.to === 'rita@hks.harvard.edu').htmlBody);
+submit('Update responses', answersFromLink(ritaLinks.find(u => answersFromLink(u)[Q.ACTION] === A.WITHDRAW)));
+ok(driveFiles[idA].access === 'PRIVATE' && driveFiles[idB].access === 'PRIVATE', 'photos made private when the listing is withdrawn');
+submit('Sell responses', Object.assign({}, sell, { [Q.ITEM]: 'Rug', [Q.EMAIL]: 'rob@hks.harvard.edu', [Q.NAME]: 'Rob', [Q.UPLOAD]: '' }));
+P = rowsOf('Listings').find(r => r.Item === 'Rug');
+ok(P['Photo link'] === 'https://example.com/p.jpg' && P['Photo preview'] === '=IMAGE("https://example.com/p.jpg")', 'a pasted photo link still works without an upload');
+const lh = tab('Listings').data[0]; lh.splice(lh.indexOf('Photo preview'), 1);   // an older sheet without the new column
+ctx.setup();
+ok(tab('Listings').data[0].filter(h => h === 'Photo preview').length === 1, 'setup adds the Photo preview column to an older sheet');
+ok(ctx.LISTING_COLS.indexOf('Photo link') < 21, 'Photo link stays a public column');
+
 // ---------- 4b. sample listings ----------
 console.log('Sample listings');
-const beforeL = rowsOf('Listings').length; let mm = mails.length;
+const beforeL = rowsOf('Listings').length; mm = mails.length;
 ctx.addSampleListings_('john@hks.harvard.edu');
 let SL = rowsOf('Listings').filter(r => r['Seller name'] === 'Sample seller');
 ok(SL.length === 7 && rowsOf('Listings').length === beforeL + 7, 'seven sample listings added');
